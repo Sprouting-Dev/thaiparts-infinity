@@ -3,20 +3,20 @@
   "info": {
     "name": "Seo",
     "icon": "allergies",
-    "displayName": "Seo",
+    "displayName": "seo",
     "description": ""
   },
   "options": {},
   "attributes": {
     "metaTitle": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "metaDescription": {
       "type": "text",
-      "required": true
+      "required": false
     },
-    "shareImage": {
+    "ogImage": {
       "type": "media",
       "multiple": false,
       "required": false,

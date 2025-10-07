@@ -1,0 +1,30 @@
+{
+  "collectionName": "components_sections_grid_products",
+  "info": {
+    "displayName": "gridProducts"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "cta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false
+    },
+    "related": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::product.product"
+    },
+    "items": {
+      "type": "component",
+      "component": "shared.card",
+      "repeatable": true,
+      "max": 8
+    }
+  },
+  "config": {}
+}

@@ -1,0 +1,84 @@
+# General
+.DS_Store
+Thumbs.db
+desktop.ini
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.env
+.env.local
+.env.*.local
+/.pnp
+.pnp.js
+
+# Node
+node_modules/
+**/node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+lerna-debug.log*
+
+# OS generated files
+*.swp
+*~
+
+# Editor / IDE
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Next.js
+/.next
+/out
+/.vercel
+.vercel_build_output
+.next/ 
+
+# Frontend build outputs
+/frontend/.next
+/frontend/out
+
+# Backend (Strapi) build/cache/uploads
+/backend/.cache
+/backend/build
+/backend/public/uploads
+/backend/data/uploads
+
+# TypeScript
+*.tsbuildinfo
+
+# Coverage
+coverage/
+coverage
+
+# Dist
+dist/
+build/
+
+# Temporary
+tmp/
+temp/
+*.tmp
+
+# OS lock files
+*.lock
+
+# Docker
+docker-compose.override.yml
+.env.local
+
+# Mac system files
+.DS_Store
+
+# JetBrains
+.idea/
+
+# Misc
+.vscode/
+.localhistory/

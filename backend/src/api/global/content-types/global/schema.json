@@ -12,9 +12,20 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "siteName": {
-      "type": "string",
-      "required": true
+    "brand": {
+      "type": "component",
+      "component": "layout.brand",
+      "repeatable": false
+    },
+    "navbar": {
+      "type": "component",
+      "component": "layout.navbar",
+      "repeatable": false
+    },
+    "footer": {
+      "type": "component",
+      "component": "layout.footer",
+      "repeatable": false
     },
     "favicon": {
       "type": "media",
@@ -22,14 +33,16 @@
       "required": false,
       "allowedTypes": ["images", "files", "videos"]
     },
-    "siteDescription": {
-      "type": "text",
-      "required": true
-    },
     "defaultSeo": {
       "type": "component",
+      "component": "shared.seo",
+      "repeatable": false
+    },
+    "footerCta": {
+      "type": "component",
+      "component": "sections.footer-cta",
       "repeatable": false,
-      "component": "shared.seo"
+      "required": false
     }
   }
 }

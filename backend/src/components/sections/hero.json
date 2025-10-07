@@ -1,0 +1,37 @@
+{
+  "collectionName": "components_sections_heroes",
+  "info": {
+    "displayName": "hero"
+  },
+  "options": {},
+  "attributes": {
+    "background": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": ["images", "files", "videos", "audios"]
+    },
+    "title": {
+      "type": "component",
+      "repeatable": false,
+      "required": true,
+      "component": "shared.responsive-title"
+    },
+    "subtitle": {
+      "type": "text",
+      "required": true
+    },
+    "primaryCta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false,
+      "required": true
+    },
+    "secondaryCta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false
+    }
+  },
+  "config": {}
+}

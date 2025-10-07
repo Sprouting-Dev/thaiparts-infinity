@@ -11,17 +11,35 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "title": {
-      "type": "string"
+    "seo": {
+      "type": "component",
+      "component": "shared.seo",
+      "repeatable": false
     },
-    "description": {
-      "type": "text"
+    "hero": {
+      "type": "component",
+      "component": "sections.hero",
+      "repeatable": false
     },
-    "contactButton": {
-      "type": "string"
+    "features": {
+      "type": "component",
+      "component": "sections.features",
+      "repeatable": false
     },
-    "aboutButton": {
-      "type": "string"
+    "products": {
+      "type": "component",
+      "component": "sections.grid-products",
+      "repeatable": false
+    },
+    "services": {
+      "type": "component",
+      "component": "sections.grid-services",
+      "repeatable": false
+    },
+    "posts": {
+      "type": "component",
+      "component": "sections.grid-posts",
+      "repeatable": false
     }
   }
 }

@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+.strapi/
+.cache/
+.tmp/
+
+# Production builds
+build/
+dist/
+
+# Generated files
+types/generated/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+*.log
+
+# Package managers
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Uploads
+public/uploads/
+data/uploads/
+
+# Database
+database/
+*.db
+*.sqlite
+*.sqlite3

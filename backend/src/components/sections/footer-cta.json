@@ -1,0 +1,30 @@
+{
+  "collectionName": "components_sections_footer_ctas",
+  "info": {
+    "displayName": "footerCta"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "subtitle": {
+      "type": "text",
+      "required": true
+    },
+    "bg": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": ["images", "files", "videos", "audios"]
+    },
+    "cta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false,
+      "required": true
+    }
+  },
+  "config": {}
+}

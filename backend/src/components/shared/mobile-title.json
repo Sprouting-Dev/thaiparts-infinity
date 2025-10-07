@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_shared_mobile_titles",
+  "info": {
+    "displayName": "Mobile Title",
+    "description": "Multiple line title for mobile display"
+  },
+  "options": {},
+  "attributes": {
+    "lines": {
+      "type": "component",
+      "repeatable": true,
+      "required": true,
+      "component": "shared.title-line",
+      "min": 1,
+      "max": 5
+    }
+  }
+}

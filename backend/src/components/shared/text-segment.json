@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_shared_text_segments",
+  "info": {
+    "displayName": "text-segment",
+    "description": "Text segment with customizable color for flexible brand rendering"
+  },
+  "options": {},
+  "attributes": {
+    "text": {
+      "type": "string",
+      "required": true,
+      "description": "Text content for this segment"
+    },
+    "color": {
+      "type": "enumeration",
+      "required": true,
+      "default": "primary",
+      "enum": ["primary", "secondary", "blue", "red"],
+      "description": "Color theme for this text segment"
+    }
+  },
+  "config": {}
+}
