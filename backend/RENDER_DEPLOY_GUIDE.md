@@ -20,26 +20,26 @@ Set these in Render Dashboard → Environment Variables:
 #### Database (Supabase Postgres)
 ```
 DATABASE_CLIENT=postgres
-DATABASE_URL=postgresql://postgres:Thaiparts2025@db.fnkrdsxktnoldfyueenn.supabase.co:5432/postgres
+DATABASE_URL=<your_supabase_postgres_connection_string>
 DATABASE_SSL=true
 DATABASE_SSL_REJECT_UNAUTHORIZED=false
 ```
 
 #### Supabase Storage
 ```
-SUPABASE_URL=https://fnkrdsxktnoldfyueenn.supabase.co
+SUPABASE_URL=<your_supabase_project_url>
 SUPABASE_BUCKET=uploads
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZua3Jkc3hrdG5vbGRmeXVlZW5uIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1OTkxNjE1NSwiZXhwIjoyMDc1NDkyMTU1fQ.5k-tsYmaA9LVe5TTgZkPSOdDUENbEvoF5vzkcqEp6cw
+SUPABASE_SERVICE_ROLE_KEY=<your_supabase_service_role_key>
 ```
 
-#### Strapi Secrets (copy from your .env)
+#### Strapi Secrets (copy from your local .env file)
 ```
-APP_KEYS=3yzvF6+EU1VihaIAKsRdQA==,e143vte4yE8pcREBCVtBAA==,TJoMyHTOtLwsAxXcHb77Hg==,GyZ2/HEJY5fPND2i0SkRFA==
-API_TOKEN_SALT=130j7ENxwveZwSNTqxtGqA==
-ADMIN_JWT_SECRET=0yXRTj2/6Kan7xukiEkGQA==
-TRANSFER_TOKEN_SALT=gYhNAvg7Jas5yGQ6elgrgg==
-ENCRYPTION_KEY=hcq817m5JkgXJtZ1tYK9OA==
-JWT_SECRET=6xy0R4a9Ck6jxPPIqhKtCw==
+APP_KEYS=<comma_separated_app_keys>
+API_TOKEN_SALT=<your_api_token_salt>
+ADMIN_JWT_SECRET=<your_admin_jwt_secret>
+TRANSFER_TOKEN_SALT=<your_transfer_token_salt>
+ENCRYPTION_KEY=<your_encryption_key>
+JWT_SECRET=<your_jwt_secret>
 ```
 
 #### Server Config
