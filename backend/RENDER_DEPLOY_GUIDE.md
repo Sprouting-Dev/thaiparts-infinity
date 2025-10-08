@@ -49,6 +49,11 @@ PORT=10000
 NODE_ENV=production
 ```
 
+Additionally set the public URL so Strapi knows the external HTTPS address used by Render:
+```
+PUBLIC_URL=https://thaiparts-infinity-backend.onrender.com
+```
+
 ### 3. Additional Settings
 - **Instance Type:** Starter (512MB RAM) - sufficient for prototype
 - **Auto-Deploy:** Yes (deploy on git push)
