@@ -1,0 +1,53 @@
+{
+  "kind": "collectionType",
+  "collectionName": "chat_sessions",
+  "info": {
+    "singularName": "chat-session",
+    "pluralName": "chat-sessions",
+    "displayName": "Chat Session",
+    "description": "จัดการ Session การสนทนาของ Chat Widget"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "sessionId": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["active", "closed"],
+      "default": "active"
+    },
+    "platform": {
+      "type": "enumeration",
+      "enum": ["web", "line"],
+      "default": "web"
+    },
+    "userAgent": {
+      "type": "string"
+    },
+    "ipAddress": {
+      "type": "string"
+    },
+    "startedAt": {
+      "type": "datetime",
+      "required": true
+    },
+    "endedAt": {
+      "type": "datetime"
+    },
+    "lastMessageAt": {
+      "type": "datetime"
+    },
+    "messages": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::chat-message.chat-message",
+      "mappedBy": "session"
+    }
+  }
+}

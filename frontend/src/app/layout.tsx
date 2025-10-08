@@ -5,6 +5,8 @@ import Header from '@/components/Header';
 import Footer, { FooterData } from '@/components/Footer';
 import PreFooterCta from '@/components/PreFooterCta';
 import { getGlobal, getGlobalFresh } from '@/lib/global';
+import { ChatProvider } from "@/components/chat/ChatProvider";
+import { ChatWidget } from "@/components/chat/ChatWidget";
 
 const kanit = Kanit({
   variable: '--font-kanit',
@@ -149,6 +151,10 @@ export default async function RootLayout({
             <Footer embedded data={footerData} />
           </div>
         </div>
+        <ChatProvider>
+          {children}
+          <ChatWidget />
+        </ChatProvider>
       </body>
     </html>
   );

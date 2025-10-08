@@ -1,0 +1,51 @@
+{
+  "kind": "collectionType",
+  "collectionName": "chat_messages",
+  "info": {
+    "singularName": "chat-message",
+    "pluralName": "chat-messages",
+    "displayName": "Chat Message",
+    "description": "เก็บข้อความแต่ละข้อในการสนทนา"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "session": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::chat-session.chat-session",
+      "inversedBy": "messages"
+    },
+    "sender": {
+      "type": "enumeration",
+      "enum": ["user", "bot", "staff"],
+      "required": true
+    },
+    "content": {
+      "type": "text",
+      "required": true
+    },
+    "messageType": {
+      "type": "enumeration",
+      "enum": ["text", "image", "file", "auto-reply", "manual"],
+      "default": "text"
+    },
+    "platform": {
+      "type": "enumeration",
+      "enum": ["web", "line"],
+      "required": true
+    },
+    "lineUserId": {
+      "type": "string"
+    },
+    "webSessionId": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "datetime",
+      "required": true
+    }
+  }
+}
