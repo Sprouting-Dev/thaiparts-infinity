@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_layout_navbars",
+  "info": {
+    "displayName": "navbar",
+    "description": "Navigation bar with configurable CTA buttons (full href control)"
+  },
+  "options": {},
+  "attributes": {
+    "ctas": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": true,
+      "required": false,
+      "max": 4,
+      "description": "Up to 4 CTA buttons with different variants (contact, secondary, primary, content-primary)"
+    }
+  },
+  "config": {}
+}

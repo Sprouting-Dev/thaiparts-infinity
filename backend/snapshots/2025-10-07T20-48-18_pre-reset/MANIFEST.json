@@ -1,0 +1,609 @@
+{
+  "createdAt": "2025-10-07T20:48:20.414Z",
+  "version": 2,
+  "tag": "pre-reset",
+  "limit": 1000,
+  "schemaCount": 26,
+  "schemas": [
+    {
+      "rel": "api/global/content-types/global/schema.json",
+      "hash": "bc2c773d3a0c3c71a77d6c811ecc93eb0b73ab90c6e98dc5fa4a5b5ac246dd98"
+    },
+    {
+      "rel": "api/home-page/content-types/home-page/schema.json",
+      "hash": "a5ca85296e13de9b2ed611a74332483c22413a5b3ac440bdd43652f8b432fa70"
+    },
+    {
+      "rel": "api/post/content-types/post/schema.json",
+      "hash": "9b46541185be8075d6768634d1b0e1b076a21f9c7d7ed9195fd59d66e07c2892"
+    },
+    {
+      "rel": "api/product/content-types/product/schema.json",
+      "hash": "492dbec61e6273d731a400b797b987541cf71b7eecec9f291c928e5be7fdefd7"
+    },
+    {
+      "rel": "api/service/content-types/service/schema.json",
+      "hash": "c100855876e9076a177d44c4d864179e62eca39ce03588008cd54d1a614d7d7f"
+    },
+    {
+      "rel": "components/layout/brand.json",
+      "hash": "020f556c164a7b9f557f04847ac141848c0d511156361ad3802ac9a25c6b6bcb"
+    },
+    {
+      "rel": "components/layout/footer-column.json",
+      "hash": "8ebcac60f622b5a2809fa27a3da514e03a0185227d9de315d5b4c5b4a567afb7"
+    },
+    {
+      "rel": "components/layout/footer.json",
+      "hash": "e854659446a2b36c5dd96a165275a032250154057c0b6777269012456973d38e"
+    },
+    {
+      "rel": "components/layout/navbar.json",
+      "hash": "9716c4c5fb94b62dcc0fd7f426308f6beb3032c1852e07fdb1e58455ee5fecbc"
+    },
+    {
+      "rel": "components/sections/feature-item.json",
+      "hash": "527039377ff5c3c131278fc817ef89e7048baf66f7fce75299922619303cadf7"
+    },
+    {
+      "rel": "components/sections/features.json",
+      "hash": "661f58e1952c9d07740e463aeff616eb3e56a7f6ff82aa5959f3349d3336f941"
+    },
+    {
+      "rel": "components/sections/footer-cta.json",
+      "hash": "1ad59fc0133829afdf080f5b0049c4f4fd82801e5c12f9ad26f2f81000864a99"
+    },
+    {
+      "rel": "components/sections/grid-posts.json",
+      "hash": "7063bd11af0ea4252dcd436305f29722fc056a92c370f36a117ccf61ab04f181"
+    },
+    {
+      "rel": "components/sections/grid-products.json",
+      "hash": "6d0c1955e83c216da70e6ba1ac761796fb684da3a0ffaa6ab6a7ab1594f9b522"
+    },
+    {
+      "rel": "components/sections/grid-services.json",
+      "hash": "e061de1088c6c8e4aa81775d070bb41c516d88fa554ddb885bb293ab8e887813"
+    },
+    {
+      "rel": "components/sections/hero.json",
+      "hash": "818cf3c5638659e27fb57fbec1ce3898e1f986f4f4a936dd047cf5d48ef49d46"
+    },
+    {
+      "rel": "components/shared/card.json",
+      "hash": "a7cfbcacab51d0f6b2606e05905f227d7b15a371181b5b978b1a01ff272af263"
+    },
+    {
+      "rel": "components/shared/category-badge.json",
+      "hash": "cd8a97d3bc10346c0c204fde227569fcad812c8620bb9a6b134a56fd78e3f2ba"
+    },
+    {
+      "rel": "components/shared/cta.json",
+      "hash": "f224f4b61f99320db8de2e614f470aea8b69128d509be1bbf2d3e4a79bd14f27"
+    },
+    {
+      "rel": "components/shared/desktop-title.json",
+      "hash": "c75073debd7f1b6649c0ba029e744d6b021f73b67cc0a15365311d088822274d"
+    },
+    {
+      "rel": "components/shared/links.json",
+      "hash": "0b697fccf1657ac03337fb9cb2224aa7e920d3e29352a2c4afc8fc818b5e61d3"
+    },
+    {
+      "rel": "components/shared/mobile-title.json",
+      "hash": "e003d92b2b1257d844963f4e3411d4ecbb9b5ea31cdddd3d1f33eb838ad9d062"
+    },
+    {
+      "rel": "components/shared/responsive-title.json",
+      "hash": "046daf4747383fe49ab08aece6f54c4a16e23870a607e3bccd0a523046e3b848"
+    },
+    {
+      "rel": "components/shared/seo.json",
+      "hash": "ec0a1d0343d5e0224fa85ea0ad9403f13a82483dbc6286cac1db510d015a3f00"
+    },
+    {
+      "rel": "components/shared/text-segment.json",
+      "hash": "3c543854af2eb56797792479eaa0efaeb63cf3650d2a83b20c6dd9bbb825557d"
+    },
+    {
+      "rel": "components/shared/title-line.json",
+      "hash": "26cb6f4944e40f716483277d83c74fd870e5849050fb6f41cbf9da2068670617"
+    }
+  ],
+  "db": true,
+  "uploadsFiles": 98,
+  "uploads": [
+    {
+      "file": ".gitkeep",
+      "bytes": 0,
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "article_01_0206d9f094.webp",
+      "bytes": 51076,
+      "hash": "9b231dc2114b0c11f05a5ce155fd123309a1e0b47bbb2f8d90274bf00b93e050"
+    },
+    {
+      "file": "article_02_b7a3fba6c7.webp",
+      "bytes": 68052,
+      "hash": "780f9a6223c02019850b37dd546e7da93e873da7ba81fe34b6b7f1c750db0925"
+    },
+    {
+      "file": "article_03_61c2c2f7bf.webp",
+      "bytes": 69166,
+      "hash": "c269531db29a89fb4014cade78d00b6e510a2250feed44f95632d4904e1cc6d5"
+    },
+    {
+      "file": "bearings_and_rollers_9566ef7e00.webp",
+      "bytes": 39542,
+      "hash": "c3d0f05fa27a64090bc895b0ee7390c194a2058518f01760d2ca55015db099c9"
+    },
+    {
+      "file": "daviddoe_strapi_d0567ea5b6.jpeg",
+      "bytes": 587694,
+      "hash": "f8b73115b292b25379392bb98f7b3f67f44020a2417a77888995d5b14a868329"
+    },
+    {
+      "file": "default_image_d8bc618dc4.png",
+      "bytes": 81615,
+      "hash": "96b62098015b0bfa69e17c7f09bfc663523dd75203a21bb097259460f7ded5d1"
+    },
+    {
+      "file": "email_icon_3130c0cec9.svg",
+      "bytes": 1226,
+      "hash": "6791ff6e68eb47e132fc501e26e918f99719a555440c3bb6fd6eb5b40c46580a"
+    },
+    {
+      "file": "engineering_expertise_icon_00c9038a8a.svg",
+      "bytes": 8450,
+      "hash": "697831eda03e229767d648a9b6ab37258bd227ca8b2476ab422af6396e1f5de8"
+    },
+    {
+      "file": "engineering_expertise_icon_d640ffff45.svg",
+      "bytes": 8450,
+      "hash": "697831eda03e229767d648a9b6ab37258bd227ca8b2476ab422af6396e1f5de8"
+    },
+    {
+      "file": "facebook_icon_c86dd9d188.svg",
+      "bytes": 447,
+      "hash": "644428e8315f89b74782b33efc5e586b95ec86b9f294a32277e327d7047a74af"
+    },
+    {
+      "file": "fast_delivery_icon_71bbd0e9ec.svg",
+      "bytes": 2098,
+      "hash": "e716deeeef79d9d4492a81a74acd7b0f36e4fc24ffa67db33291087a14d03f68"
+    },
+    {
+      "file": "fast_delivery_icon_f36e100090.svg",
+      "bytes": 2098,
+      "hash": "e716deeeef79d9d4492a81a74acd7b0f36e4fc24ffa67db33291087a14d03f68"
+    },
+    {
+      "file": "favicon_9c179c64bf.ico",
+      "bytes": 15406,
+      "hash": "ec6557e4967b40c664aa80fe20c5904c13a0e086010900d898d2a6b2ede57619"
+    },
+    {
+      "file": "favicon_c87be8262c.png",
+      "bytes": 2738,
+      "hash": "3b28e6bf202dab36d781145d3ccd3d84cf3a1bfd86c9b69c158b896ff31c85cf"
+    },
+    {
+      "file": "hero_image_2366cc197e.png",
+      "bytes": 2111942,
+      "hash": "96ae84130338dd99e83fc4ee4c55ed7387b4dcfa95982f17b8de725fa1a4837d"
+    },
+    {
+      "file": "hero_image_b2af870488.webp",
+      "bytes": 347564,
+      "hash": "2060d1133382b1ce8a8c434a45209fd3b7024515243c32579bef755a1e046086"
+    },
+    {
+      "file": "hydraulic_system_48a3c811c0.webp",
+      "bytes": 47730,
+      "hash": "ec72c7f5a3af8dd23d4b832f2f805dabf069170214c16e6edb45da19d95acfdb"
+    },
+    {
+      "file": "Industrial_standard_icon_26039e90cb.svg",
+      "bytes": 1343,
+      "hash": "41abb7e05e0d49594fb80a1e5a0cca52594b3c0ae9424c67fe898dc04009ccab"
+    },
+    {
+      "file": "Industrial_standard_icon_89edf28ba1.svg",
+      "bytes": 1343,
+      "hash": "41abb7e05e0d49594fb80a1e5a0cca52594b3c0ae9424c67fe898dc04009ccab"
+    },
+    {
+      "file": "large_article_01_0206d9f094.webp",
+      "bytes": 42532,
+      "hash": "39f317d2589b567bd18e8768e2bead943a84d7260cbb3a6c18b1460246f5d1a7"
+    },
+    {
+      "file": "large_article_02_b7a3fba6c7.webp",
+      "bytes": 46878,
+      "hash": "f5a653593d8248d9b5bfefa493c7d7fdc966bda1d215081a4bded0e118e57014"
+    },
+    {
+      "file": "large_article_03_61c2c2f7bf.webp",
+      "bytes": 56856,
+      "hash": "43bdf609c40a184cef90db941d91ce091662362ef9ae6b01f84b0ea0566a5f57"
+    },
+    {
+      "file": "large_bearings_and_rollers_9566ef7e00.webp",
+      "bytes": 31702,
+      "hash": "68426a22007d854943a871f325baced0999b7ce590678952fb18b77517d949b1"
+    },
+    {
+      "file": "large_daviddoe_strapi_d0567ea5b6.jpeg",
+      "bytes": 74823,
+      "hash": "99ed277cd44d851d8b548dcc8c5435c59b3939267dc8b151e867661e974bcf2d"
+    },
+    {
+      "file": "large_default_image_d8bc618dc4.png",
+      "bytes": 328045,
+      "hash": "4a9077b412711818a956c6411c1e8b40eda74413761b6d2537d43a30b83837a7"
+    },
+    {
+      "file": "large_hero_image_2366cc197e.png",
+      "bytes": 1467939,
+      "hash": "adf92e3144b19b011ebc75f09f3139764d61b20c35431c008e952427b405911d"
+    },
+    {
+      "file": "large_hero_image_b2af870488.webp",
+      "bytes": 106170,
+      "hash": "f1c4bb16e31e4a3e88948232b06984b27df8d62517ed7224b0c8166303b8ff3c"
+    },
+    {
+      "file": "large_hydraulic_system_48a3c811c0.webp",
+      "bytes": 42716,
+      "hash": "b9093aee4f1037afc8f8258f12af2dc6187e7907d48b2f9faf3ec6a5b8e40e3b"
+    },
+    {
+      "file": "large_motor_and_drive_697a80bd00.webp",
+      "bytes": 50408,
+      "hash": "e87bb15023e57bc2dfefef1ff01d1ab1c4cdd2afd28bd15b8e091846d0c7df27"
+    },
+    {
+      "file": "large_plc_module_91ef338d00.webp",
+      "bytes": 45408,
+      "hash": "15f8323535830b84202b97c0fbed09648e68e85875a9b582b65340aee47fabda"
+    },
+    {
+      "file": "large_pressure_and_flow_e441b8984a.webp",
+      "bytes": 87284,
+      "hash": "c506471d46955a6324e42f4bf79cc2292a7ccb037f2c1971eb885e61d789b04a"
+    },
+    {
+      "file": "large_preventive_maintenance_9e592fbc2f.webp",
+      "bytes": 61516,
+      "hash": "291bb1dc128709c0c160f8c0ada0909213be7cf1285cc4c1d29d40faca472399"
+    },
+    {
+      "file": "large_pre_footer_05f6e53c04.webp",
+      "bytes": 47766,
+      "hash": "18be556b09e9717318182c82564c0e030e57e71c4d630ee169bca62284cc7bb5"
+    },
+    {
+      "file": "large_rapid_response_and_on_site_support_3ff1f7d70a.webp",
+      "bytes": 67562,
+      "hash": "63c43dbf3db6de989ebf872e825c84540cdd6d83bedfd4495502a152fea97fac"
+    },
+    {
+      "file": "large_system_design_and_upgrade_26f9d8fe7f.webp",
+      "bytes": 35360,
+      "hash": "55d8b280b2766ea5ed1862b03c6f6e2e75c5934ed73f6387f9cd77c193813e8c"
+    },
+    {
+      "file": "medium_article_01_0206d9f094.webp",
+      "bytes": 31304,
+      "hash": "dc934ea547bd46571c7bff38a8488b1a4258c38fcb57e88f2e36781396615f0e"
+    },
+    {
+      "file": "medium_article_02_b7a3fba6c7.webp",
+      "bytes": 33326,
+      "hash": "b83370ee2ea3d47f01175ab05b4dd0469d2bbca32ed215e21ccd4d0fd2af4dfc"
+    },
+    {
+      "file": "medium_article_03_61c2c2f7bf.webp",
+      "bytes": 41082,
+      "hash": "6fa8ded04ba62d4418f645a216ee0c850acebe81a5203367b7be9e4e63c0d35b"
+    },
+    {
+      "file": "medium_bearings_and_rollers_9566ef7e00.webp",
+      "bytes": 23412,
+      "hash": "470d3383b351b2116f2a475e288f7b5956eb7020d18598940fa14edcefd66172"
+    },
+    {
+      "file": "medium_daviddoe_strapi_d0567ea5b6.jpeg",
+      "bytes": 44315,
+      "hash": "3b63868a11e282f1e83080b8ba9b25802550757ca97ed7be87be6367955dc017"
+    },
+    {
+      "file": "medium_default_image_d8bc618dc4.png",
+      "bytes": 174724,
+      "hash": "606a8b9f39054dd96e62422b93314f87dfce2f09208be3cc4e69afc94e349bf5"
+    },
+    {
+      "file": "medium_hero_image_2366cc197e.png",
+      "bytes": 878380,
+      "hash": "f34e72f8b3385f3e1918abfd60b12a4ff0194cb3030f2a7abfa2a717003cbf12"
+    },
+    {
+      "file": "medium_hero_image_b2af870488.webp",
+      "bytes": 74422,
+      "hash": "3915fe64eefda23a73236c1ac5da8fb9f3f806ef90faef01c7e20ad5c15213e4"
+    },
+    {
+      "file": "medium_hydraulic_system_48a3c811c0.webp",
+      "bytes": 30958,
+      "hash": "a53479abb789f656eb04ce6ba9d43eb51fa6737e274a05db0142f8a809a900c2"
+    },
+    {
+      "file": "medium_motor_and_drive_697a80bd00.webp",
+      "bytes": 36450,
+      "hash": "a884432db64188b1d9f67e02cc3acc360b916d53fd4364c537deeffe9e22fb26"
+    },
+    {
+      "file": "medium_plc_module_91ef338d00.webp",
+      "bytes": 33732,
+      "hash": "a5bfbcde0c50521f5e40def5baccbc401cc712bb1ece37b789825879412f52cf"
+    },
+    {
+      "file": "medium_pressure_and_flow_e441b8984a.webp",
+      "bytes": 62402,
+      "hash": "85859d714ac8d6ea08c9f564f4a0769b0ce0b72bc6ac8efe920ccbbe790b7d10"
+    },
+    {
+      "file": "medium_preventive_maintenance_9e592fbc2f.webp",
+      "bytes": 45888,
+      "hash": "42a8af261c563c69140ca2ca93dc71a1ab8d1fbb9ae9873132d3d50045d08637"
+    },
+    {
+      "file": "medium_pre_footer_05f6e53c04.webp",
+      "bytes": 35514,
+      "hash": "c6a7aa025556b122712e99913caaef85bf9fbbcd06bc90d9bd7d6baf2d53fe79"
+    },
+    {
+      "file": "medium_rapid_response_and_on_site_support_3ff1f7d70a.webp",
+      "bytes": 49152,
+      "hash": "3eddb3c6d6387c4a7eefc386c25cda57c88e85b9d237c8734f19414f8197bb68"
+    },
+    {
+      "file": "medium_system_design_and_upgrade_26f9d8fe7f.webp",
+      "bytes": 26966,
+      "hash": "e95616642267287529144446655001b87c14a0c016a8fc88faf18ac6ee2c90e3"
+    },
+    {
+      "file": "motor_and_drive_697a80bd00.webp",
+      "bytes": 64146,
+      "hash": "67f2eac0d891bd810d3f0dd116832ea6b801c212fa0b663053cf7c079609ef56"
+    },
+    {
+      "file": "one_stop_service_icon_18003d8e0d.svg",
+      "bytes": 10658,
+      "hash": "dbd796eeb09391b5c180fc3867948b34a6ea70fd59ce3d2e1ecf62806233c6c6"
+    },
+    {
+      "file": "one_stop_service_icon_235e45e125.svg",
+      "bytes": 10658,
+      "hash": "dbd796eeb09391b5c180fc3867948b34a6ea70fd59ce3d2e1ecf62806233c6c6"
+    },
+    {
+      "file": "phone_icon_e482b87f54.svg",
+      "bytes": 1229,
+      "hash": "3c26f8526154c06c25248d3ba8a5607b54a95a56b1c97bc6c46575da5ac86072"
+    },
+    {
+      "file": "plc_module_91ef338d00.webp",
+      "bytes": 54500,
+      "hash": "f26240918243312091efdf980bc9a0199add3328779eb1cb73fd8d413a97f792"
+    },
+    {
+      "file": "pressure_and_flow_e441b8984a.webp",
+      "bytes": 108046,
+      "hash": "4e63b07eeb45b225d729d160360a24bc74901ed37f5c114894e68b679e89aa72"
+    },
+    {
+      "file": "preventive_maintenance_9e592fbc2f.webp",
+      "bytes": 73908,
+      "hash": "c44fd57b04d8b8e8a7d5deba98efd80279dc9c79c429cc6117ce4949b935963c"
+    },
+    {
+      "file": "pre_footer_05f6e53c04.webp",
+      "bytes": 54840,
+      "hash": "b4cc74eb84c112183bc5bf9a91b2bdad6a32262c87d7a6b3521a4cbb4d38e28c"
+    },
+    {
+      "file": "rapid_response_and_on_site_support_3ff1f7d70a.webp",
+      "bytes": 82674,
+      "hash": "248f4d5bcfb43a516a173f6571880e7b5934771b1e68719da2ea43bd930c061b"
+    },
+    {
+      "file": "small_article_01_0206d9f094.webp",
+      "bytes": 19444,
+      "hash": "b2b51328e5dd4a4dbf519a560f7feb63f497613b907654d53e8e518b38c70f06"
+    },
+    {
+      "file": "small_article_02_b7a3fba6c7.webp",
+      "bytes": 19996,
+      "hash": "e7bf40d6f435b731936838fd78f7c386bfc05574f0dcef7fc4e10c56fd32f1d3"
+    },
+    {
+      "file": "small_article_03_61c2c2f7bf.webp",
+      "bytes": 24716,
+      "hash": "059a820339cd556592721cd3a227a3c2116084ba6d54b7d41c1601f9b2424e3a"
+    },
+    {
+      "file": "small_bearings_and_rollers_9566ef7e00.webp",
+      "bytes": 14096,
+      "hash": "65d1f5139d3fb484e5f47356bdf289beecfe55c38f24c0ed66fb649485bf09cd"
+    },
+    {
+      "file": "small_daviddoe_strapi_d0567ea5b6.jpeg",
+      "bytes": 22427,
+      "hash": "24c4b72b1f6b7d65f991a3ae57a3d00601ce426e03578cc80c3d016146fa41d9"
+    },
+    {
+      "file": "small_default_image_d8bc618dc4.png",
+      "bytes": 75768,
+      "hash": "e40aad243ea55a38fc893b8b74564df2d7696928dba8875301c1bc3551e088ab"
+    },
+    {
+      "file": "small_favicon_c87be8262c.png",
+      "bytes": 17800,
+      "hash": "8a7c253ca8377971e6642dcc05de95d47e195657f7d5f9d43ad8cced56651f5d"
+    },
+    {
+      "file": "small_hero_image_2366cc197e.png",
+      "bytes": 415949,
+      "hash": "afdc399d35008f047d60b0e927532b5540e286c9f4d601f6acfb8a99789ef0fc"
+    },
+    {
+      "file": "small_hero_image_b2af870488.webp",
+      "bytes": 43144,
+      "hash": "8366e2603dbd4961b32ddd8108d848b1ab5759531856194d31b09aae2c32a013"
+    },
+    {
+      "file": "small_hydraulic_system_48a3c811c0.webp",
+      "bytes": 19472,
+      "hash": "05ae5bc84b4285656f4434325ffd980a640c0ac96d7fed645bd7602f70bf7f98"
+    },
+    {
+      "file": "small_motor_and_drive_697a80bd00.webp",
+      "bytes": 22334,
+      "hash": "b1e7075bd6da132969c6c9b71014e5c73a448fd226d8566e6eff6a060f00be59"
+    },
+    {
+      "file": "small_plc_module_91ef338d00.webp",
+      "bytes": 20670,
+      "hash": "723000deb1729f0c293b7185180ce69ade43d2462033915b4e246dd70af08604"
+    },
+    {
+      "file": "small_pressure_and_flow_e441b8984a.webp",
+      "bytes": 37252,
+      "hash": "49d6fbc683b5da5c147de4a3042ff4030ee5efde895e040d5c4d6897631b8d8c"
+    },
+    {
+      "file": "small_preventive_maintenance_9e592fbc2f.webp",
+      "bytes": 27518,
+      "hash": "9ac002e383784e94bede7adca20458b675eee744e5b452b8a71dd8d33da39d2e"
+    },
+    {
+      "file": "small_pre_footer_05f6e53c04.webp",
+      "bytes": 21852,
+      "hash": "f96bcbcb87f5a522dc6523e8fa8748c8d82c490ea8783bdc30e7d4f19283b8d5"
+    },
+    {
+      "file": "small_rapid_response_and_on_site_support_3ff1f7d70a.webp",
+      "bytes": 30202,
+      "hash": "4501e9e8d41ef5e19e34965570ab2ec49b441a53cb5f0a9cda85576a071d9575"
+    },
+    {
+      "file": "small_system_design_and_upgrade_26f9d8fe7f.webp",
+      "bytes": 16604,
+      "hash": "095ec5ca99fc942727aff33ff4d5a0022ef6f935b63bd10b32bb2c67500fe381"
+    },
+    {
+      "file": "system_design_and_upgrade_26f9d8fe7f.webp",
+      "bytes": 40760,
+      "hash": "8e20c9ee53d3eff3a2d0db2992ac0c369a226669879a91cb177a08b24d84ac89"
+    },
+    {
+      "file": "thaiparts_infinity_logo_174ee086fa.svg",
+      "bytes": 306729,
+      "hash": "7fbefd2bca41ecbfb62d8ef1e8ded831ed0db8443f7bbc600dff4ed9b3319d47"
+    },
+    {
+      "file": "thaiparts_infinity_logo_c0e48ced4c.svg",
+      "bytes": 306729,
+      "hash": "7fbefd2bca41ecbfb62d8ef1e8ded831ed0db8443f7bbc600dff4ed9b3319d47"
+    },
+    {
+      "file": "thumbnail_article_01_0206d9f094.webp",
+      "bytes": 3962,
+      "hash": "2e3f1d2ecd9ee160c72412a9131546333872b1812e479fefa9417a01db0e8a6b"
+    },
+    {
+      "file": "thumbnail_article_02_b7a3fba6c7.webp",
+      "bytes": 4746,
+      "hash": "f5efa66973e19013af5228982ee512d22ad45adb01a5bb6a3dbb9c7cc8ee819c"
+    },
+    {
+      "file": "thumbnail_article_03_61c2c2f7bf.webp",
+      "bytes": 4784,
+      "hash": "d82455ebf4b911c09b92d5bfa49380b89694ddab96b898eb05dbfe50163e10f3"
+    },
+    {
+      "file": "thumbnail_bearings_and_rollers_9566ef7e00.webp",
+      "bytes": 2996,
+      "hash": "637d0f4b013bae1fde5dd1b883dca7106419b68c50431866adf9d76702f16e80"
+    },
+    {
+      "file": "thumbnail_daviddoe_strapi_d0567ea5b6.jpeg",
+      "bytes": 4201,
+      "hash": "89fef0944dc868a1b3de13da0c540da37a0524bd032dbf152c6820a17fc94693"
+    },
+    {
+      "file": "thumbnail_default_image_d8bc618dc4.png",
+      "bytes": 21060,
+      "hash": "ac60657e8a7e88b5b3d143c32155f7e957e5c6bb9dd735fa644153d1c8f31c5d"
+    },
+    {
+      "file": "thumbnail_favicon_c87be8262c.png",
+      "bytes": 4605,
+      "hash": "51afe6dbf2496a901340a59ec6e05b66156f79dd42c374852bb7b85be1fc3091"
+    },
+    {
+      "file": "thumbnail_hero_image_2366cc197e.png",
+      "bytes": 100291,
+      "hash": "89572f1d318336debca764675f211cb3499fd1bb2071baf834440ce6a747e18d"
+    },
+    {
+      "file": "thumbnail_hero_image_b2af870488.webp",
+      "bytes": 11410,
+      "hash": "8ba2dfb8219d46f0764deca90dfdb031c7906766cb7b7dec3b995d1d4fff3c37"
+    },
+    {
+      "file": "thumbnail_hydraulic_system_48a3c811c0.webp",
+      "bytes": 5218,
+      "hash": "3a517cf23d6fe607aa8d1246dccf57d080f4db85d28064435ae914f97f1f27ee"
+    },
+    {
+      "file": "thumbnail_motor_and_drive_697a80bd00.webp",
+      "bytes": 4568,
+      "hash": "698f77a6c308a9d56a85642ea627aee42ebfd9e39c5d2bb6b02d2a584d072812"
+    },
+    {
+      "file": "thumbnail_plc_module_91ef338d00.webp",
+      "bytes": 4490,
+      "hash": "fff1b6bf0b772f6fd7d38a743686e2f2d001768060a0106cb2d70f8e084107af"
+    },
+    {
+      "file": "thumbnail_pressure_and_flow_e441b8984a.webp",
+      "bytes": 7384,
+      "hash": "d4f79fced4c070095866299402adc8a15f9a8e3e472c96467a5cedac2dcc54e0"
+    },
+    {
+      "file": "thumbnail_preventive_maintenance_9e592fbc2f.webp",
+      "bytes": 5868,
+      "hash": "e37d6c9b78e394cbab20400bf486c067cd8fc9193dd9149f329f05be294698f6"
+    },
+    {
+      "file": "thumbnail_pre_footer_05f6e53c04.webp",
+      "bytes": 4316,
+      "hash": "f8d174480febbe5f540605949ca6480e4abdddb64adf0f7f3812e5bfcc711e11"
+    },
+    {
+      "file": "thumbnail_rapid_response_and_on_site_support_3ff1f7d70a.webp",
+      "bytes": 6032,
+      "hash": "546fecdf2dc407afc4bc5129d7e90771257093b41c74d63f968765e16951116d"
+    },
+    {
+      "file": "thumbnail_system_design_and_upgrade_26f9d8fe7f.webp",
+      "bytes": 3698,
+      "hash": "14fcf330826cc550c510c57541781b96e4fe6c5f36251b6dd44daf44046ec2d9"
+    }
+  ],
+  "content": [],
+  "mediaCount": 0
+}

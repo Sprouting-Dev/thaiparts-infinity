@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_shared_category_badges",
+  "info": {
+    "displayName": "Category Badge",
+    "description": "Category badge with predefined colors"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "color": {
+      "type": "enumeration",
+      "enum": ["blue", "teal", "red", "navy", "green"],
+      "default": "blue",
+      "required": true
+    }
+  }
+}

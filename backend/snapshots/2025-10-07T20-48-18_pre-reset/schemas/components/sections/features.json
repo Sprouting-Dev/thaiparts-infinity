@@ -1,0 +1,35 @@
+{
+  "collectionName": "components_sections_features",
+  "info": {
+    "displayName": "features"
+  },
+  "options": {},
+  "attributes": {
+    "titleSegments": {
+      "type": "component",
+      "component": "shared.text-segment",
+      "repeatable": true,
+      "required": true,
+      "description": "Structured colored segments for title rendering",
+      "min": 1
+    },
+    "description": {
+      "type": "text",
+      "required": false
+    },
+    "cta": {
+      "type": "component",
+      "component": "shared.cta",
+      "repeatable": false,
+      "required": false
+    },
+    "items": {
+      "type": "component",
+      "component": "sections.feature-item",
+      "repeatable": true,
+      "min": 4,
+      "max": 4
+    }
+  },
+  "config": {}
+}

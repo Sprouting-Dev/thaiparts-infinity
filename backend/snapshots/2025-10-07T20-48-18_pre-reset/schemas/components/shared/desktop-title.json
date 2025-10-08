@@ -1,0 +1,30 @@
+{
+  "collectionName": "components_shared_desktop_titles",
+  "info": {
+    "displayName": "Desktop Title",
+    "description": "Single line title with two color segments for desktop"
+  },
+  "options": {},
+  "attributes": {
+    "leftText": {
+      "type": "string",
+      "required": true
+    },
+    "leftColor": {
+      "type": "enumeration",
+      "required": false,
+      "default": "brandBlue",
+      "enum": ["brandBlue", "accentRed", "white"]
+    },
+    "rightText": {
+      "type": "string",
+      "required": true
+    },
+    "rightColor": {
+      "type": "enumeration",
+      "required": false,
+      "default": "accentRed",
+      "enum": ["brandBlue", "accentRed", "white"]
+    }
+  }
+}

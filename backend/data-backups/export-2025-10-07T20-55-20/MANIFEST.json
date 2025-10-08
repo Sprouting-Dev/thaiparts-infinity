@@ -1,0 +1,26 @@
+{
+  "generatedAt": "2025-10-07T20:55:20.268Z",
+  "types": [
+    {
+      "uid": "api::global.global",
+      "error": "Invalid key *"
+    },
+    {
+      "uid": "api::home-page.home-page",
+      "error": "Invalid key *"
+    },
+    {
+      "uid": "api::post.post",
+      "error": "Invalid key *"
+    },
+    {
+      "uid": "api::product.product",
+      "error": "Invalid key *"
+    },
+    {
+      "uid": "api::service.service",
+      "error": "Invalid key *"
+    }
+  ],
+  "mediaCount": 0
+}

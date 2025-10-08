@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_sections_contact_heroes",
+  "info": {
+    "displayName": "Contact Hero",
+    "description": "Hero section for contact page with title and subtitle"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "component",
+      "repeatable": false,
+      "required": true,
+      "component": "shared.responsive-title"
+    },
+    "subtitle": {
+      "type": "text",
+      "required": false
+    },
+    "background": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images", "files", "videos", "audios"]
+    }
+  },
+  "config": {}
+}
