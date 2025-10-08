@@ -54,6 +54,8 @@ Additionally set the public URL so Strapi knows the external HTTPS address used 
 PUBLIC_URL=https://thaiparts-infinity-backend.onrender.com
 ```
 
+Important: make sure Render (or your reverse proxy) preserves the X-Forwarded-Proto header so Strapi knows the original request protocol. Render normally sets this automatically. Also set `ENCRYPTION_KEY` (used by Strapi for session/encryption) in Render's environment variables before first admin login.
+
 ### 3. Additional Settings
 - **Instance Type:** Starter (512MB RAM) - sufficient for prototype
 - **Auto-Deploy:** Yes (deploy on git push)
