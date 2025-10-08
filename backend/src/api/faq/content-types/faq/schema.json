@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "faqs",
+  "info": {
+    "singularName": "faq",
+    "pluralName": "faqs",
+    "displayName": "FAQ",
+    "description": "คำถาม-คำตอบสำหรับ Chat Bot และ Line OA"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "question": {
+      "type": "string",
+      "required": true
+    },
+    "answer": {
+      "type": "text",
+      "required": true
+    },
+    "keywords": {
+      "type": "text",
+      "description": "คำสำคัญที่ใช้ค้นหา (คั่นด้วยจุลภาค)"
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": ["สินค้า", "การจัดส่ง", "การชำระเงิน", "การรับประกัน", "อื่นๆ"],
+      "default": "อื่นๆ"
+    },
+    "priority": {
+      "type": "integer",
+      "default": 1,
+      "min": 1,
+      "max": 10
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
+    "language": {
+      "type": "enumeration",
+      "enum": ["th", "en"],
+      "default": "th"
+    }
+  }
+}
