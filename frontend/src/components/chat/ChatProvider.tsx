@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
+import { api } from '@/lib/api';
 
 // Types
 interface Message {
@@ -118,7 +119,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
   const createNewSession = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/chat-sessions`, {
+      const response = await fetch('/api/chat-sessions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -137,7 +138,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
   const loadSession = async (sessionId: string) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/chat-sessions/${sessionId}`);
+      const response = await fetch(`/api/chat-sessions/${sessionId}`);
       
       if (!response.ok) {
         // Session not found, create new one
@@ -183,7 +184,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       dispatch({ type: 'ADD_MESSAGE', payload: userMessage });
 
       // Send message to API
-      const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/chat-messages`, {
+      const response = await fetch('/api/chat-messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

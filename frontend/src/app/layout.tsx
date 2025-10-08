@@ -120,39 +120,38 @@ export default async function RootLayout({
       <body
         className={`${kanit.variable} antialiased flex flex-col items-center min-h-screen gap-24`}
       >
-        <Header
-          brand={global?.brand}
-          footer={global?.footer}
-          navbar={global?.navbar}
-        />
-        <main className="w-full flex flex-col items-center flex-1">
-          {children}
-        </main>
-        <div className="w-full flex flex-col p-8">
-          <div className="w-full flex flex-col">
-            {global?.footerCta?.cta?.label && (
-              <PreFooterCta
-                embedded
-                title={global.footerCta.title}
-                subtitle={global.footerCta.subtitle}
-                bg={global.footerCta.bg}
-                cta={{
-                  label: global.footerCta.cta?.label,
-                  href: global.footerCta.cta?.href,
-                  variant:
-                    (global.footerCta.cta?.variant as
-                      | 'primary'
-                      | 'secondaryLight'
-                      | 'secondaryDark'
-                      | 'outline') || 'primary',
-                }}
-              />
-            )}
-            <Footer embedded data={footerData} />
-          </div>
-        </div>
         <ChatProvider>
-          {children}
+          <Header
+            brand={global?.brand}
+            footer={global?.footer}
+            navbar={global?.navbar}
+          />
+          <main className="w-full flex flex-col items-center flex-1">
+            {children}
+          </main>
+          <div className="w-full flex flex-col p-8">
+            <div className="w-full flex flex-col">
+              {global?.footerCta?.cta?.label && (
+                <PreFooterCta
+                  embedded
+                  title={global.footerCta.title}
+                  subtitle={global.footerCta.subtitle}
+                  bg={global.footerCta.bg}
+                  cta={{
+                    label: global.footerCta.cta?.label,
+                    href: global.footerCta.cta?.href,
+                    variant:
+                      (global.footerCta.cta?.variant as
+                        | 'primary'
+                        | 'secondaryLight'
+                        | 'secondaryDark'
+                        | 'outline') || 'primary',
+                  }}
+                />
+              )}
+              <Footer embedded data={footerData} />
+            </div>
+          </div>
           <ChatWidget />
         </ChatProvider>
       </body>

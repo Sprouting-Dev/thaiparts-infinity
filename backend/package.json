@@ -22,6 +22,7 @@
     "check": "npm run type-check && npm run format:check"
   },
   "dependencies": {
+    "@line/bot-sdk": "^10.3.0",
     "@strapi/plugin-cloud": "5.24.2",
     "@strapi/plugin-users-permissions": "5.24.2",
     "@strapi/strapi": "5.24.2",
