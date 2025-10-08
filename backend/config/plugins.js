@@ -15,4 +15,18 @@ module.exports = ({ env }) => ({
       },
     },
   },
+  'users-permissions': {
+    config: {
+      jwtManagement: 'refresh',
+      sessions: {
+        cookie: {
+          // Cookie settings: use secure cookies in production
+          domain: env('UP_COOKIE_DOMAIN', ''),
+          path: env('UP_COOKIE_PATH', '/'),
+          secure: env.bool('UP_COOKIE_SECURE', process.env.NODE_ENV === 'production'),
+          sameSite: env('UP_COOKIE_SAMESITE', 'lax'),
+        },
+      },
+    },
+  },
 });
