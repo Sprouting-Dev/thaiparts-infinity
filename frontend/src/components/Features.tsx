@@ -41,7 +41,6 @@ export default function Features({
     'เราคือผู้ให้บริการ อะไหล่และระบบ Automation ครบวงจร (One Stop Service) สำหรับอุตสาหกรรมหนัก ด้วยพันธกิจหลักในการช่วยโรงงานของคุณ ลดความเสี่ยง (Reduce Risk) และ ลดการหยุดทำงาน (Minimize Downtime) อย่างแท้จริง';
   const buttonLabel = cta?.label || 'ดูผลิตภัณฑ์ทั้งหมด';
   const buttonHref = cta?.href || '#';
-  const buttonNewTab = cta?.newTab || false;
   return (
     <section className="w-full flex flex-col items-center gap-4 md:gap-8 smooth-transition">
       {/* Unified Header - responsive across all breakpoints */}

@@ -27,16 +27,16 @@ interface FormData {
 }
 
 export default function ContactForm({ data }: ContactFormProps) {
-  // Use Thai content for the form
-  const title = 'ส่งข้อความหาเรา';
-  const description = 'กรอกแบบฟอร์มด้านล่าง แล้วทีมงานของเราจะติดต่อกลับภายใน 24 ชั่วโมง';
-  const showNameField = true;
-  const showEmailField = true;
-  const showPhoneField = true;
-  const showSubjectField = false;
-  const showMessageField = true;
-  const submitButtonText = 'ส่งข้อความ';
-  const successMessage = 'ขอบคุณสำหรับข้อความของคุณ เราจะติดต่อกลับเร็วๆ นี้';
+  // Use data from props or fallback to Thai content
+  const title = data?.title || 'ส่งข้อความหาเรา';
+  const description = data?.description || 'กรอกแบบฟอร์มด้านล่าง แล้วทีมงานของเราจะติดต่อกลับภายใน 24 ชั่วโมง';
+  const showNameField = data?.showNameField ?? true;
+  const showEmailField = data?.showEmailField ?? true;
+  const showPhoneField = data?.showPhoneField ?? true;
+  const showSubjectField = data?.showSubjectField ?? false;
+  const showMessageField = data?.showMessageField ?? true;
+  const submitButtonText = data?.submitButtonText || 'ส่งข้อความ';
+  const successMessage = data?.successMessage || 'ขอบคุณสำหรับข้อความของคุณ เราจะติดต่อกลับเร็วๆ นี้';
 
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -283,7 +283,7 @@ export default function ContactForm({ data }: ContactFormProps) {
         {/* Contact Info */}
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
           <p className="text-sm text-blue-800">
-            <strong>Note:</strong> We'll respond to your inquiry within 24-48 hours. For urgent matters, please call us directly.
+            <strong>Note:</strong> We&apos;ll respond to your inquiry within 24-48 hours. For urgent matters, please call us directly.
           </p>
         </div>
       </form>

@@ -1,7 +1,7 @@
 import { toOptimizedImage, type ImageOptimizeOptions } from './image-optimize';
 
 // Utility to normalize Strapi media shapes to absolute URLs
-export function toAbsolute(raw?: any): string {
+export function toAbsolute(raw?: unknown): string {
   if (!raw) return '';
 
   // already a string url
@@ -19,14 +19,14 @@ export function toAbsolute(raw?: any): string {
   // - { data: { attributes: { url, formats } } }
   // - { attributes: { url, formats } }
   // - direct media object with url or formats
-  const data = raw?.data ?? raw;
-  const attrs = data?.attributes ?? data;
+  const data = (raw as { data?: unknown })?.data ?? raw;
+  const attrs = (data as { attributes?: unknown })?.attributes ?? data;
   const urlPath =
-    attrs?.url ||
-    attrs?.formats?.large?.url ||
-    attrs?.formats?.medium?.url ||
-    attrs?.formats?.small?.url ||
-    attrs?.formats?.thumbnail?.url ||
+    (attrs as { url?: string })?.url ||
+    (attrs as { formats?: { large?: { url?: string }; medium?: { url?: string }; small?: { url?: string }; thumbnail?: { url?: string } } })?.formats?.large?.url ||
+    (attrs as { formats?: { large?: { url?: string }; medium?: { url?: string }; small?: { url?: string }; thumbnail?: { url?: string } } })?.formats?.medium?.url ||
+    (attrs as { formats?: { large?: { url?: string }; medium?: { url?: string }; small?: { url?: string }; thumbnail?: { url?: string } } })?.formats?.small?.url ||
+    (attrs as { formats?: { large?: { url?: string }; medium?: { url?: string }; small?: { url?: string }; thumbnail?: { url?: string } } })?.formats?.thumbnail?.url ||
     '';
 
   if (!urlPath) return '';
@@ -47,7 +47,7 @@ export function toAbsolute(raw?: any): string {
  * @returns Optimized image URL (.webp) or original URL for SVG
  */
 export function toOptimizedMedia(
-  raw?: any,
+  raw?: unknown,
   options: ImageOptimizeOptions = {}
 ): string {
   const absoluteUrl = toAbsolute(raw);

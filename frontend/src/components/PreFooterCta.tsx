@@ -1,11 +1,12 @@
  'use client';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import CTAButton from '@/components/CTAButton';
 
 interface PreFooterCtaProps {
   title?: string;
   subtitle?: string;
-  bg?: any; // can be string or Strapi media object
+  bg?: string; // can be string or Strapi media object
   cta?: {
     label?: string;
     href?: string;
@@ -54,13 +55,15 @@ export default function PreFooterCta({
 
       {/* Optional hidden preload img to encourage early decode */}
       {hasImage && (
-        <img
+        <Image
           src={bgUrl}
           alt=""
           aria-hidden
           className="opacity-0 w-0 h-0 pointer-events-none select-none"
           loading="lazy"
           decoding="async"
+          width={1}
+          height={1}
         />
       )}
 

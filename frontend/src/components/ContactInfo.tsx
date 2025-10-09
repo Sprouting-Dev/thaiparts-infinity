@@ -12,7 +12,7 @@ interface ContactInfoProps {
 }
 
 export default function ContactInfo({ data }: ContactInfoProps) {
-  const { title, address, phone, email, businessHours, additionalInfo } = data;
+  const { title, address, phone, email } = data;
 
   return (
     <div className="p-8 rounded-3xl" style={{ backgroundColor: 'rgba(16, 99, 167, 0.04)' }}>

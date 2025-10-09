@@ -30,7 +30,6 @@ interface Props {
 // Global site footer now supports dynamic data from Strapi global.footer
 export default function Footer({ data, embedded }: Props) {
   // Now 100% Strapi-driven - no fallback data
-  const columns = data?.columns || [];
 
   const Content = (
     <div className="w-full mx-auto bg-white shadow-[0px_2px_8px_rgba(0,0,0,0.12)] rounded-b-[8px] rounded-t-none flex flex-col items-start p-4 gap-6">
@@ -55,7 +54,7 @@ export default function Footer({ data, embedded }: Props) {
               { label: 'Knowledge Center', href: '/posts' },
               { label: 'About Us', href: '/about-us' },
               { label: 'Contact', href: '/contact-us' }
-            ].map((link, i) => (
+            ].map((link) => (
               <div key={link.label} className="flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-[#E92928]" />
                 <a href={link.href} className="font-['Kanit'] font-medium text-[15px] leading-[24px] text-[#1063A7] hover:text-[#E92928] transition-colors">
