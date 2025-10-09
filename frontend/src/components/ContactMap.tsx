@@ -14,7 +14,7 @@ interface ContactMapProps {
 
 export default function ContactMap({ data }: ContactMapProps) {
   const { 
-    title = "Find Us", 
+    title = "แผนที่", 
     mapIframeUrl, 
     mapWidth, 
     mapHeight, 
@@ -24,25 +24,25 @@ export default function ContactMap({ data }: ContactMapProps) {
   } = data;
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-8">
       {title && (
         <h2 className="text-2xl font-bold text-gray-900 mb-6">{title}</h2>
       )}
       
       {/* Location Info */}
       {(locationName || locationDescription) && (
-        <div className="mb-4">
+        <div className="mb-6">
           {locationName && (
-            <h3 className="font-medium text-gray-900 mb-1">{locationName}</h3>
+            <h3 className="font-semibold text-gray-900 mb-2 text-lg">{locationName}</h3>
           )}
           {locationDescription && (
-            <p className="text-gray-600 text-sm">{locationDescription}</p>
+            <p className="text-gray-600">{locationDescription}</p>
           )}
         </div>
       )}
 
       {/* Map iframe */}
-      <div className="relative rounded-lg overflow-hidden">
+      <div className="relative rounded-xl overflow-hidden shadow-md">
         <iframe
           src={mapIframeUrl}
           width={mapWidth}
