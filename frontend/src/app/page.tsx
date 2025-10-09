@@ -1,103 +1,205 @@
-import Image from "next/image";
+import Hero from '@/components/Hero';
+import Features from '@/components/Features';
+import GridPreview from '@/components/GridPreview';
+import { text } from 'stream/consumers';
 
-export default function Home() {
+export default function Page() {
+  // Static content for delivery - no Strapi dependency
+  const hero = {
+    title: {
+      desktop: {
+        leftText: "พาร์ทเนอร์ผู้เชี่ยวชาญระบบ",
+        leftColor: "brandBlue" as const,
+        rightText: "Automation, Electrical และ Instrument ครบวงจร",
+        rightColor: "accentRed" as const
+      },
+      mobile: {
+        lines: [
+          { text: "พาร์ทเนอร์ผู้เชี่ยวชาญระบบ", color: "brandBlue" as const },
+          { text: "Automation, Electrical และ Instrument ครบวงจร", color: "accentRed" as const }
+        ]
+      }
+    },
+    background: "/homepage/homepage-hero.png",
+    subtitle: "เราดูแลระบบและจัดหาอะไหล่ ตั้งแต่ต้นจนจบ มั่นใจได้ว่าเครื่องจักรของคุณจะเดินหน้าอย่างราบรื่น ไม่มีสะดุด",
+    ctas: [
+      {
+        label: "ปรึกษาวิศวกร",
+        href: "/contact-us",
+        variant: "primary",
+        newTab: false
+      },
+      {
+        label: "ดูสินค้าและอะไหล่ทั้งหมด",
+        href: "/products",
+        variant: "secondary", 
+        newTab: false
+      }
+    ],
+    panel: {
+      enabled: true,
+      align: 'center' as const
+    }
+  };
+
+  const features = {
+    titleSegments: [
+      { text: "THAIPARTS", color: "blue" as const },
+      { text: "INFINITY", color: "red" as const },
+      { text: "พาร์ทเนอร์ผู้เชี่ยวชาญที่คุณวางใจได้", color: "blue" as const }
+    ],
+    description: "เราคือผู้ให้บริการ อะไหล่และระบบ Automation ครบวงจร (One Stop Service) สำหรับอุตสาหกรรมหนัก ด้วยพันธกิจหลักในการช่วยโรงงานของคุณ ลดความเสี่ยง (Reduce Risk) และ ลดการหยุดทำงาน (Minimize Downtime) อย่างแท้จริง",
+    cta: {
+      label: "เรียนรู้เรื่องราวของเรา",
+      href: "/about-us",
+      variant: "secondary",
+      newTab: false
+    },
+    items: [
+      {
+        icon: "/homepage/icons/one-stop-service-icon.svg",
+        title: "One Stop Service",
+        description: "ครบวงจรในที่เดียว\n(จัดหา, ออกแบบ, ติดตั้ง, ซ่อมบำรุง)"
+      },
+      {
+        icon: "/homepage/icons/fast-delivery-icon.svg",
+        title: "Fast Delivery",
+        description: "จัดส่งไว แก้ปัญหาฉุกเฉิน\n(พร้อม On-site Support 24-48 ชม.)"
+      },
+      {
+        icon: "/homepage/icons/engineering-expertise-icon.svg",
+        title: "Engineering Expertise",
+        description: "ทีมวิศวกรผู้เชี่ยวชาญ\n(ให้คำปรึกษาเชิงเทคนิคทันที)"
+      },
+      {
+        icon: "/homepage/icons/Industrial-standard-icon.svg",
+        title: "Industrial Standard",
+        description: "สินค้ามาตรฐานสากล\n(รับประกันอะไหล่แท้ 100%)"
+      }
+    ]
+  };
+
+  const gridPreview = {
+    kind: "products" as const,
+    title: "อะไหล่และระบบที่เราเชี่ยวชาญ",
+    cta: {
+      label: "สินค้าทั้งหมด",
+      href: "/products",
+      variant: "primary" as const
+    },
+    items: [
+      {
+        title: "ตลับลูกปืน, ลูกกลิ้ง",
+        image: "/homepage/products/bearings-and-rollers.webp",
+        categoryBadge: { label: 'Mechanical Parts', color: 'blue' },
+        href: "/products/bearings-rollers"
+      },
+      {
+        title: "Hydraulic System",
+        image: "/homepage/products/hydraulic-system.webp",
+        categoryBadge: { label: 'Fluid Systems', color: 'teal' },
+        href: "/products/hydraulic-system"
+      },
+      {
+        title: "Motor & Drive",
+        image: "/homepage/products/motor-and-drive.webp",
+        categoryBadge: { label: 'Electrical Hardware', color: 'red' },
+        href: "/products/motor-drive"
+      },
+      {
+        title: "PLC Module",
+        image: "/homepage/products/plc-module.webp",
+        categoryBadge: { label: 'PLC/SCADA/Automation', color: 'navy' },
+        href: "/products/plc-module"
+      },
+      {
+        title: "Pressure & Flow",
+        image: "/homepage/products/pressure-and-flow.webp",
+        categoryBadge: { label: 'Measurement Systems', color: 'green' },
+        href: "/products/pressure-flow"
+      }
+    ]
+  };
+
+  const services = {
+    kind: "services" as const,
+    title: "บริการและโซลูชันวิศวกรรม",
+    cta: {
+      label: "บริการทั้งหมด",
+      href: "/services",
+      variant: "primary" as const
+    },
+    items: [
+      {
+        title: "System Design & Upgrade",
+        image: "/homepage/services/system-design-and-upgrade.webp",
+        href: "/services/system-design"
+      },
+      {
+        title: "Preventive Maintenance",
+        image: "/homepage/services/preventive-maintenance.webp",
+        href: "/services/preventive-maintenance"
+      },
+      {
+        title: "Rapid Response & On-site Support",
+        image: "/homepage/services/rapid-response-and-on-site-support.webp",
+        href: "/services/rapid-response"
+      }
+    ]
+  };
+
+  const posts = {
+    kind: "posts" as const,
+    title: "ศูนย์รวมความเชี่ยวชาญ",
+    cta: {
+      label: "บทความทั้งหมด",
+      href: "/posts",
+      variant: "primary" as const
+    },
+    items: [
+      {
+        title: "5 สัญญาณเตือน! ถึงเวลาต้องอัปเกรด PLC/SCADA ในโรงงานคุณ",
+        image: "/homepage/articles/article-01.webp",
+        description: "บทวิเคราะห์เชิงเทคนิคที่ช่วยให้ผู้บริหารและวิศวกรประเมินความเสี่ยงจากระบบควบคุมที่ล้าสมัย ก่อนเกิด Downtime ครั้งใหญ่",
+        href: "/posts/scada-plc-system"
+      },
+      {
+        title: "Case Study: โรงงานอาหาร A ลด Downtime จาก 80 เหลือ 10 ชม./ปี ได้อย่างไร",
+        image: "/homepage/articles/article-02.webp",
+        description: "เจาะลึกโซลูชัน Hydraulic & Pneumatic Systems ที่เราออกแบบและติดตั้ง พร้อมตัวเลขผลลัพธ์ที่วัดผลได้จริง",
+        href: "/posts/downtime-reduction"
+      },
+      {
+        title: "เช็กด่วน! มอเตอร์ VFD: ทำไมการจัดส่งด่วนจึงช่วยประหยัดเงินได้มากกว่า",
+        image: "/homepage/articles/article-03.webp",
+        description: "บทความที่เชื่อมโยงความสำคัญของ Fast Delivery เข้ากับผลกระทบทางเศรษฐกิจเมื่อเครื่องจักรหยุดเดิน",
+        href: "/posts/vfd-electrical-system"
+      }
+    ]
+  };
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="bg-[#F5F5F5]">
+      {/* Main page layout */}
+      <main className="w-full flex flex-col gap-16 justify-center items-center">
+        {/* Full-bleed Hero (no max-width wrapper here) */}
+        <Hero {...hero} />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+        {/* Constrained content wrapper (970px spec) */}
+        <div className="container-970 flex flex-col gap-16">
+          {/* Features Section */}
+          <Features {...features} />
+
+          {/* Products Section */}
+          <GridPreview section={gridPreview} />
+
+          {/* Services Section */}
+          <GridPreview section={services} />
+
+          {/* Posts Section */}
+          <GridPreview section={posts} />
         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }
