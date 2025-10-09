@@ -34,7 +34,7 @@ export default function ContactForm({ data }: ContactFormProps) {
   const showNameField = true;
   const showEmailField = true;
   const showPhoneField = true;
-  const showSubjectField = true;
+  const showSubjectField = false;
   const showMessageField = true;
   const submitButtonText = 'Send Message';
   const successMessage = 'Thank you for your message. We will contact you shortly.';
@@ -267,13 +267,6 @@ export default function ContactForm({ data }: ContactFormProps) {
               submitButtonText
             )}
           </button>
-        </div>
-
-        {/* Mock Notice */}
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-          <p className="text-sm text-yellow-800">
-            <strong>Development Note:</strong> This is a mock contact form. In production, this would connect to a real backend API to process submissions.
-          </p>
         </div>
       </form>
     </div>

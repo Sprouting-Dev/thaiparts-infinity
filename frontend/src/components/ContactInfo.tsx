@@ -45,12 +45,17 @@ export default function ContactInfo({ data }: ContactInfoProps) {
             </div>
             <div>
               <h3 className="font-medium text-gray-900 mb-1">Phone</h3>
-              <a 
-                href={`tel:${phone.replace(/\s+/g, '')}`}
-                className="text-blue-600 hover:text-blue-700 transition-colors"
-              >
-                {phone}
-              </a>
+              <div className="text-blue-600 hover:text-blue-700 transition-colors whitespace-pre-line">
+                {phone.split('\n').map((line, index) => (
+                  <a 
+                    key={index}
+                    href={`tel:${line.replace(/\s+/g, '')}`}
+                    className="block text-blue-600 hover:text-blue-700 transition-colors"
+                  >
+                    {line}
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         )}

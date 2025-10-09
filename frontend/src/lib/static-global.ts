@@ -74,34 +74,26 @@ export const staticGlobalData: StaticGlobalData = {
       {
         title: "บริษัท",
         links: [
-          { label: "เกี่ยวกับเรา", href: "/about" },
-          { label: "ผลงาน", href: "/products" },
-          { label: "บริการ", href: "/services" },
-          { label: "บทความ", href: "/posts" }
+          { label: "Home", href: "/about" },
+          { label: "Products & Spare Parts", href: "/products" },
+          { label: "Engineering & Solutions", href: "/services" },
+          { label: "Knowledge Center", href: "/posts" }
         ]
       },
       {
         title: "ติดต่อ",
         links: [
-          { label: "ติดต่อเรา", href: "/contact-us" },
-          { label: "02-123-4567", href: "tel:021234567" },
-          { label: "info@thaiparts-infinity.com", href: "mailto:info@thaiparts-infinity.com" }
+          { label: "About Us", href: "/contact-us" },
+          { label: "Contact", href: "tel:021234567" },
         ]
       },
-      {
-        title: "ที่อยู่",
-        links: [
-          { label: "123 ถนนอุตสาหกรรม", href: "#" },
-          { label: "กรุงเทพมหานคร 10400", href: "#" }
-        ]
-      }
     ]
   },
   footerCta: {
-    title: "พร้อมเริ่มโครงการของคุณแล้วหรือยัง?",
-    subtitle: "ติดต่อเราวันนี้เพื่อรับคำปรึกษาฟรี",
+    title: "เครื่องจักรหยุดเดิน? อย่าให้ Downtime ทำลายกำไรของคุณ",
+    subtitle: "ติดต่อสายด่วนวิศวกรของเราทันที บริการ On-site Support ภายใน 24-48 ชม.",
     cta: {
-      label: "ติดต่อเรา",
+      label: "แจ้งปัญหาด่วน/ติดต่อเรา",
       href: "/contact-us",
       variant: "primary"
     }

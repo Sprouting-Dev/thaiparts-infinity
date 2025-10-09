@@ -9,26 +9,25 @@ export default function ContactPage() {
     hero: {
       title: {
         desktop: {
-          leftText: "Get in",
+          leftText: "เราพร้อมให้",
           leftColor: "brandBlue" as const,
-          rightText: "Touch",
+          rightText: "การสนับสนุนและบริการคุณ",
           rightColor: "accentRed" as const
         },
         mobile: {
           lines: [
-            { text: "Get in", color: "brandBlue" as const },
-            { text: "Touch", color: "accentRed" as const }
+            { text: "เราพร้อมให้", color: "brandBlue" as const },
+            { text: "การสนับสนุนและบริการคุณ", color: "accentRed" as const }
           ]
         }
       },
-      subtitle: "We'd love to hear from you. Send us a message and we'll respond as soon as possible."
+      subtitle: "ติดต่อทีมงานขายส่งของเรา เพื่อสอบถามราคา เปิดบัญชี หรือติดตามสถานะคำสั่งซื้อ"
     },
     contactInfo: {
-      title: "Contact Information",
-      address: "123 Business Street\nBangkok 10100\nThailand",
-      phone: "+66 2 123 4567",
-      email: "info@thaiparts.com",
-      businessHours: "Monday - Friday: 8:00 AM - 6:00 PM\nSaturday: 9:00 AM - 4:00 PM\nSunday: Closed"
+      title: "ข้อมูลบริษัท",
+      address: "บริษัท: THAIPARTS INFINITY CO., LTD.\nที่อยู่: 5/17 M.2, Thap Ma, Mueang Rayong, Rayong, 21000",
+      phone: "(+66) 092-424-2144\n(+66)097-128-2707",
+      email: "info@thaipartsinfinity.com",
     },
     contactForm: {
       title: "Send us a Message",
@@ -43,7 +42,7 @@ export default function ContactPage() {
     },
     map: {
       title: "Find Us",
-      mapIframeUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3875.5394!2d100.5018!3d13.7563!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTPCsDQ1JzIyLjciTiAxMDDCsDMwJzA2LjUiRQ!5e0!3m2!1sen!2sth!4v1234567890",
+      mapIframeUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15491.832!2d101.254!3d12.681!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s5%2F17%20M.2%2C%20Thap%20Ma%2C%20Mueang%20Rayong%2C%20Rayong%2C%2021000!5e0!3m2!1sen!2sth!4v1728472800",
       mapWidth: "100%",
       mapHeight: "400",
       allowFullscreen: true,
