@@ -49,20 +49,20 @@ export const staticGlobalData: StaticGlobalData = {
         color: "red"
       }
     ],
-    logo: "/favicon.svg"
+  logo: "/thaiparts-infinity-logo.svg"
   },
   navbar: {
     ctas: [
       {
-        label: "ติดต่อเรา",
-        href: "/contact-us",
+        label: "ติดต่อด่วน 092-424-2144",
+        href: "tel:0924242144",
         variant: "primary",
         newTab: false,
         enabled: true
       },
       {
-        label: "เกี่ยวกับเรา",
-        href: "/about",
+        label: "ติดต่อเรา",
+        href: "/contact-us",
         variant: "secondary", 
         newTab: false,
         enabled: true
@@ -98,12 +98,12 @@ export const staticGlobalData: StaticGlobalData = {
     ]
   },
   footerCta: {
-    title: "พร้อมเริ่มโครงการของคุณแล้วหรือยัง?",
-    subtitle: "ติดต่อเราวันนี้เพื่อรับคำปรึกษาฟรี",
+    title: "เครื่องจักรหยุดเดิน? อย่าให้ Downtime ทำลายกำไรของคุณ",
+    subtitle: "ติดต่อสายด่วนวิศวกรของเราทันที บริการ On-site Support ภายใน 24-48 ชม.",
     cta: {
-      label: "ติดต่อเรา",
+      label: "แจ้งปัญหาด่วน/ติดต่อเรา",
       href: "/contact-us",
-      variant: "primary"
+      variant: "content-primary"
     }
   }
 };

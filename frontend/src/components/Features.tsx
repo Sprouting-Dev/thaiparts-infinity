@@ -1,10 +1,10 @@
 'use client';
 import { motion } from 'framer-motion';
-import { toAbsolute } from '@/lib/media';
+import Image from 'next/image';
 import CTAButton from '@/components/CTAButton';
 
 interface FeatureItem {
-  icon: any;
+  icon: string; // static root-relative or absolute URL to public asset
   title: string;
   description: string;
 }
@@ -94,23 +94,34 @@ export default function Features({
 
             {/* Icon */}
             <div className="w-[40px] h-[40px] lg:w-20 lg:h-20 xl:w-24 xl:h-24 flex items-center justify-center flex-shrink-0">
-              {item.icon && (
-                <img
-                  src={toAbsolute(item.icon)}
+              {typeof item.icon === 'string' ? (
+                <Image
+                  src={item.icon}
                   alt={item.title}
                   className="w-full h-full object-contain"
-                  loading="lazy"
+                  width={96}
+                  height={96}
                 />
-              )}
+              ) : null}
             </div>
 
-            {/* Description */}
-            <p
-              className="font-['Kanit'] font-normal text-[#1063A7] text-center lg:w-auto lg:h-auto lg:leading-relaxed lg:flex-grow lg:flex lg:items-center"
+            {/* Description split into two stacked spans (supports "\n" in the string) */}
+            <div
+              className="font-['Kanit'] font-normal text-[#1063A7] text-center lg:w-auto lg:h-auto lg:leading-relaxed lg:flex-grow lg:flex lg:items-center flex flex-col"
               style={{ textShadow: '0px 0px 2px rgba(0,0,0,0.12)' }}
             >
-              {item.description}
-            </p>
+              {(() => {
+                const parts = String(item.description || '').split('\n');
+                const first = parts[0] || '';
+                const second = parts.slice(1).join(' '); // join remaining lines into second span
+                return (
+                  <>
+                    <span className="break-words">{first}</span>
+                    {second ? <span className="break-words mt-1">{second}</span> : null}
+                  </>
+                );
+              })()}
+            </div>
           </motion.div>
         ))}
       </div>

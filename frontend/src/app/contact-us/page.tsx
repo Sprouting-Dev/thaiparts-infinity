@@ -58,7 +58,7 @@ export default function ContactPage() {
       <Hero
         title={pageData.hero.title}
         subtitle={pageData.hero.subtitle}
-        background={undefined}
+        background="/contact/contact-hero.png"
         ctas={[]} // Contact page hero doesn't need CTA buttons
         panel={{ enabled: false, align: 'left' }}
       />

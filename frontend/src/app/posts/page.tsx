@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import GridPreview from '@/components/GridPreview';
 
 export const metadata: Metadata = {
   title: 'Knowledge Center | THAIPARTS INFINITY',
@@ -21,24 +22,25 @@ type Post = {
           url: string;
         };
       };
+      url?: string;
     };
   };
 };
 
 function getPosts(): Post[] {
-  // Static posts data
+  // Static posts data (kept as original sources; images will be mapped to homepage assets)
   return [
     {
       id: 1,
       attributes: {
-        title: "5 สถานีผลิตผล ครัวช่องภาค PLC / SCADA รวมโปรแกรม",
+        title: "5 สัญญาณเตือน! ถึงเวลาต้องอัปเกรด PLC/SCADA ในโรงงานคุณ",
         slug: "scada-plc-system",
-        subtitle: "ระบบควบคุมการผลิตแบบครบวงจร",
+        subtitle: "บทวิเคราะห์เชิงเทคนิคที่ช่วยให้ผู้บริหารและวิศวกรประเมินความเสี่ยงจากระบบควบคุมที่ล้าสมัย ก่อนเกิด Downtime ครั้งใหญ่",
         body: [
           {
             type: "paragraph",
             children: [
-              { text: "ระบบควบคุมการผลิตแบบครบวงจร ด้วยเทคโนโลยี SCADA และ PLC ที่ทันสมัยสำหรับอุตสาหกรรมอาหาร การออกแบบและติดตั้งระบบ Automation ที่ช่วยเพิ่มประสิทธิภาพการผลิต" }
+              { text: "บทวิเคราะห์เชิงเทคนิคที่ช่วยให้ผู้บริหารและวิศวกรประเมินความเสี่ยงจากระบบควบคุมที่ล้าสมัย ก่อนเกิด Downtime ครั้งใหญ่" }
             ]
           }
         ],
@@ -48,14 +50,14 @@ function getPosts(): Post[] {
     {
       id: 2,
       attributes: {
-        title: "Case Study: โรงงานมัด A ระบบ Downtime จาก 80 เรื้อไร 10 นาทีต่อล่วล",
+        title: "Case Study: โรงงานอาหาร A ลด Downtime จาก 80 เหลือ 10 ชม./ปี ได้อย่างไร",
         slug: "downtime-reduction",
-        subtitle: "การปรับปรุงระบบเพื่อลด Downtime",
+        subtitle: "เจาะลึกโซลูชัน Hydraulic & Pneumatic Systems ที่เราออกแบบและติดตั้ง พร้อมตัวเลขผลลัพธ์ที่วัดผลได้จริง",
         body: [
           {
-            type: "paragraph", 
+            type: "paragraph",
             children: [
-              { text: "การปรับปรุงระบบที่ช่วยลด Downtime ให้กับโรงงานผลิต ทำให้สามารถเพิ่มประสิทธิภาพการผลิตได้อย่างมาก จากการวิเคราะห์และแก้ไขปัญหาที่ต้นเหตุ" }
+              { text: "เจาะลึกโซลูชัน Hydraulic & Pneumatic Systems ที่เราออกแบบและติดตั้ง พร้อมตัวเลขผลลัพธ์ที่วัดผลได้จริง" }
             ]
           }
         ],
@@ -65,135 +67,78 @@ function getPosts(): Post[] {
     {
       id: 3,
       attributes: {
-        title: "เครื่องปัด เครื่อง VFD การแก้ปัญหาระบบไฟฟ้าให้ทำงานล่วแอดจัสเตอร์",
-        slug: "vfd-electrical-system", 
-        subtitle: "การแก้ไขปัญหาระบบไฟฟ้าและควบคุม",
+        title: "เช็กด่วน! มอเตอร์ VFD: ทำไมการจัดส่งด่วนจึงช่วยประหยัดเงินได้มากกว่า",
+        slug: "vfd-electrical-system",
+        subtitle: "บทความที่เชื่อมโยงความสำคัญของ Fast Delivery เข้ากับผลกระทบทางเศรษฐกิจเมื่อเครื่องจักรหยุดเดิน",
         body: [
           {
             type: "paragraph",
             children: [
-              { text: "การแก้ไขปัญหาระบบไฟฟ้าและควบคุมให้ทำงานได้อย่างมีประสิทธิภาพและปลอดภัย รวมถึงการปรับแต่งพารามิเตอร์ VFD เพื่อให้เหมาะสมกับการใช้งาน" }
+              { text: "บทความที่เชื่อมโยงความสำคัญของ Fast Delivery เข้ากับผลกระทบทางเศรษฐกิจเมื่อเครื่องจักรหยุดเดิน" }
             ]
           }
         ],
         thumbnail: undefined
       }
     },
-    {
-      id: 4,
-      attributes: {
-        title: "แนวทางการบำรุงรักษาเชิงป้องกันสำหรับระบบ Automation",
-        slug: "preventive-maintenance-automation",
-        subtitle: "Preventive Maintenance Best Practices",
-        body: [
-          {
-            type: "paragraph",
-            children: [
-              { text: "แนวทางและหลักการในการบำรุงรักษาเชิงป้องกันสำหรับระบบ Automation เพื่อลดความเสี่ยงในการเกิดปัญหาและเพิ่มอายุการใช้งานของอุปกรณ์" }
-            ]
-          }
-        ],
-        thumbnail: undefined
-      }
-    }
   ];
 }
 
 export default function PostsPage() {
   const posts = getPosts();
 
+  // Map static posts to the same card data used on the homepage GridPreview
+  const items = posts.map(p => {
+    const attrs = p.attributes || ({} as any);
+    const slug = attrs.slug || '';
+    // Map known slugs to homepage article images
+    const imageMap: Record<string, string> = {
+      'scada-plc-system': '/homepage/articles/article-01.webp',
+      'downtime-reduction': '/homepage/articles/article-02.webp',
+      'vfd-electrical-system': '/homepage/articles/article-03.webp',
+    };
+
+    const image =
+      attrs.thumbnail?.data?.attributes?.url || attrs.thumbnail?.url || imageMap[slug] || '/homepage/articles/article-01.webp';
+
+    const richBlocks = Array.isArray(attrs.body)
+      ? attrs.body
+      : Array.isArray((attrs as any).content)
+        ? (attrs as any).content
+        : [];
+
+    let bodyText = '';
+    if (richBlocks.length) {
+      bodyText = richBlocks
+        .filter((b: any) => b && (b.type === 'paragraph' || b.type === 'text'))
+        .map((b: any) =>
+          Array.isArray(b.children)
+            ? b.children.map((c: any) => (c && typeof c.text === 'string' ? c.text : '')).join('')
+            : b.text || ''
+        )
+        .join(' ')
+        .slice(0, 200);
+    }
+
+    return {
+      title: attrs.title || '',
+      image,
+      description: attrs.subtitle || bodyText || '',
+      href: `/posts/${slug}`,
+    };
+  });
+
+  const section = {
+    kind: 'posts' as const,
+    title: 'ศูนย์รวมความเชี่ยวชาญ',
+    items,
+  };
+
   return (
     <div className="bg-[#F5F5F5] min-h-screen">
       <main className="w-full flex flex-col items-center pt-24">
         <div className="container-970 flex flex-col gap-8 py-8">
-          {/* Header */}
-          <div className="flex items-center gap-3">
-            <div className="w-4 h-4 rounded-full bg-[#E92928] flex-shrink-0" />
-            <h1 className="font-['Kanit'] font-medium text-[22px] leading-[33px] md:text-[28px] md:leading-[42px] text-[#1063A7]">
-              ศูนย์รวมความเชี่ยวชาญ
-            </h1>
-          </div>
-
-          {/* Posts Grid */}
-          {posts.length > 0 ? (
-            <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-7 lg:gap-8">
-              {posts.map(post => {
-                if (!post || !post.attributes) return null;
-                const { attributes } = post as any;
-                // Support both media shapes: 1) { thumbnail: { data: { attributes: { url }}} } 2) { thumbnail: { url } }
-                const imageUrl =
-                  attributes.thumbnail?.data?.attributes?.url ||
-                  attributes.thumbnail?.url ||
-                  '';
-                // Body / content fallback
-                const richBlocks = Array.isArray(attributes.body)
-                  ? attributes.body
-                  : Array.isArray(attributes.content)
-                    ? attributes.content
-                    : [];
-                let bodyText = '';
-                if (richBlocks.length) {
-                  bodyText = richBlocks
-                    .filter(
-                      (b: any) =>
-                        b && (b.type === 'paragraph' || b.type === 'text')
-                    )
-                    .map((b: any) =>
-                      Array.isArray(b.children)
-                        ? b.children
-                            .map((c: any) =>
-                              c && typeof c.text === 'string' ? c.text : ''
-                            )
-                            .join('')
-                        : b.text || ''
-                    )
-                    .join(' ')
-                    .slice(0, 150);
-                }
-                const description = attributes.subtitle || bodyText || '';
-                return (
-                  <div
-                    key={post.id}
-                    className="group flex flex-col gap-3 hover:transform hover:scale-[1.02] transition-all duration-200 bg-white rounded-lg shadow-lg hover:shadow-xl overflow-hidden"
-                  >
-                    <div className="w-full aspect-[300/220] overflow-hidden">
-                      {imageUrl ? (
-                        <img
-                          src={
-                            imageUrl.startsWith('http')
-                              ? imageUrl
-                              : `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${imageUrl}`
-                          }
-                          alt={attributes.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-neutral-200 to-neutral-300 flex items-center justify-center">
-                          <div className="text-neutral-400 text-4xl">📄</div>
-                        </div>
-                      )}
-                    </div>
-                    <div className="p-6 flex flex-col gap-3 flex-grow">
-                      <h3 className="font-['Kanit'] font-medium text-[20px] leading-tight text-[#333333] group-hover:text-[#1063A7] transition-colors duration-200 line-clamp-3">
-                        {attributes.title}
-                      </h3>
-                      {description && (
-                        <p className="font-['Kanit'] font-normal text-[14px] leading-relaxed text-[#666666] line-clamp-3 flex-grow">
-                          {description}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="w-full text-center py-16">
-              <p className="font-['Kanit'] text-[18px] text-[#666666]">
-                ไม่พบบทความในขณะนี้
-              </p>
-            </div>
-          )}
+          <GridPreview section={section} />
         </div>
       </main>
     </div>

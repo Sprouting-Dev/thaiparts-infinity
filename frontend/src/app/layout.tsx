@@ -91,22 +91,10 @@ export default function RootLayout({
         copyright: global.footer.copyright,
       }
     : undefined;
-  const fallbackFavicon = '/favicon.svg';
-  let faviconHref = global?.favicon || fallbackFavicon;
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[favicon] Using static favicon:', faviconHref);
-  }
 
   return (
     <html lang="th">
       <head>
-        <link
-          rel="icon"
-          href={faviconHref}
-          type={faviconHref.endsWith('.svg') ? 'image/svg+xml' : undefined}
-        />
-        <link rel="shortcut icon" href={faviconHref} />
-        <link rel="apple-touch-icon" href={faviconHref} />
         <meta name="theme-color" content="#1063A7" />
       </head>
       <body

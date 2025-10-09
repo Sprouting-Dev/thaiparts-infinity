@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import Image from 'next/image';
 
 export const metadata: Metadata = {
   title: 'Services | THAIPARTS INFINITY',
@@ -19,51 +20,33 @@ type Service = {
 };
 
 function getServices(): Service[] {
-  // Static services data
+  // Static services data (mirror homepage services)
   return [
     {
       id: 1,
       attributes: {
-        name: "System Design & Upgrade",
-        slug: "system-design",
-        subtitle: "ออกแบบและยกระดับระบบ Automation",
-        thumbnail: undefined
+        name: 'System Design & Upgrade',
+        slug: 'system-design',
+        subtitle: 'ออกแบบและยกระดับระบบ',
+        thumbnail: { url: '/homepage/services/system-design-and-upgrade.webp' }
       }
     },
     {
       id: 2,
       attributes: {
-        name: "Preventive Maintenance",
-        slug: "preventive-maintenance", 
-        subtitle: "บำรุงรักษาเชิงป้องกัน เพื่อลด Downtime",
-        thumbnail: undefined
+        name: 'Preventive Maintenance',
+        slug: 'preventive-maintenance',
+        subtitle: 'บำรุงรักษาเชิงป้องกัน',
+        thumbnail: { url: '/homepage/services/preventive-maintenance.webp' }
       }
     },
     {
       id: 3,
       attributes: {
-        name: "Rapid Response & On-site Support",
-        slug: "rapid-response",
-        subtitle: "บริการฉุกเฉินและการสนับสนุนในพื้นที่ 24/7",
-        thumbnail: undefined
-      }
-    },
-    {
-      id: 4,
-      attributes: {
-        name: "Training & Consultation",
-        slug: "training-consultation",
-        subtitle: "อบรมและให้คำปรึกษาทางเทคนิค",
-        thumbnail: undefined
-      }
-    },
-    {
-      id: 5,
-      attributes: {
-        name: "Spare Parts Supply",
-        slug: "spare-parts",
-        subtitle: "จัดหาอะไหล่และอุปกรณ์ทดแทน",
-        thumbnail: undefined
+        name: 'Rapid Response & On-site Support',
+        slug: 'rapid-response',
+        subtitle: 'บริการฉุกเฉิน และการสนับสนุนในพื้นที่',
+        thumbnail: { url: '/homepage/services/rapid-response-and-on-site-support.webp' }
       }
     }
   ];
@@ -101,17 +84,25 @@ export default function ServicesPage() {
                     className="group flex flex-col gap-3 hover:transform hover:scale-[1.02] transition-all duration-200"
                   >
                     {/* Image */}
-                    <div className="w-full aspect-[300/220] overflow-hidden rounded-lg">
+                    <div className="w-full aspect-[300/220] overflow-hidden rounded-lg relative">
                       {imageUrl ? (
-                        <img
-                          src={
-                            imageUrl.startsWith('http')
-                              ? imageUrl
-                              : `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${imageUrl}`
-                          }
-                          alt={attributes.name}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
+                        (() => {
+                          const isExternal = imageUrl.startsWith('http');
+                          const src = isExternal
+                            ? imageUrl
+                            : imageUrl.startsWith('/')
+                            ? imageUrl
+                            : `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${imageUrl}`;
+                          return (
+                            <Image
+                              src={src}
+                              alt={attributes.name}
+                              fill
+                              className="object-cover group-hover:scale-105 transition-transform duration-300"
+                              unoptimized={isExternal}
+                            />
+                          );
+                        })()
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-neutral-200 to-neutral-300 flex items-center justify-center">
                           <div className="text-neutral-400 text-4xl">🔧</div>
@@ -124,12 +115,7 @@ export default function ServicesPage() {
                       {attributes.name}
                     </h3>
 
-                    {/* Subtitle */}
-                    {attributes.subtitle && (
-                      <p className="font-['Kanit'] font-normal text-[14px] leading-relaxed text-[#666666]">
-                        {attributes.subtitle}
-                      </p>
-                    )}
+                    {/* Subtitle intentionally omitted on services page */}
                   </div>
                 );
               })}

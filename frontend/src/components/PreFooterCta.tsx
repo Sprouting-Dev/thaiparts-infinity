@@ -1,4 +1,4 @@
-'use client';
+ 'use client';
 import { motion } from 'framer-motion';
 import CTAButton from '@/components/CTAButton';
 
@@ -15,7 +15,6 @@ interface PreFooterCtaProps {
 }
 
 // Pre-footer CTA block (dark background image + CTA) used before the global footer.
-import { toAbsolute } from '@/lib/media';
 
 export default function PreFooterCta({
   title,
@@ -24,12 +23,20 @@ export default function PreFooterCta({
   cta,
   embedded,
 }: PreFooterCtaProps) {
-  // Resolve to absolute URL (handles Strapi media object or string)
-  const bgUrl = toAbsolute(bg);
-
-  // Decide if we have a valid image
+  // Resolve background: support root-relative '/...' or full 'http...' strings
+  let bgUrl = '/layout/footer/pre-footer.webp'; // default fallback
+  if (typeof bg === 'string') {
+    if (bg.startsWith('/') || bg.startsWith('http')) bgUrl = bg;
+  }
   const hasImage = !!bgUrl;
 
+  const fadeUp = {
+    hidden: { opacity: 0, y: 12 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  };
+
+  // Inner content is rendered as a plain div so the parent (Footer) can
+  // choose to animate the combined pre-footer + footer as a single motion unit
   const Inner = (
     <div className="relative w-full h-[260px] lg:h-[310px] rounded-[8px] rounded-b-none overflow-hidden flex flex-col items-center justify-center">
       {/* Background layer */}
@@ -63,7 +70,7 @@ export default function PreFooterCta({
           <div className="flex flex-col items-center gap-4">
             {title && (
               <h2
-                className="font-['Kanit'] font-semibold fluid-section-heading text-white"
+                className="font-['Kanit'] font-semibold text-[28px] leading-[42px] text-white"
                 style={{ textShadow: '0 2px 16px rgba(0,0,0,0.5)' }}
               >
                 {title}
@@ -71,7 +78,7 @@ export default function PreFooterCta({
             )}
             {subtitle && (
               <p
-                className="font-['Kanit'] font-normal fluid-hero-sub text-white"
+                className="font-['Kanit'] font-normal text-[22px] leading-[33px] text-white"
                 style={{ textShadow: '0 2px 16px rgba(0,0,0,0.5)' }}
               >
                 {subtitle}
@@ -80,22 +87,26 @@ export default function PreFooterCta({
           </div>
         )}
         {cta?.label && (
-          <CTAButton
-            cta={{
-              label: cta.label,
-              href: cta.href || '#',
-              variant: 'primary',
-            }}
-            asMotion={true}
-            textSize="large"
-            className="backdrop-blur-sm bg-[rgba(16,99,167,0.55)] hover:bg-[rgba(16,99,167,0.75)]"
-          />
+          <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+            <CTAButton
+              cta={{
+                label: cta.label,
+                href: cta.href || '#',
+                variant: 'content-primary',
+              }}
+              asMotion={true}
+              textSize="large"
+              className="backdrop-blur-sm bg-[rgba(16,99,167,0.55)] hover:bg-[rgba(16,99,167,0.75)]"
+            />
+          </motion.div>
         )}
       </div>
     </div>
   );
 
   if (embedded) {
+    // When embedded, return a plain wrapper so the parent can animate both
+    // pre-footer and footer together inside a single motion container.
     return (
       <div className="w-full">
         {Inner}
@@ -107,11 +118,17 @@ export default function PreFooterCta({
   }
 
   return (
-    <section className="w-full flex justify-center items-center px-8">
+    <motion.section
+      className="w-full flex justify-center items-center px-8"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
+      variants={fadeUp}
+    >
       {Inner}
       {!hasImage && (
         <div className="sr-only">Pre-footer background image missing</div>
       )}
-    </section>
+    </motion.section>
   );
 }

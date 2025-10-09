@@ -1,35 +1,36 @@
 import Hero from '@/components/Hero';
 import Features from '@/components/Features';
 import GridPreview from '@/components/GridPreview';
+import { text } from 'stream/consumers';
 
 export default function Page() {
   // Static content for delivery - no Strapi dependency
   const hero = {
     title: {
       desktop: {
-        leftText: "ผู้ให้บริการด้านระบบครบวงจร",
+        leftText: "พาร์ทเนอร์ผู้เชี่ยวชาญระบบ",
         leftColor: "brandBlue" as const,
         rightText: "Automation, Electrical และ Instrument ครบวงจร",
         rightColor: "accentRed" as const
       },
       mobile: {
         lines: [
-          { text: "ผู้ให้บริการด้านระบบครบวงจร", color: "brandBlue" as const },
+          { text: "พาร์ทเนอร์ผู้เชี่ยวชาญระบบ", color: "brandBlue" as const },
           { text: "Automation, Electrical และ Instrument ครบวงจร", color: "accentRed" as const }
         ]
       }
     },
-    background: undefined,
-    subtitle: "บริการงานประเมินโครงการด้าม สำหรับลูกค้าของ บริษัท ไทยพาร์ท อินฟินิตี้ จำกัด ให้บริการครอบคลุมงานทั้งระบบ",
+    background: "/homepage/homepage-hero.png",
+    subtitle: "เราดูแลระบบและจัดหาอะไหล่ ตั้งแต่ต้นจนจบ มั่นใจได้ว่าเครื่องจักรของคุณจะเดินหน้าอย่างราบรื่น ไม่มีสะดุด",
     ctas: [
       {
-        label: "ปรึกษาปัญหา",
+        label: "ปรึกษาวิศวกร",
         href: "/contact-us",
         variant: "primary",
         newTab: false
       },
       {
-        label: "ดูผลงานของเราทั้งหมด",
+        label: "ดูสินค้าและอะไหล่ทั้งหมด",
         href: "/products",
         variant: "secondary", 
         newTab: false
@@ -43,72 +44,78 @@ export default function Page() {
 
   const features = {
     titleSegments: [
-      { text: "THAIPARTS INFINITY", color: "red" as const },
-      { text: " พร้อมยกระดับผลิตภัณฑ์ของคุณให้ดี", color: "blue" as const }
+      { text: "THAIPARTS", color: "blue" as const },
+      { text: "INFINITY", color: "red" as const },
+      { text: "พาร์ทเนอร์ผู้เชี่ยวชาญที่คุณวางใจได้", color: "blue" as const }
     ],
-    description: "เราช่วยให้คุณยกระดับระบบการผลิตให้ดีขึ้นเพื่อ Automation ครบวงจร (One Stop Service) สำหรับลูกค้าองค์กรทั้งใหญ่และเล็ก (Reduce Risk) รวม สิ่งจำเป็นให้ครบครัน การให้คำปรึกษาจากทีมงานเทคนิคและใส่ใจในราคายุติธรรมสำหรับลูกค้าทุกเเรา (Minimize Downtime) ดูแลรับรองทุกน",
+    description: "เราคือผู้ให้บริการ อะไหล่และระบบ Automation ครบวงจร (One Stop Service) สำหรับอุตสาหกรรมหนัก ด้วยพันธกิจหลักในการช่วยโรงงานของคุณ ลดความเสี่ยง (Reduce Risk) และ ลดการหยุดทำงาน (Minimize Downtime) อย่างแท้จริง",
     cta: {
-      label: "ดูการทำงานของเรา",
-      href: "/services",
+      label: "เรียนรู้เรื่องราวของเรา",
+      href: "/about-us",
       variant: "secondary",
       newTab: false
     },
     items: [
       {
-        icon: undefined,
+        icon: "/homepage/icons/one-stop-service-icon.svg",
         title: "One Stop Service",
-        description: "ครบครันงานติดตั้ง, ดูแลรักษา, ซ่อมแซม"
+        description: "ครบวงจรในที่เดียว\n(จัดหา, ออกแบบ, ติดตั้ง, ซ่อมบำรุง)"
       },
       {
-        icon: undefined, 
+        icon: "/homepage/icons/fast-delivery-icon.svg",
         title: "Fast Delivery",
-        description: "รองรับ งานฉุกเฉิน On-site Support 24-48 ชม"
+        description: "จัดส่งไว แก้ปัญหาฉุกเฉิน\n(พร้อม On-site Support 24-48 ชม.)"
       },
       {
-        icon: undefined,
-        title: "Engineering Expertise", 
-        description: "คำปรึกษาปัญหา และการออกแบบระบบงาน"
+        icon: "/homepage/icons/engineering-expertise-icon.svg",
+        title: "Engineering Expertise",
+        description: "ทีมวิศวกรผู้เชี่ยวชาญ\n(ให้คำปรึกษาเชิงเทคนิคทันที)"
       },
       {
-        icon: undefined,
+        icon: "/homepage/icons/Industrial-standard-icon.svg",
         title: "Industrial Standard",
-        description: "ผลิตภัณฑ์มาตรฐาน (ISO) คุณภาพเยี่ยม"
+        description: "สินค้ามาตรฐานสากล\n(รับประกันอะไหล่แท้ 100%)"
       }
     ]
   };
 
   const gridPreview = {
     kind: "products" as const,
-    title: "อะไหล่และระบบที่เราดูแล",
+    title: "อะไหล่และระบบที่เราเชี่ยวชาญ",
     cta: {
-      label: "ดูทั้งหมด",
+      label: "สินค้าทั้งหมด",
       href: "/products",
       variant: "primary" as const
     },
     items: [
       {
-        title: "อสื่อสัญญา ลูกปืน",
-        image: undefined,
+        title: "ตลับลูกปืน, ลูกกลิ้ง",
+        image: "/homepage/products/bearings-and-rollers.webp",
+        categoryBadge: { label: 'Mechanical Parts', color: 'blue' },
         href: "/products/bearings-rollers"
       },
       {
         title: "Hydraulic System",
-        image: undefined,
+        image: "/homepage/products/hydraulic-system.webp",
+        categoryBadge: { label: 'Fluid Systems', color: 'teal' },
         href: "/products/hydraulic-system"
       },
       {
-        title: "Motor & Drive", 
-        image: undefined,
+        title: "Motor & Drive",
+        image: "/homepage/products/motor-and-drive.webp",
+        categoryBadge: { label: 'Electrical Hardware', color: 'red' },
         href: "/products/motor-drive"
       },
       {
         title: "PLC Module",
-        image: undefined,
+        image: "/homepage/products/plc-module.webp",
+        categoryBadge: { label: 'PLC/SCADA/Automation', color: 'navy' },
         href: "/products/plc-module"
       },
       {
         title: "Pressure & Flow",
-        image: undefined, 
+        image: "/homepage/products/pressure-and-flow.webp",
+        categoryBadge: { label: 'Measurement Systems', color: 'green' },
         href: "/products/pressure-flow"
       }
     ]
@@ -116,59 +123,56 @@ export default function Page() {
 
   const services = {
     kind: "services" as const,
-    title: "บริการและโซลูชันครบวงจร",
+    title: "บริการและโซลูชันวิศวกรรม",
     cta: {
-      label: "ดูบริการทั้งหมด",
+      label: "บริการทั้งหมด",
       href: "/services",
       variant: "primary" as const
     },
     items: [
       {
         title: "System Design & Upgrade",
-        image: undefined,
-        description: "ออกแบบและยกระดับระบบ",
+        image: "/homepage/services/system-design-and-upgrade.webp",
         href: "/services/system-design"
       },
       {
-        title: "Preventive Maintenance", 
-        image: undefined,
-        description: "บำรุงรักษาเชิงป้องกัน",
+        title: "Preventive Maintenance",
+        image: "/homepage/services/preventive-maintenance.webp",
         href: "/services/preventive-maintenance"
       },
       {
         title: "Rapid Response & On-site Support",
-        image: undefined,
-        description: "บริการฉุกเฉิน และการสนับสนุนในพื้นที่",
+        image: "/homepage/services/rapid-response-and-on-site-support.webp",
         href: "/services/rapid-response"
       }
     ]
   };
 
-  const projects = {
+  const posts = {
     kind: "posts" as const,
-    title: "ผลงานที่น่าภาคภูมิใจ",
+    title: "ศูนย์รวมความเชี่ยวชาญ",
     cta: {
-      label: "ดูผลงานทั้งหมด", 
-      href: "/products",
+      label: "บทความทั้งหมด",
+      href: "/posts",
       variant: "primary" as const
     },
     items: [
       {
-        title: "5 สถานีผลิตผล ครัวช่องภาค PLC / SCADA รวมโปรแกรม",
-        image: undefined,
-        description: "ระบบควบคุมการผลิตแบบครบวงจร ด้วยเทคโนโลยี SCADA และ PLC ที่ทันสมัยสำหรับอุตสาหกรรมอาหาร",
+        title: "5 สัญญาณเตือน! ถึงเวลาต้องอัปเกรด PLC/SCADA ในโรงงานคุณ",
+        image: "/homepage/articles/article-01.webp",
+        description: "บทวิเคราะห์เชิงเทคนิคที่ช่วยให้ผู้บริหารและวิศวกรประเมินความเสี่ยงจากระบบควบคุมที่ล้าสมัย ก่อนเกิด Downtime ครั้งใหญ่",
         href: "/posts/scada-plc-system"
       },
       {
-        title: "Case Study: โรงงานมัด A ระบบ Downtime จาก 80 เรื้อไร 10 นาทีต่อล่วล",
-        image: undefined, 
-        description: "การปรับปรุงระบบที่ช่วยลด Downtime ให้กับโรงงานผลิต ทำให้สามารถเพิ่มประสิทธิภาพการผลิตได้อย่างมาก",
+        title: "Case Study: โรงงานอาหาร A ลด Downtime จาก 80 เหลือ 10 ชม./ปี ได้อย่างไร",
+        image: "/homepage/articles/article-02.webp",
+        description: "เจาะลึกโซลูชัน Hydraulic & Pneumatic Systems ที่เราออกแบบและติดตั้ง พร้อมตัวเลขผลลัพธ์ที่วัดผลได้จริง",
         href: "/posts/downtime-reduction"
       },
       {
-        title: "เครื่องปัด เครื่อง VFD การแก้ปัญหาระบบไฟฟ้าให้ทำงานล่วแอดจัสเตอร์",
-        image: undefined,
-        description: "การแก้ไขปัญหาระบบไฟฟ้าและควบคุมให้ทำงานได้อย่างมีประสิทธิภาพและปลอดภัย",
+        title: "เช็กด่วน! มอเตอร์ VFD: ทำไมการจัดส่งด่วนจึงช่วยประหยัดเงินได้มากกว่า",
+        image: "/homepage/articles/article-03.webp",
+        description: "บทความที่เชื่อมโยงความสำคัญของ Fast Delivery เข้ากับผลกระทบทางเศรษฐกิจเมื่อเครื่องจักรหยุดเดิน",
         href: "/posts/vfd-electrical-system"
       }
     ]
@@ -192,8 +196,8 @@ export default function Page() {
           {/* Services Section */}
           <GridPreview section={services} />
 
-          {/* Projects Section */}
-          <GridPreview section={projects} />
+          {/* Posts Section */}
+          <GridPreview section={posts} />
         </div>
       </main>
     </div>

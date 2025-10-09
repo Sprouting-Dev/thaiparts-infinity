@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { getCategoryBadgeStyle } from '@/lib/categoryBadge';
+import Image from 'next/image';
 
 export const metadata: Metadata = {
   title: 'Products | THAIPARTS INFINITY',
@@ -26,11 +27,12 @@ function getProducts(): Product[] {
     {
       id: 1,
       attributes: {
-        name: "อสื่อสัญญา ลูกปืน",
-        slug: "bearings-rollers", 
+        // Match homepage title
+        name: "ตลับลูกปืน, ลูกกลิ้ง",
+        slug: "bearings-rollers",
         subtitle: "Bearings & Rollers",
-        thumbnail: undefined,
-        categoryBadge: { label: "Mechanical", color: "blue" }
+        thumbnail: { url: '/homepage/products/bearings-and-rollers.webp' },
+        categoryBadge: { label: 'Mechanical Parts', color: 'blue' }
       }
     },
     {
@@ -38,9 +40,9 @@ function getProducts(): Product[] {
       attributes: {
         name: "Hydraulic System",
         slug: "hydraulic-system",
-        subtitle: "Hydraulic Components & Systems", 
-        thumbnail: undefined,
-        categoryBadge: { label: "Hydraulic", color: "teal" }
+        subtitle: "Hydraulic Components & Systems",
+        thumbnail: { url: '/homepage/products/hydraulic-system.webp' },
+        categoryBadge: { label: 'Fluid Systems', color: 'teal' }
       }
     },
     {
@@ -49,18 +51,18 @@ function getProducts(): Product[] {
         name: "Motor & Drive",
         slug: "motor-drive",
         subtitle: "Motors & Drive Systems",
-        thumbnail: undefined,
-        categoryBadge: { label: "Electrical", color: "red" }
+        thumbnail: { url: '/homepage/products/motor-and-drive.webp' },
+        categoryBadge: { label: 'Electrical Hardware', color: 'red' }
       }
     },
     {
       id: 4,
       attributes: {
-        name: "PLC Module", 
+        name: "PLC Module",
         slug: "plc-module",
         subtitle: "Programmable Logic Controllers",
-        thumbnail: undefined,
-        categoryBadge: { label: "Automation", color: "navy" }
+        thumbnail: { url: '/homepage/products/plc-module.webp' },
+        categoryBadge: { label: 'PLC/SCADA/Automation', color: 'navy' }
       }
     },
     {
@@ -69,8 +71,8 @@ function getProducts(): Product[] {
         name: "Pressure & Flow",
         slug: "pressure-flow",
         subtitle: "Pressure & Flow Control Systems",
-        thumbnail: undefined,
-        categoryBadge: { label: "Control", color: "green" }
+        thumbnail: { url: '/homepage/products/pressure-and-flow.webp' },
+        categoryBadge: { label: 'Measurement Systems', color: 'green' }
       }
     }
   ];
@@ -113,17 +115,27 @@ export default function ProductsPage() {
                     className="group flex flex-col gap-3 hover:transform hover:scale-[1.02] transition-all duration-200"
                   >
                     {/* Image */}
-                    <div className="w-full aspect-[300/220] overflow-hidden rounded-lg">
+                    <div className="w-full aspect-[300/220] overflow-hidden rounded-lg relative">
                       {imageUrl ? (
-                        <img
-                          src={
-                            imageUrl.startsWith('http')
-                              ? imageUrl
-                              : `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${imageUrl}`
-                          }
-                          alt={attributes.name}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
+                        (() => {
+                          const isExternal = imageUrl.startsWith('http');
+                          const src = isExternal
+                            ? imageUrl
+                            : imageUrl.startsWith('/')
+                            ? imageUrl
+                            : `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${imageUrl}`;
+
+                          return (
+                            <Image
+                              src={src}
+                              alt={attributes.name}
+                              fill
+                              className="object-cover group-hover:scale-105 transition-transform duration-300"
+                              // Allow external images without next.config domains
+                              unoptimized={isExternal}
+                            />
+                          );
+                        })()
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-neutral-200 to-neutral-300 flex items-center justify-center">
                           <div className="text-neutral-400 text-4xl">📦</div>

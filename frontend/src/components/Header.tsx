@@ -122,7 +122,7 @@ export default function Header({ brand, navbar }: Props) {
               />
             </div>
           ) : (
-            <div className="bg-[url('/file.svg')] bg-cover w-[32px] h-[32px] md:w-[40px] md:h-[40px] lg:w-[48px] lg:h-[48px] rounded-full" />
+            <div className="bg-[url('/thaiparts-infinity-logo.svg')] bg-cover w-[32px] h-[32px] md:w-[40px] md:h-[40px] lg:w-[48px] lg:h-[48px] rounded-full" />
           )}
           <Link
             href="/"

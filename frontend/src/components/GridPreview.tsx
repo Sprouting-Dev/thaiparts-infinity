@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import CTAButton from './CTAButton';
 import type { CTAVariant } from '@/lib/button-styles';
 import { getCategoryBadgeStyle } from '@/lib/categoryBadge';
@@ -86,7 +87,7 @@ export default async function GridPreview({ section }: { section: Section }) {
 
       {/* Grid container */}
       <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-7 lg:gap-8">
-        {displayItems.slice(0, 5).map((item: any, index: number) => {
+  {displayItems.slice(0, 5).map((item: any, index: number) => {
           // Handle both API response format and direct items format
           const isDirectItem = 'title' in item && !item.attributes;
 
@@ -113,6 +114,9 @@ export default async function GridPreview({ section }: { section: Section }) {
 
           const categoryStyle = getCategoryBadgeStyle(categoryBadge?.color);
 
+          // Determine base for prefixed Strapi media URLs
+          const base = process.env.NEXT_PUBLIC_STRAPI_URL ?? 'http://localhost:1337';
+
           return (
             <Link
               key={isDirectItem ? index : item.id}
@@ -124,20 +128,21 @@ export default async function GridPreview({ section }: { section: Section }) {
               }`}
             >
               {/* Image container */}
-              <div className="w-full aspect-[300/220] overflow-hidden rounded-lg">
+              <div className="w-full aspect-[300/220] overflow-hidden rounded-lg relative">
                 {image ? (
-                  <img
-                    src={
-                      image.startsWith('http')
-                        ? image
-                        : `${
-                            process.env.NEXT_PUBLIC_STRAPI_URL ??
-                            'http://localhost:1337'
-                          }${image}`
-                    }
-                    alt={title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
+                  (() => {
+                    const isExternal = image.startsWith('http');
+                    const src = isExternal ? image : image.startsWith('/') ? image : `${base}${image}`;
+                    return (
+                      <Image
+                        src={src}
+                        alt={title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        unoptimized={isExternal}
+                      />
+                    );
+                  })()
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-neutral-200 to-neutral-300 flex items-center justify-center">
                     <div className="text-neutral-400 text-4xl">
