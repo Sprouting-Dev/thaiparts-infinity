@@ -24,7 +24,7 @@ export default function ContactPage() {
       subtitle: "ติดต่อทีมงานขายส่งของเรา เพื่อสอบถามราคา เปิดบัญชี หรือติดตามสถานะคำสั่งซื้อ"
     },
     contactInfo: {
-      title: "ข้อมูลบริษัท",
+      title: "Company Information",
       address: "บริษัท: THAIPARTS INFINITY CO., LTD.\nที่อยู่: 5/17 M.2, Thap Ma, Mueang Rayong, Rayong, 21000",
       phone: "(+66) 092-424-2144\n(+66)097-128-2707",
       email: "info@thaipartsinfinity.com",
