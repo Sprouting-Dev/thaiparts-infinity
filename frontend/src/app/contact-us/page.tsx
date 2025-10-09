@@ -70,7 +70,6 @@ export default function ContactPage() {
           {/* Left Column - Contact Info & Map */}
           <div className="space-y-8">
             <ContactInfo data={pageData.contactInfo} />
-            <ContactMap data={pageData.map} />
           </div>
 
           {/* Right Column - Contact Form */}
