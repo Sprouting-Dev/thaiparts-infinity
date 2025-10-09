@@ -82,10 +82,10 @@ export default function Hero(props: {
           }}
         >
           {/* Title and Subtitle Container - responsive width */}
-          <div className="flex flex-col items-center gap-2 w-full">
+          <div className="flex flex-col lg:items-center gap-2 w-full">
             {/* Mobile Title (3 lines stacked) */}
             <h1
-              className="lg:hidden font-[Kanit] font-medium text-[22px] leading-[33px] text-center"
+              className="lg:hidden font-[Kanit] font-medium text-[22px] text-start"
               style={{ textShadow: '0px 2px 16px rgba(0,0,0,0.5)' }}
             >
               {props.title.mobile.lines.map((line, index) => (
@@ -97,7 +97,7 @@ export default function Hero(props: {
 
             {/* Desktop Title (single line, two colors) */}
             <h1
-              className="hidden lg:block font-[Kanit] font-medium text-[36px] leading-[54px] text-center"
+              className="hidden lg:block font-[Kanit] font-medium text-[36px]"
               style={{ textShadow: '0px 2px 16px rgba(0,0,0,0.5)' }}
             >
               <span className={color(props.title.desktop.leftColor)}>
@@ -108,7 +108,7 @@ export default function Hero(props: {
               </span>
             </h1>
             <p
-              className="text-[#F5F5F5] text-center font-normal text-[16px] leading-[24px] lg:text-[22px] lg:leading-[33px] lg:max-w-[665px]"
+              className="text-[#F5F5F5] lg:text-center font-normal text-[16px] leading-[24px] lg:text-[22px] lg:leading-[33px] lg:max-w-[665px]"
               style={{ textShadow: '0px 2px 16px rgba(0,0,0,0.5)' }}
             >
               {props.subtitle}

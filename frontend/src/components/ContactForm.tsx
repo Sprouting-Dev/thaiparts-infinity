@@ -27,23 +27,22 @@ interface FormData {
 }
 
 export default function ContactForm({ data }: ContactFormProps) {
-  // NOTE: Content is hard-coded for static delivery. The `data` prop is kept
-  // so pages that pass props won't break, but values below will be used.
-  const title = 'Contact Us';
-  const description = 'Fill the form below and our team will get back to you within 24-48 hours.';
+  // Use Thai content for the form
+  const title = 'ส่งข้อความหาเรา';
+  const description = 'กรอกแบบฟอร์มด้านล่าง แล้วทีมงานของเราจะติดต่อกลับภายใน 24 ชั่วโมง';
   const showNameField = true;
   const showEmailField = true;
   const showPhoneField = true;
-  const showSubjectField = true;
+  const showSubjectField = false;
   const showMessageField = true;
-  const submitButtonText = 'Send Message';
-  const successMessage = 'Thank you for your message. We will contact you shortly.';
+  const submitButtonText = 'ส่งข้อความ';
+  const successMessage = 'ขอบคุณสำหรับข้อความของคุณ เราจะติดต่อกลับเร็วๆ นี้';
 
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
     phone: '',
-    subject: '',
+    subject: 'Contact Form Inquiry', // ตั้งค่า default subject
     message: '',
   });
 
@@ -55,21 +54,21 @@ export default function ContactForm({ data }: ContactFormProps) {
     const newErrors: Partial<FormData> = {};
 
     if (showNameField && !formData.name.trim()) {
-      newErrors.name = 'Name is required';
+      newErrors.name = 'กรุณากรอกชื่อ';
     }
 
     if (showEmailField && !formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = 'กรุณากรอกอีเมล';
     } else if (showEmailField && formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = 'รูปแบบอีเมลไม่ถูกต้อง';
     }
 
     if (showSubjectField && !formData.subject.trim()) {
-      newErrors.subject = 'Subject is required';
+      newErrors.subject = 'กรุณากรอกหัวข้อ';
     }
 
     if (showMessageField && !formData.message.trim()) {
-      newErrors.message = 'Message is required';
+      newErrors.message = 'กรุณากรอกข้อความ';
     }
 
     setErrors(newErrors);
@@ -86,12 +85,20 @@ export default function ContactForm({ data }: ContactFormProps) {
     setIsSubmitting(true);
     
     try {
-      // Mock API call - simulate processing time
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // In a real implementation, you would send the data to your API
-      console.log('Mock form submission:', formData);
-      
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to send email');
+      }
+
       setIsSubmitted(true);
       
       // Reset form after successful submission
@@ -99,13 +106,14 @@ export default function ContactForm({ data }: ContactFormProps) {
         name: '',
         email: '',
         phone: '',
-        subject: '',
+        subject: 'Contact Form Inquiry', // ตั้งค่า default subject
         message: '',
       });
       
     } catch (error) {
       console.error('Form submission error:', error);
       // Handle error state here
+      alert(error instanceof Error ? error.message : 'Failed to send email. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -122,20 +130,20 @@ export default function ContactForm({ data }: ContactFormProps) {
 
   if (isSubmitted) {
     return (
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-8">
         <div className="text-center py-8">
-          <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
-            <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-20 h-20 mx-auto mb-6 bg-green-100 rounded-full flex items-center justify-center">
+            <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">Message Sent!</h3>
-          <p className="text-gray-600 mb-6">{successMessage}</p>
+          <h3 className="text-2xl font-bold text-gray-900 mb-3">ส่งข้อความสำเร็จ!</h3>
+          <p className="text-gray-600 mb-8 text-lg">{successMessage}</p>
           <button
             onClick={() => setIsSubmitted(false)}
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            className="bg-[#1063A7] text-white px-8 py-3 rounded-xl hover:bg-[#0d4d85] transition-colors font-medium"
           >
-            Send Another Message
+            ส่งข้อความอีกครั้ง
           </button>
         </div>
       </div>
@@ -143,117 +151,120 @@ export default function ContactForm({ data }: ContactFormProps) {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">{title}</h2>
+    <div className="p-8 rounded-3xl" style={{ backgroundColor: 'rgba(16, 99, 167, 0.04)' }}>
+      <h2 className="text-2xl font-medium text-[#1063A7] mb-8 text-center underline decoration-[#E92928] underline-offset-4">{title}</h2>
       
       {description && (
-        <p className="text-gray-600 mb-6">{description}</p>
+        <p className="text-gray-600 mb-8 text-lg leading-relaxed">{description}</p>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-8">
         {/* Name Field */}
         {showNameField && (
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-              Name *
+            <label htmlFor="name" className="block text-base font-semibold text-gray-900 mb-3">
+              ชื่อ *
             </label>
             <input
               type="text"
               id="name"
               value={formData.name}
               onChange={(e) => handleChange('name', e.target.value)}
-              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors.name ? 'border-red-500' : 'border-gray-300'
+              className={`w-full px-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-[#1063A7] transition-all duration-200 text-lg ${
+                errors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-gray-200 hover:border-gray-300'
               }`}
-              placeholder="Your full name"
+              placeholder="กรอกชื่อของคุณ"
             />
-            {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+            {errors.name && <p className="mt-2 text-sm text-red-600 font-medium">{errors.name}</p>}
           </div>
         )}
 
         {/* Email Field */}
         {showEmailField && (
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-              Email *
+            <label htmlFor="email" className="block text-base font-semibold text-gray-900 mb-3">
+              อีเมล *
             </label>
             <input
               type="email"
               id="email"
               value={formData.email}
               onChange={(e) => handleChange('email', e.target.value)}
-              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors.email ? 'border-red-500' : 'border-gray-300'
+              className={`w-full px-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-[#1063A7] transition-all duration-200 text-lg ${
+                errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-gray-200 hover:border-gray-300'
               }`}
               placeholder="your.email@example.com"
             />
-            {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
+            {errors.email && <p className="mt-2 text-sm text-red-600 font-medium">{errors.email}</p>}
           </div>
         )}
 
         {/* Phone Field */}
         {showPhoneField && (
           <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-              Phone
+            <label htmlFor="phone" className="block text-base font-semibold text-gray-900 mb-3">
+              เบอร์โทรศัพท์
             </label>
             <input
               type="tel"
               id="phone"
               value={formData.phone}
               onChange={(e) => handleChange('phone', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="+66 2 123 4567"
+              className={`w-full px-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-[#1063A7] transition-all duration-200 text-lg ${
+                errors.phone ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-gray-200 hover:border-gray-300'
+              }`}
+              placeholder="092-424-2144"
             />
+            {errors.phone && <p className="mt-2 text-sm text-red-600 font-medium">{errors.phone}</p>}
           </div>
         )}
 
         {/* Subject Field */}
         {showSubjectField && (
           <div>
-            <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
-              Subject *
+            <label htmlFor="subject" className="block text-base font-semibold text-gray-900 mb-3">
+              หัวข้อ *
             </label>
             <input
               type="text"
               id="subject"
               value={formData.subject}
               onChange={(e) => handleChange('subject', e.target.value)}
-              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors.subject ? 'border-red-500' : 'border-gray-300'
+              className={`w-full px-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-[#1063A7] transition-all duration-200 text-lg ${
+                errors.subject ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-gray-200 hover:border-gray-300'
               }`}
-              placeholder="What can we help you with?"
+              placeholder="หัวข้อที่ต้องการสอบถาม"
             />
-            {errors.subject && <p className="mt-1 text-sm text-red-600">{errors.subject}</p>}
+            {errors.subject && <p className="mt-2 text-sm text-red-600 font-medium">{errors.subject}</p>}
           </div>
         )}
 
         {/* Message Field */}
         {showMessageField && (
           <div>
-            <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-              Message *
+            <label htmlFor="message" className="block text-base font-semibold text-gray-900 mb-3">
+              ข้อความ *
             </label>
             <textarea
               id="message"
-              rows={5}
+              rows={6}
               value={formData.message}
               onChange={(e) => handleChange('message', e.target.value)}
-              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-vertical ${
-                errors.message ? 'border-red-500' : 'border-gray-300'
+              className={`w-full px-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-[#1063A7] transition-all duration-200 text-lg resize-vertical ${
+                errors.message ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : 'border-gray-200 hover:border-gray-300'
               }`}
-              placeholder="Please tell us more about your inquiry..."
+              placeholder="กรุณาเขียนข้อความที่ต้องการสอบถาม..."
             />
-            {errors.message && <p className="mt-1 text-sm text-red-600">{errors.message}</p>}
+            {errors.message && <p className="mt-2 text-sm text-red-600 font-medium">{errors.message}</p>}
           </div>
         )}
 
         {/* Submit Button */}
-        <div>
+        <div className="pt-4">
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-full bg-[#1063A7] text-white py-4 px-6 rounded-xl hover:bg-[#0d4d85] focus:outline-none focus:ring-4 focus:ring-blue-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-semibold text-lg shadow-lg hover:shadow-xl"
           >
             {isSubmitting ? (
               <span className="flex items-center justify-center">
@@ -261,7 +272,7 @@ export default function ContactForm({ data }: ContactFormProps) {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Sending...
+                กำลังส่ง...
               </span>
             ) : (
               submitButtonText
@@ -269,10 +280,10 @@ export default function ContactForm({ data }: ContactFormProps) {
           </button>
         </div>
 
-        {/* Mock Notice */}
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-          <p className="text-sm text-yellow-800">
-            <strong>Development Note:</strong> This is a mock contact form. In production, this would connect to a real backend API to process submissions.
+        {/* Contact Info */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <p className="text-sm text-blue-800">
+            <strong>Note:</strong> We'll respond to your inquiry within 24-48 hours. For urgent matters, please call us directly.
           </p>
         </div>
       </form>
