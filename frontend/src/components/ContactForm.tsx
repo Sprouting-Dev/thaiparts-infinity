@@ -151,8 +151,8 @@ export default function ContactForm({ data }: ContactFormProps) {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-8">
-      <h2 className="text-2xl font-bold text-gray-900 mb-3">{title}</h2>
+    <div className="p-8 rounded-3xl" style={{ backgroundColor: 'rgba(16, 99, 167, 0.04)' }}>
+      <h2 className="text-2xl font-medium text-[#1063A7] mb-8 text-center underline decoration-[#E92928] underline-offset-4">{title}</h2>
       
       {description && (
         <p className="text-gray-600 mb-8 text-lg leading-relaxed">{description}</p>
