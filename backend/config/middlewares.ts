@@ -1,21 +1,37 @@
 export default ({ env }) => [
-  'strapi::logger',
-  'strapi::errors',
-  'strapi::security',
-  // Configure CORS so that the browser can send credentials (cookies) to the backend.
-  // Use PUBLIC_URL as the allowed origin in production. Adjust or add additional
-  // origins (e.g. local dev) as needed.
+  "strapi::errors",
   {
-    name: 'strapi::cors',
+    name: "strapi::security",
     config: {
-      origin: [env('PUBLIC_URL', 'https://thaiparts-infinity-backend.onrender.com')],
-      credentials: true,
+      contentSecurityPolicy: {
+        useDefaults: true,
+        directives: {
+          "connect-src": ["'self'", "https:"],
+          "default-src": ["'self'"],
+          "img-src": [
+            "'self'",
+            "data:",
+            "blob:",
+            "market-assets.strapi.io",
+            env("SUPABASE_URL"),
+          ],
+          "media-src": [
+            "'self'",
+            "data:",
+            "blob:",
+            "market-assets.strapi.io",
+            env("SUPABASE_URL"),
+          ],
+        },
+      },
     },
   },
-  'strapi::poweredBy',
-  'strapi::query',
-  'strapi::body',
-  'strapi::session',
-  'strapi::favicon',
-  'strapi::public',
+  "strapi::cors",
+  "strapi::poweredBy",
+  "strapi::logger",
+  "strapi::query",
+  "strapi::body",
+  "strapi::session",
+  "strapi::favicon",
+  "strapi::public",
 ];

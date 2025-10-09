@@ -24,6 +24,8 @@ try {
 
 const nextConfig: NextConfig = {
   images: {
+    // Disable Next.js built-in image optimization to avoid server-side sharp processing
+    unoptimized: true,
     // TypeScript expects RemotePattern[]; cast here because we built the shape dynamically.
     // It's safe because entries follow the RemotePattern fields: protocol, hostname, port?, pathname
     remotePatterns: remotePatterns as any,
