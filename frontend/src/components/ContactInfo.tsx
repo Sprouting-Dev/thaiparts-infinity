@@ -17,7 +17,7 @@ export default function ContactInfo({ data }: ContactInfoProps) {
   return (
     <div className="p-8 rounded-3xl" style={{ backgroundColor: 'rgba(16, 99, 167, 0.04)' }}>
       {/* Header */}
-      <h2 className="text-2xl font-medium text-[#1063A7] mb-8 text-center">{title}</h2>
+      <h2 className="text-2xl font-medium text-[#1063A7] mb-8 text-center underline decoration-[#E92928] underline-offset-4">{title}</h2>
       
       {/* Company Info */}
       <div className="space-y-4 text-gray-700">
