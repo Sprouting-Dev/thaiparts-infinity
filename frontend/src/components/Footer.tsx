@@ -42,8 +42,8 @@ export default function Footer({ data, embedded }: Props) {
               </span>
             </div>
             <nav className="flex flex-col items-start px-4 md:px-6 lg:px-8 gap-2">
-              {columns.map(col => (
-                <React.Fragment key={col.title || 'col'}>
+              {columns.map((col, colIndex) => (
+                <React.Fragment key={col.title || `col-${colIndex}`}>
                   {col.title && (
                     <div className="flex items-center gap-2 mt-2">
                       <div className="w-[4px] h-[4px] bg-[#E92928] rounded-full" />
@@ -52,9 +52,9 @@ export default function Footer({ data, embedded }: Props) {
                       </span>
                     </div>
                   )}
-                  {col.links?.map(link => (
+                  {col.links?.map((link, linkIndex) => (
                     <div
-                      key={link.label}
+                      key={link.label || `link-${colIndex}-${linkIndex}`}
                       className="flex items-center gap-2 ml-0"
                     >
                       <div className="w-[4px] h-[4px] bg-[#E92928] rounded-full" />

@@ -1,4 +1,3 @@
-import clsx from 'clsx';
 import Image from 'next/image';
 import CTAButton from '@/components/CTAButton';
 
@@ -47,29 +46,26 @@ export default function Hero(props: {
     }
   };
 
+  // Use provided background if present, otherwise fall back to the public asset in /public/homepage
+  const backgroundPath = props.background ?? '/homepage/homepage-hero.png';
+
   return (
     <section className="relative w-screen h-[568px] md:h-[720px] lg:h-[900px] xl:h-[1024px] smooth-transition">
       {/* Full-bleed responsive background image + gradient overlay */}
       <div className="absolute inset-0 overflow-hidden">
-        {props.background ? (
-          <>
-            {/* Single responsive background image */}
-            <div className="absolute inset-0">
-              <Image
-                src={props.background}
-                alt=""
-                fill
-                className="object-cover object-center"
-                priority
-                sizes="100vw"
-              />
-            </div>
-            {/* Gradient overlay (no blur on background) */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-black/30 to-black/70" />
-          </>
-        ) : (
-          <div className="w-full h-full bg-gradient-to-b from-neutral-300 to-neutral-600" />
-        )}
+        {/* Single responsive background image (use public asset when no prop provided) */}
+        <div className="absolute inset-0">
+          <Image
+            src={backgroundPath}
+            alt=""
+            fill
+            className="object-cover object-center"
+            priority
+            sizes="100vw"
+          />
+        </div>
+        {/* Gradient overlay (no blur on background) */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-black/30 to-black/70" />
       </div>
 
       {/* Subtle Glass Panel (Figma-like) */}

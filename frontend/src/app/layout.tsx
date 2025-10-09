@@ -4,7 +4,7 @@ import './globals.css';
 import Header from '@/components/Header';
 import Footer, { FooterData } from '@/components/Footer';
 import PreFooterCta from '@/components/PreFooterCta';
-import { getGlobal, getGlobalFresh } from '@/lib/global';
+import { getStaticGlobal, getStaticGlobalFresh } from '@/lib/static-global';
 
 const kanit = Kanit({
   variable: '--font-kanit',
@@ -12,10 +12,10 @@ const kanit = Kanit({
   subsets: ['latin', 'latin-ext', 'thai'],
 });
 
-// Dynamic metadata from Strapi Global.defaultSeo (with safe fallbacks)
+// Static metadata from static global data
 export async function generateMetadata(): Promise<Metadata> {
-  // Use fresh fetch so tab title reflects latest without waiting for ISR cache
-  const global = (await getGlobalFresh()) || (await getGlobal());
+  // Use static data instead of Strapi
+  const global = getStaticGlobalFresh();
   const rawTitle = global?.seo?.metaTitle?.trim();
   const brandLeft = (global as any)?.brand?.left || 'THAIPARTS';
   const brandRight = (global as any)?.brand?.right || 'INFINITY';
@@ -30,7 +30,7 @@ export async function generateMetadata(): Promise<Metadata> {
     : [];
   if (process.env.NODE_ENV === 'development') {
     console.log(
-      '[metadata] rawTitle from Strapi:',
+      '[metadata] rawTitle from static data:',
       rawTitle,
       'final title:',
       title
@@ -68,13 +68,13 @@ export const viewport = {
   initialScale: 1,
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Fetch fresh first so newly uploaded favicon / footer changes appear immediately; fallback to cached if fails.
-  const global = (await getGlobalFresh()) || (await getGlobal());
+  // Use static global data instead of Strapi
+  const global = getStaticGlobal();
   const footerData: FooterData | undefined = global?.footer
     ? {
         companyName: global.footer.companyName,
@@ -94,13 +94,7 @@ export default async function RootLayout({
   const fallbackFavicon = '/favicon.svg';
   let faviconHref = global?.favicon || fallbackFavicon;
   if (process.env.NODE_ENV === 'development') {
-    if (faviconHref === fallbackFavicon) {
-      console.log(
-        '[favicon] Using fallback favicon.svg (upload favicon in Strapi Global to override)'
-      );
-    } else {
-      console.log('[favicon] Using Strapi favicon:', faviconHref);
-    }
+    console.log('[favicon] Using static favicon:', faviconHref);
   }
 
   return (

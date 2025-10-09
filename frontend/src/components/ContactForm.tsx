@@ -27,17 +27,17 @@ interface FormData {
 }
 
 export default function ContactForm({ data }: ContactFormProps) {
-  const {
-    title,
-    description,
-    showNameField,
-    showEmailField,
-    showPhoneField,
-    showSubjectField,
-    showMessageField,
-    submitButtonText,
-    successMessage
-  } = data;
+  // NOTE: Content is hard-coded for static delivery. The `data` prop is kept
+  // so pages that pass props won't break, but values below will be used.
+  const title = 'Contact Us';
+  const description = 'Fill the form below and our team will get back to you within 24-48 hours.';
+  const showNameField = true;
+  const showEmailField = true;
+  const showPhoneField = true;
+  const showSubjectField = true;
+  const showMessageField = true;
+  const submitButtonText = 'Send Message';
+  const successMessage = 'Thank you for your message. We will contact you shortly.';
 
   const [formData, setFormData] = useState<FormData>({
     name: '',

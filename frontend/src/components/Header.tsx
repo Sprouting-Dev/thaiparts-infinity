@@ -112,7 +112,7 @@ export default function Header({ brand, navbar }: Props) {
           {brand?.logo ? (
             <div className="relative w-[32px] h-[32px] md:w-[40px] md:h-[40px] lg:w-[48px] lg:h-[48px] flex items-center justify-center">
               <Image
-                src={brand.logo}
+                src={brand.logo || "/thaiparts-infinity-logo.svg"}
                 alt="Brand Logo"
                 width={48}
                 height={48}

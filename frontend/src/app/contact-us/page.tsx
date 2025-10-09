@@ -1,45 +1,11 @@
-import { api } from '@/lib/api';
-import { contactPopulate } from '@/lib/queries';
-import { toAbsolute } from '@/lib/media';
 import Hero from '@/components/Hero';
 import ContactInfo from '@/components/ContactInfo';
 import ContactForm from '@/components/ContactForm';
 import ContactMap from '@/components/ContactMap';
 
-export const revalidate = 300; // ISR
-
-type ContactResponse = any;
-
-export default async function ContactPage() {
-  let attr: any = null;
-  let fetchError: string | null = null;
-
-  try {
-    console.log(
-      '🔍 Fetching contact page from Strapi with query:',
-      `/api/contact?${contactPopulate}`
-    );
-
-    const json = await api<ContactResponse>(`/api/contact?${contactPopulate}`, {
-      next: { revalidate },
-    });
-    
-    console.log('📦 Raw Strapi contact response:', json);
-
-    // Handle Strapi single-type response structure
-    attr = json?.data?.attributes ?? json?.data ?? null;
-    console.log('🎯 Processed contact attributes:', attr);
-
-  } catch (err: any) {
-    const msg = err?.message ?? String(err);
-    console.warn('❌ Failed to fetch contact page from Strapi:', msg);
-    console.warn('❌ Query that failed:', `/api/contact?${contactPopulate}`);
-    fetchError = msg;
-    attr = null;
-  }
-
-  // Fallback data for development/demo
-  const fallbackData = {
+export default function ContactPage() {
+  // Static content for delivery - no Strapi dependency
+  const pageData = {
     hero: {
       title: {
         desktop: {
@@ -86,20 +52,16 @@ export default async function ContactPage() {
     }
   };
 
-  const pageData = attr || fallbackData;
-
   return (
     <main className="min-h-screen">
       {/* Hero Section */}
-      {pageData.hero && (
-        <Hero
-          title={pageData.hero.title}
-          subtitle={pageData.hero.subtitle || "We'd love to hear from you. Send us a message and we'll respond as soon as possible."}
-          background={pageData.hero.background ? toAbsolute(pageData.hero.background) : undefined}
-          ctas={[]} // Contact page hero doesn't need CTA buttons
-          panel={{ enabled: false, align: 'left' }}
-        />
-      )}
+      <Hero
+        title={pageData.hero.title}
+        subtitle={pageData.hero.subtitle}
+        background={undefined}
+        ctas={[]} // Contact page hero doesn't need CTA buttons
+        panel={{ enabled: false, align: 'left' }}
+      />
 
       {/* Contact Content */}
       <div className="max-w-7xl mx-auto px-4 py-16">
@@ -107,40 +69,16 @@ export default async function ContactPage() {
           
           {/* Left Column - Contact Info & Map */}
           <div className="space-y-12">
-            {pageData.contactInfo && (
-              <ContactInfo data={pageData.contactInfo} />
-            )}
-            
-            {pageData.map && (
-              <ContactMap data={pageData.map} />
-            )}
+            <ContactInfo data={pageData.contactInfo} />
+            <ContactMap data={pageData.map} />
           </div>
 
           {/* Right Column - Contact Form */}
           <div>
-            {pageData.contactForm && (
-              <ContactForm data={pageData.contactForm} />
-            )}
+            <ContactForm data={pageData.contactForm} />
           </div>
         </div>
       </div>
-
-      {/* Debug Info (Development Only) */}
-      {process.env.NODE_ENV === 'development' && fetchError && (
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <details className="bg-red-50 border border-red-200 rounded p-4">
-            <summary className="cursor-pointer font-medium text-red-800">
-              ⚠️ Development Debug: API Error
-            </summary>
-            <pre className="mt-2 text-sm text-red-700 overflow-auto">
-              {fetchError}
-            </pre>
-            <p className="mt-2 text-sm text-red-600">
-              Using fallback data for development. Configure content in Strapi admin.
-            </p>
-          </details>
-        </div>
-      )}
     </main>
   );
 }

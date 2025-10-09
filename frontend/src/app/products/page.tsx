@@ -1,5 +1,4 @@
 import { Metadata } from 'next';
-import { api } from '@/lib/api';
 import { getCategoryBadgeStyle } from '@/lib/categoryBadge';
 
 export const metadata: Metadata = {
@@ -21,39 +20,64 @@ type Product = {
   };
 };
 
-async function getProducts() {
-  try {
-    const response = await api<{ data?: any[] }>(
-      '/api/products?populate[thumbnail]=1&populate[categoryBadge]=1&sort=publishedAt:asc',
-      { next: { revalidate: 300 } }
-    );
-    const raw = Array.isArray(response?.data) ? response!.data : [];
-    if (raw.length)
-      console.log('[products] raw entries sample (first 3):', raw.slice(0, 3));
-    const normalized: Product[] = raw
-      .map(entry => {
-        if (!entry || typeof entry !== 'object') return null as any;
-        if (entry.attributes && typeof entry.attributes === 'object')
-          return entry as Product;
-        const { id, ...rest } = entry;
-        return { id, attributes: rest } as Product;
-      })
-      .filter(Boolean);
-    if (normalized.length !== raw.length) {
-      console.warn('[products] wrapped flattened entries', {
-        received: raw.length,
-        normalized: normalized.length,
-      });
+function getProducts(): Product[] {
+  // Static product data
+  return [
+    {
+      id: 1,
+      attributes: {
+        name: "อสื่อสัญญา ลูกปืน",
+        slug: "bearings-rollers", 
+        subtitle: "Bearings & Rollers",
+        thumbnail: undefined,
+        categoryBadge: { label: "Mechanical", color: "blue" }
+      }
+    },
+    {
+      id: 2,
+      attributes: {
+        name: "Hydraulic System",
+        slug: "hydraulic-system",
+        subtitle: "Hydraulic Components & Systems", 
+        thumbnail: undefined,
+        categoryBadge: { label: "Hydraulic", color: "teal" }
+      }
+    },
+    {
+      id: 3,
+      attributes: {
+        name: "Motor & Drive",
+        slug: "motor-drive",
+        subtitle: "Motors & Drive Systems",
+        thumbnail: undefined,
+        categoryBadge: { label: "Electrical", color: "red" }
+      }
+    },
+    {
+      id: 4,
+      attributes: {
+        name: "PLC Module", 
+        slug: "plc-module",
+        subtitle: "Programmable Logic Controllers",
+        thumbnail: undefined,
+        categoryBadge: { label: "Automation", color: "navy" }
+      }
+    },
+    {
+      id: 5,
+      attributes: {
+        name: "Pressure & Flow",
+        slug: "pressure-flow",
+        subtitle: "Pressure & Flow Control Systems",
+        thumbnail: undefined,
+        categoryBadge: { label: "Control", color: "green" }
+      }
     }
-    return normalized;
-  } catch (error) {
-    console.error('Failed to fetch products:', error);
-    return [];
-  }
+  ];
 }
 
-export default async function ProductsPage() {
-  const products = await getProducts();
+export default function ProductsPage() {
+  const products = getProducts();
 
   return (
     <div className="bg-[#F5F5F5] min-h-screen">

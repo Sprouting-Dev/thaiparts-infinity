@@ -1,5 +1,4 @@
 import { Metadata } from 'next';
-import { api } from '@/lib/api';
 
 export const metadata: Metadata = {
   title: 'Knowledge Center | THAIPARTS INFINITY',
@@ -26,40 +25,82 @@ type Post = {
   };
 };
 
-async function getPosts() {
-  try {
-    const response = await api<{ data?: any[] }>(
-      '/api/posts?populate[thumbnail]=1&sort=publishedAt:asc',
-      { next: { revalidate: 300 } }
-    );
-    const raw = Array.isArray(response?.data) ? response!.data : [];
-    if (raw.length)
-      console.log('[posts] raw entries sample (first 3):', raw.slice(0, 3));
-    // Normalize each entry so we always have { id, attributes: {...} }
-    const normalized: Post[] = raw
-      .map(entry => {
-        if (!entry || typeof entry !== 'object') return null as any;
-        if (entry.attributes && typeof entry.attributes === 'object')
-          return entry as Post; // already standard
-        const { id, ...rest } = entry;
-        return { id, attributes: rest } as Post;
-      })
-      .filter(Boolean);
-    if (normalized.length !== raw.length) {
-      console.warn('[posts] wrapped flattened entries', {
-        received: raw.length,
-        normalized: normalized.length,
-      });
+function getPosts(): Post[] {
+  // Static posts data
+  return [
+    {
+      id: 1,
+      attributes: {
+        title: "5 สถานีผลิตผล ครัวช่องภาค PLC / SCADA รวมโปรแกรม",
+        slug: "scada-plc-system",
+        subtitle: "ระบบควบคุมการผลิตแบบครบวงจร",
+        body: [
+          {
+            type: "paragraph",
+            children: [
+              { text: "ระบบควบคุมการผลิตแบบครบวงจร ด้วยเทคโนโลยี SCADA และ PLC ที่ทันสมัยสำหรับอุตสาหกรรมอาหาร การออกแบบและติดตั้งระบบ Automation ที่ช่วยเพิ่มประสิทธิภาพการผลิต" }
+            ]
+          }
+        ],
+        thumbnail: undefined
+      }
+    },
+    {
+      id: 2,
+      attributes: {
+        title: "Case Study: โรงงานมัด A ระบบ Downtime จาก 80 เรื้อไร 10 นาทีต่อล่วล",
+        slug: "downtime-reduction",
+        subtitle: "การปรับปรุงระบบเพื่อลด Downtime",
+        body: [
+          {
+            type: "paragraph", 
+            children: [
+              { text: "การปรับปรุงระบบที่ช่วยลด Downtime ให้กับโรงงานผลิต ทำให้สามารถเพิ่มประสิทธิภาพการผลิตได้อย่างมาก จากการวิเคราะห์และแก้ไขปัญหาที่ต้นเหตุ" }
+            ]
+          }
+        ],
+        thumbnail: undefined
+      }
+    },
+    {
+      id: 3,
+      attributes: {
+        title: "เครื่องปัด เครื่อง VFD การแก้ปัญหาระบบไฟฟ้าให้ทำงานล่วแอดจัสเตอร์",
+        slug: "vfd-electrical-system", 
+        subtitle: "การแก้ไขปัญหาระบบไฟฟ้าและควบคุม",
+        body: [
+          {
+            type: "paragraph",
+            children: [
+              { text: "การแก้ไขปัญหาระบบไฟฟ้าและควบคุมให้ทำงานได้อย่างมีประสิทธิภาพและปลอดภัย รวมถึงการปรับแต่งพารามิเตอร์ VFD เพื่อให้เหมาะสมกับการใช้งาน" }
+            ]
+          }
+        ],
+        thumbnail: undefined
+      }
+    },
+    {
+      id: 4,
+      attributes: {
+        title: "แนวทางการบำรุงรักษาเชิงป้องกันสำหรับระบบ Automation",
+        slug: "preventive-maintenance-automation",
+        subtitle: "Preventive Maintenance Best Practices",
+        body: [
+          {
+            type: "paragraph",
+            children: [
+              { text: "แนวทางและหลักการในการบำรุงรักษาเชิงป้องกันสำหรับระบบ Automation เพื่อลดความเสี่ยงในการเกิดปัญหาและเพิ่มอายุการใช้งานของอุปกรณ์" }
+            ]
+          }
+        ],
+        thumbnail: undefined
+      }
     }
-    return normalized;
-  } catch (error) {
-    console.error('Failed to fetch posts:', error);
-    return [];
-  }
+  ];
 }
 
-export default async function PostsPage() {
-  const posts = await getPosts();
+export default function PostsPage() {
+  const posts = getPosts();
 
   return (
     <div className="bg-[#F5F5F5] min-h-screen">

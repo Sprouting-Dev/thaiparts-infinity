@@ -1,5 +1,4 @@
 import { Metadata } from 'next';
-import { api } from '@/lib/api';
 
 export const metadata: Metadata = {
   title: 'Services | THAIPARTS INFINITY',
@@ -19,39 +18,59 @@ type Service = {
   };
 };
 
-async function getServices() {
-  try {
-    const response = await api<{ data?: any[] }>(
-      '/api/services?populate[thumbnail]=1&sort=publishedAt:asc',
-      { next: { revalidate: 300 } }
-    );
-    const raw = Array.isArray(response?.data) ? response!.data : [];
-    if (raw.length)
-      console.log('[services] raw entries sample (first 3):', raw.slice(0, 3));
-    const normalized: Service[] = raw
-      .map(entry => {
-        if (!entry || typeof entry !== 'object') return null as any;
-        if (entry.attributes && typeof entry.attributes === 'object')
-          return entry as Service;
-        const { id, ...rest } = entry;
-        return { id, attributes: rest } as Service;
-      })
-      .filter(Boolean);
-    if (normalized.length !== raw.length) {
-      console.warn('[services] wrapped flattened entries', {
-        received: raw.length,
-        normalized: normalized.length,
-      });
+function getServices(): Service[] {
+  // Static services data
+  return [
+    {
+      id: 1,
+      attributes: {
+        name: "System Design & Upgrade",
+        slug: "system-design",
+        subtitle: "ออกแบบและยกระดับระบบ Automation",
+        thumbnail: undefined
+      }
+    },
+    {
+      id: 2,
+      attributes: {
+        name: "Preventive Maintenance",
+        slug: "preventive-maintenance", 
+        subtitle: "บำรุงรักษาเชิงป้องกัน เพื่อลด Downtime",
+        thumbnail: undefined
+      }
+    },
+    {
+      id: 3,
+      attributes: {
+        name: "Rapid Response & On-site Support",
+        slug: "rapid-response",
+        subtitle: "บริการฉุกเฉินและการสนับสนุนในพื้นที่ 24/7",
+        thumbnail: undefined
+      }
+    },
+    {
+      id: 4,
+      attributes: {
+        name: "Training & Consultation",
+        slug: "training-consultation",
+        subtitle: "อบรมและให้คำปรึกษาทางเทคนิค",
+        thumbnail: undefined
+      }
+    },
+    {
+      id: 5,
+      attributes: {
+        name: "Spare Parts Supply",
+        slug: "spare-parts",
+        subtitle: "จัดหาอะไหล่และอุปกรณ์ทดแทน",
+        thumbnail: undefined
+      }
     }
-    return normalized;
-  } catch (error) {
-    console.error('Failed to fetch services:', error);
-    return [];
-  }
+  ];
 }
 
-export default async function ServicesPage() {
-  const services = await getServices();
+export default function ServicesPage() {
+  const services = getServices();
 
   return (
     <div className="bg-[#F5F5F5] min-h-screen">
