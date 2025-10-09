@@ -86,12 +86,20 @@ export default function ContactForm({ data }: ContactFormProps) {
     setIsSubmitting(true);
     
     try {
-      // Mock API call - simulate processing time
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // In a real implementation, you would send the data to your API
-      console.log('Mock form submission:', formData);
-      
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to send email');
+      }
+
       setIsSubmitted(true);
       
       // Reset form after successful submission
@@ -106,6 +114,7 @@ export default function ContactForm({ data }: ContactFormProps) {
     } catch (error) {
       console.error('Form submission error:', error);
       // Handle error state here
+      alert(error instanceof Error ? error.message : 'Failed to send email. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -269,10 +278,10 @@ export default function ContactForm({ data }: ContactFormProps) {
           </button>
         </div>
 
-        {/* Mock Notice */}
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-          <p className="text-sm text-yellow-800">
-            <strong>Development Note:</strong> This is a mock contact form. In production, this would connect to a real backend API to process submissions.
+        {/* Contact Info */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <p className="text-sm text-blue-800">
+            <strong>Note:</strong> We'll respond to your inquiry within 24-48 hours. For urgent matters, please call us directly.
           </p>
         </div>
       </form>
