@@ -89,7 +89,7 @@ export default function PostsPage() {
 
   // Map static posts to the same card data used on the homepage GridPreview
   const items = posts.map(p => {
-    const attrs = p.attributes || ({} as any);
+    const attrs = p.attributes || {};
     const slug = attrs.slug || '';
     // Map known slugs to homepage article images
     const imageMap: Record<string, string> = {
@@ -103,18 +103,16 @@ export default function PostsPage() {
 
     const richBlocks = Array.isArray(attrs.body)
       ? attrs.body
-      : Array.isArray((attrs as any).content)
-        ? (attrs as any).content
-        : [];
+      : [];
 
     let bodyText = '';
     if (richBlocks.length) {
       bodyText = richBlocks
-        .filter((b: any) => b && (b.type === 'paragraph' || b.type === 'text'))
-        .map((b: any) =>
+        .filter((b) => b && (b.type === 'paragraph' || b.type === 'text'))
+        .map((b) =>
           Array.isArray(b.children)
-            ? b.children.map((c: any) => (c && typeof c.text === 'string' ? c.text : '')).join('')
-            : b.text || ''
+            ? b.children.map((c) => (c && typeof c.text === 'string' ? c.text : '')).join('')
+            : ''
         )
         .join(' ')
         .slice(0, 200);

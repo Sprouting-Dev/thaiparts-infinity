@@ -50,7 +50,7 @@ export function toOptimizedImage(
   }
 
   // Default optimization settings
-  const { width, height, quality = 85, format = 'webp' } = options;
+  const { width, quality = 85 } = options;
 
   // Use Next.js Image API for optimization
   const params = new URLSearchParams();

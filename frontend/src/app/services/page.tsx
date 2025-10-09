@@ -72,7 +72,7 @@ export default function ServicesPage() {
             <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-7 lg:gap-8">
               {services.map(service => {
                 if (!service || !service.attributes) return null;
-                const { attributes } = service as any;
+                const { attributes } = service;
                 const imageUrl =
                   attributes.thumbnail?.data?.attributes?.url ||
                   attributes.thumbnail?.url ||

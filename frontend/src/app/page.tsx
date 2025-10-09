@@ -1,7 +1,6 @@
 import Hero from '@/components/Hero';
 import Features from '@/components/Features';
 import GridPreview from '@/components/GridPreview';
-import { text } from 'stream/consumers';
 
 export default function Page() {
   // Static content for delivery - no Strapi dependency

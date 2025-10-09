@@ -22,7 +22,7 @@ export default function Hero(props: {
   };
   background?: string;
   subtitle: string;
-  ctas: { label: string; href?: string; variant: any; newTab?: boolean }[];
+  ctas: { label: string; href?: string; variant: string; newTab?: boolean }[];
   panel: { enabled: boolean; align: 'left' | 'center' | 'right' };
 }) {
   // Debug logging for background prop

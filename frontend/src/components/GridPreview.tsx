@@ -48,7 +48,24 @@ async function fetchItems(kind: Section['kind'], limit = 5) {
 
 export default async function GridPreview({ section }: { section: Section }) {
   // Use provided items or fetch from API
-  let displayItems: any[] = [];
+  let displayItems: Array<{
+    id?: number;
+    attributes?: {
+      name?: string;
+      title?: string;
+      slug?: string;
+      thumbnail?: { data?: { attributes?: { url?: string } }; url?: string };
+      categoryBadge?: { label?: string; color?: string };
+      description?: string;
+      subtitle?: string;
+    };
+    title?: string;
+    image?: string;
+    description?: string;
+    subtitle?: string;
+    href?: string;
+    categoryBadge?: { label?: string; color?: string };
+  }> = [];
 
   if (section.items && section.items.length > 0) {
     // Use items from backend
@@ -87,7 +104,7 @@ export default async function GridPreview({ section }: { section: Section }) {
 
       {/* Grid container */}
       <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-7 lg:gap-8">
-  {displayItems.slice(0, 5).map((item: any, index: number) => {
+  {displayItems.slice(0, 5).map((item, index: number) => {
           // Handle both API response format and direct items format
           const isDirectItem = 'title' in item && !item.attributes;
 
@@ -136,7 +153,7 @@ export default async function GridPreview({ section }: { section: Section }) {
                     return (
                       <Image
                         src={src}
-                        alt={title}
+                        alt={title || ''}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
                         unoptimized={isExternal}

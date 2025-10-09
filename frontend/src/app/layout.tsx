@@ -17,8 +17,8 @@ export async function generateMetadata(): Promise<Metadata> {
   // Use static data instead of Strapi
   const global = getStaticGlobalFresh();
   const rawTitle = global?.seo?.metaTitle?.trim();
-  const brandLeft = (global as any)?.brand?.left || 'THAIPARTS';
-  const brandRight = (global as any)?.brand?.right || 'INFINITY';
+  const brandLeft = global?.brand?.segments?.[0]?.text || 'THAIPARTS';
+  const brandRight = global?.brand?.segments?.[1]?.text || 'INFINITY';
   const baseTitle = `${brandLeft} ${brandRight}`.trim();
   const defaultSuffix = 'Industrial Automation & Spare Parts';
   const title = rawTitle || `${baseTitle} - ${defaultSuffix}`;
@@ -82,10 +82,10 @@ export default function RootLayout({
         phone: global.footer.phone,
         email: global.footer.email,
         facebook: global.footer.facebook,
-        columns: global.footer.columns?.map((c: any) => ({
-          title: c?.heading,
+        columns: global.footer.columns?.map((c) => ({
+          title: c?.title || '',
           links:
-            c?.links?.map((l: any) => ({ label: l?.label, href: l?.href })) ||
+            c?.links?.map((l) => ({ label: l?.label || '', href: l?.href })) ||
             [],
         })),
         copyright: global.footer.copyright,

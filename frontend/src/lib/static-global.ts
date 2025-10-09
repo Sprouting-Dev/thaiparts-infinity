@@ -1,11 +1,22 @@
 // Static global data to replace Strapi API calls
 export interface StaticGlobalData {
   favicon?: string;
-  footer?: any;
+  footer?: {
+    companyName?: string;
+    address?: string;
+    phone?: string;
+    email?: string;
+    facebook?: string;
+    columns?: Array<{
+      title?: string;
+      links?: Array<{ label?: string; href?: string }>;
+    }>;
+    copyright?: string;
+  };
   footerCta?: {
     title?: string;
     subtitle?: string;
-    bg?: any;
+    bg?: string;
     cta?: { label?: string; href?: string; variant?: string };
   } | null;
   seo?: {
