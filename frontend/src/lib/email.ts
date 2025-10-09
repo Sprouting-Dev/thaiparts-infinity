@@ -16,7 +16,7 @@ export async function sendContactEmail(data: EmailData) {
     const adminEmail = await resend.emails.send({
       from: process.env.RESEND_FROM_EMAIL!,
       to: [process.env.ADMIN_EMAIL!],
-      subject: `New Contact Form Submission: ${data.subject}`,
+      subject: `ข้อความใหม่จาก Contact Form - ${data.name}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #2563eb;">New Contact Form Submission</h2>
@@ -26,7 +26,6 @@ export async function sendContactEmail(data: EmailData) {
             <p><strong>Name:</strong> ${data.name}</p>
             <p><strong>Email:</strong> ${data.email}</p>
             ${data.phone ? `<p><strong>Phone:</strong> ${data.phone}</p>` : ''}
-            <p><strong>Subject:</strong> ${data.subject}</p>
           </div>
           
           <div style="background: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0;">
@@ -58,7 +57,6 @@ export async function sendContactEmail(data: EmailData) {
           
           <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h3 style="margin-top: 0; color: #374151;">Your Message Summary</h3>
-            <p><strong>Subject:</strong> ${data.subject}</p>
             <p><strong>Message:</strong></p>
             <p style="white-space: pre-wrap; background: white; padding: 15px; border-radius: 4px;">${data.message}</p>
           </div>

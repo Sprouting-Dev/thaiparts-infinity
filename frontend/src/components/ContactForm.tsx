@@ -42,7 +42,7 @@ export default function ContactForm({ data }: ContactFormProps) {
     name: '',
     email: '',
     phone: '',
-    subject: '',
+    subject: 'Contact Form Inquiry', // ตั้งค่า default subject
     message: '',
   });
 
@@ -106,7 +106,7 @@ export default function ContactForm({ data }: ContactFormProps) {
         name: '',
         email: '',
         phone: '',
-        subject: '',
+        subject: 'Contact Form Inquiry', // ตั้งค่า default subject
         message: '',
       });
       

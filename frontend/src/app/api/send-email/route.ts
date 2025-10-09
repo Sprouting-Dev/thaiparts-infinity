@@ -6,9 +6,10 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     
     // Validate required fields
-    const { name, email, subject, message } = body;
+    const { name, email, message } = body;
+    const subject = body.subject || 'Contact Form Inquiry'; // ใช้ default subject ถ้าไม่มี
     
-    if (!name || !email || !subject || !message) {
+    if (!name || !email || !message) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
