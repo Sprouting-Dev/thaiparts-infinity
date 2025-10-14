@@ -18,7 +18,7 @@ try {
       pathname: '/**',
     },
   ];
-} catch (e) {
+} catch {
   // leave default
 }
 
@@ -26,7 +26,8 @@ const nextConfig: NextConfig = {
   images: {
     // TypeScript expects RemotePattern[]; cast here because we built the shape dynamically.
     // It's safe because entries follow the RemotePattern fields: protocol, hostname, port?, pathname
-    remotePatterns: remotePatterns as any,
+  // Cast via unknown to the expected NextConfig images.remotePatterns type
+  remotePatterns: remotePatterns as unknown as NonNullable<NextConfig['images']>['remotePatterns'],
   },
 };
 
