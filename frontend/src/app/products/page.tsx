@@ -20,13 +20,13 @@ const ProductCard = ({ product }: { product: Product }) => {
       <div className="p-4">
         {/* Tag */}
         <div className="mb-2">
-          <span className="text-primary text-sm font-medium bg-blue-50 px-3 py-1 rounded-full">
+          <span className="text-[#007AA3] text-sm font-semibold bg-[#D7F5FF] px-3 py-1 rounded-full">
             {product.tag}
           </span>
         </div>
         
         {/* Product Name */}
-        <h3 className="text-gray-800 text-lg font-semibold mb-2">
+        <h3 className="text-foreground text-2xl font-medium mb-2">
           {product.name}
         </h3>
         
@@ -45,14 +45,14 @@ export default function ProductsPage() {
   return (
     <>
       <div className='mt-40 px-4 w-full flex justify-between items-center'>
-        <h1 className='text-primary font-medium text-3xl flex items-center gap-4'>
+        <h1 className='text-primary font-medium text-2xl flex items-center gap-4'>
           <span className='w-3 h-3 bg-[var(--color-accent)] rounded-full'></span>
           Product
         </h1>
         
         <div className='rounded-full p-1 cursor-pointer' style={{background: 'linear-gradient(to bottom, #C8E5FD, #4085BD)'}}>
           <div className='bg-primary rounded-full px-5 py-2'>
-            <div className='flex items-center gap-3 text-secondary text-xl'>
+            <div className='flex items-center gap-3 text-secondary text-lg'>
               <span className='w-3 h-3 bg-[var(--color-accent)] rounded-full'></span>
               <span>All</span>
               <BsCaretDownFill />
@@ -61,7 +61,7 @@ export default function ProductsPage() {
         </div>
       </div>
 
-      <h1 className='text-primary text-3xl font-medium w-full px-4 mt-14 underline decoration-[var(--color-accent)] underline-offset-8'>
+      <h1 className='text-primary text-2xl font-medium w-full px-4 mt-14 underline decoration-[var(--color-accent)] underline-offset-8'>
         อะไหล่เครื่องจักร (Spare Parts)
       </h1>
 
