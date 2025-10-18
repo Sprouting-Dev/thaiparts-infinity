@@ -3,39 +3,51 @@
 import { useState, useEffect } from 'react';
 import { Product } from '@/types/product';
 import { productAPI } from '@/services/productService';
-import { ProductFilter, ProductCard } from '@/components';
+import { ProductFilter, ProductCard, ProductsPageSkeleton, FilterLoadingSkeleton } from '@/components';
 import { categoryMapping, getProductsByCategory } from '@/lib/categoryMapping';
 
 export default function ProductsPage() {
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFilterLoading, setIsFilterLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchProducts();
   }, []);
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (retryCount = 0) => {
     try {
       setIsLoading(true);
       const response = await productAPI.getProducts();
       setProducts(response.products);
       setError(null);
     } catch (err) {
+      if (retryCount < 2 && (err as Error).message.includes('401')) {
+        setTimeout(() => {
+          fetchProducts(retryCount + 1);
+        }, 1000 * (retryCount + 1));
+        return;
+      }
+      
       setError('Failed to fetch products');
-      console.error('Error fetching products:', err);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleFilterChange = (filterId: string) => {
+    setIsFilterLoading(true);
     setSelectedFilter(filterId);
+    
+    setTimeout(() => {
+      setIsFilterLoading(false);
+    }, 300);
   };
 
   const handleProductClick = (product: Product) => {
-    console.log('Product clicked:', product);
+    // TODO: Implement product detail navigation
   };
 
   const getFilteredProducts = () => {
@@ -99,15 +111,9 @@ export default function ProductsPage() {
           />
         </div>
 
-        {isLoading && (
-          <div className="px-4 mt-8 w-full">
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-              {[...Array(6)].map((_, index) => (
-                <div key={index} className="bg-gray-200 animate-pulse rounded-lg h-64"></div>
-              ))}
-            </div>
-          </div>
-        )}
+        {isLoading && <ProductsPageSkeleton />}
+
+        {!isLoading && isFilterLoading && <FilterLoadingSkeleton />}
 
         {error && (
           <div className="text-center py-8">
@@ -115,7 +121,7 @@ export default function ProductsPage() {
           </div>
         )}
 
-        {!isLoading && !error && (
+        {!isLoading && !isFilterLoading && !error && (
           <div>
             {Object.entries(filteredProductsByCategory).map(([categoryKey, categoryProducts]) => 
               renderProductSection(categoryKey, categoryProducts)

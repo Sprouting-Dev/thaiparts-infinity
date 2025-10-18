@@ -56,20 +56,38 @@ export const productAPI = {
         url += `&filters[$or][0][title][$containsi]=${filters.search}&filters[$or][1][description][$containsi]=${filters.search}`;
       }
 
+      const headers = getStrapiHeaders();
+
       const response = await fetch(url, {
-        headers: getStrapiHeaders(),
+        headers: headers,
       });
       
       if (!response.ok) {
-        console.error('API Error:', response.status, response.statusText);
+
+        if (response.status === 401 && !API_TOKEN) {
+          const retryResponse = await fetch(url, {
+            headers: { 'Content-Type': 'application/json' },
+          });
+          
+          if (retryResponse.ok) {
+            const strapiResponse = await retryResponse.json();
+            const products = strapiResponse.data?.map(mapStrapiProduct) || [];
+            return {
+              products,
+              total: strapiResponse.meta?.pagination?.total || products.length,
+              page: strapiResponse.meta?.pagination?.page || 1,
+              limit: strapiResponse.meta?.pagination?.pageSize || products.length,
+              hasMore: false,
+            };
+          }
+        }
 
         let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
         try {
           const errorBody = await response.json();
-          console.error('Strapi Error Details:', errorBody);
           errorMessage = errorBody.error?.message || errorMessage;
         } catch (e) {
-          console.error('Could not parse error response:', e);
+          // Error parsing response body
         }
         
         throw new Error(`Failed to fetch products: ${errorMessage}`);
@@ -87,7 +105,6 @@ export const productAPI = {
         hasMore: false,
       };
     } catch (error) {
-      console.error('Error fetching products from Strapi:', error);
       throw error;
     }
   },
@@ -105,7 +122,6 @@ export const productAPI = {
       const strapiResponse = await response.json();
       return mapStrapiProduct(strapiResponse.data);
     } catch (error) {
-      console.error('Error fetching product:', error);
       throw error;
     }
   },
@@ -116,7 +132,6 @@ export const productAPI = {
       const response = await this.getProducts(filters);
       return response.products;
     } catch (error) {
-      console.error('Error searching products:', error);
       throw error;
     }
   }
