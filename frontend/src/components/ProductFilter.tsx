@@ -55,7 +55,7 @@ export const ProductFilter = ({
   return (
     <div className={`relative ${className}`}>
       <button
-        className={`${buttonClassName} !py-2 !px-3 text-[1rem] font-medium gap-3 hover:bg-opacity-80 transition-all duration-200 cursor-pointer relative`}
+        className={`${buttonClassName} !py-2 !px-3 text-sm lg:text-[1rem] font-medium gap-3 hover:bg-opacity-80 transition-all duration-200 cursor-pointer relative`}
         style={{
           backgroundColor: buttonStyle.bg,
           color: buttonStyle.color,
@@ -81,7 +81,7 @@ export const ProductFilter = ({
           />
           
           <div 
-            className="absolute top-full right-0 mt-2 w-86 bg-white rounded-2xl shadow-xl overflow-hidden z-20"
+            className="absolute top-full right-0 mt-2 w-70 lg:w-86 bg-white rounded-2xl shadow-xl overflow-hidden z-20"
             style={{
               background: 'linear-gradient(180deg, #CCE8FF 0%, #1063A7 100%)',
               padding: '2px'
@@ -100,7 +100,7 @@ export const ProductFilter = ({
                     <span className="w-2 h-2 flex-shrink-0"></span> 
                   )}
             
-                  <span className="text-lg font-medium text-primary">
+                  <span className="text-sm lg:text-[1rem] font-medium text-primary">
                     {option.label}
                   </span>
              

@@ -42,12 +42,12 @@ export const ProductCard = ({
 
       <div className='py-4'>
         <div className="mb-2">
-          <span className={`text-[0.82rem] font-semibold px-3 py-1 rounded-full ${badgeStyle?.bg || 'bg-gray-100'} ${badgeStyle?.text || 'text-gray-600'}`}>
+          <span className={`text-xs lg:text-[0.82rem] font-semibold px-3 py-1 rounded-full ${badgeStyle?.bg || 'bg-gray-100'} ${badgeStyle?.text || 'text-gray-600'}`}>
             {product.tag}
           </span>
         </div>
 
-        <h3 className="text-foreground text-[1.375rem] font-medium mb-2 line-clamp-2">
+        <h3 className="text-foreground text-base lg:text-[1.375rem] font-medium mb-2 line-clamp-2">
           {product.name}
         </h3>
       </div>

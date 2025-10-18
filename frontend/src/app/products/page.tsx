@@ -58,16 +58,15 @@ export default function ProductsPage() {
     const categoryInfo = categoryMapping[categoryKey];
     if (!categoryInfo || products.length === 0) return null;
 
-    // ใช้ getProductsByCategory ที่เรียงตาม tag แล้ว (ไม่แสดง subtitle tag)
     const sortedProducts = getProductsByCategory(products, categoryKey);
 
     return (
       <div key={categoryKey} className="mb-12">
-        <h2 className="text-primary text-[1.375rem] font-medium w-full px-4 mt-[2.4375rem] underline decoration-[var(--color-accent)] underline-offset-8">
+        <h2 className="text-primary lg:text-[1.375rem] font-medium w-full px-4 mt-[2.4375rem] underline decoration-[var(--color-accent)] decoration-1.5 underline-offset-8">
           {categoryInfo.title}
         </h2>
         
-        <div className="px-4 mt-8 w-full">
+        <div className="px-4 mt-5 lg:mt-8 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             {sortedProducts.map(product => (
               <ProductCard 
@@ -87,9 +86,9 @@ export default function ProductsPage() {
   return (
     <>
       <div className="px-4 lg:px-58.75">
-        <div className="mt-49 lg:mt-61.5 w-full flex justify-between items-center">
-          <h1 className="pl-5 text-primary font-medium lg:text-[1.375rem] flex items-center gap-4">
-            <span className="w-4 h-4 bg-accent rounded-full"></span>
+        <div className="mt-32 lg:mt-61.5 w-full flex justify-between items-center">
+          <h1 className="pl-5 text-primary font-medium lg:text-[1.375rem] flex items-baseline lg:items-center gap-4">
+            <span className="w-2 h-2 lg:w-4 lg:h-4 bg-accent rounded-full"></span>
             อะไหล่และระบบที่เราเชี่ยวชาญ
           </h1>
 
