@@ -99,6 +99,7 @@ export default function RootLayout({
       </head>
       <body
         className={`${kanit.variable} antialiased flex flex-col items-center min-h-screen gap-24`}
+        suppressHydrationWarning={true}
       >
         <Header
           brand={global?.brand}

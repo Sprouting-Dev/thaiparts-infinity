@@ -1,4 +1,3 @@
-// Types สำหรับ Product data
 export interface Product {
   id: number;
   name: string;
@@ -13,7 +12,6 @@ export interface Product {
   updatedAt?: string;
 }
 
-// Types สำหรับ Product Category
 export interface ProductCategory {
   id: number;
   name: string;
@@ -22,7 +20,6 @@ export interface ProductCategory {
   color?: string;
 }
 
-// API Response types (เตรียมไว้สำหรับต่อ database)
 export interface ProductsResponse {
   products: Product[];
   total: number;
@@ -31,7 +28,6 @@ export interface ProductsResponse {
   hasMore: boolean;
 }
 
-// Filter types
 export interface ProductFilters {
   category?: string;
   tag?: string;
