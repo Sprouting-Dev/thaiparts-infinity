@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react';
 import { Product } from '@/types/product';
 import { productAPI } from '@/services/productService';
-import { ProductFilter, ProductCard, ProductsPageSkeleton, FilterLoadingSkeleton } from '@/components';
+import { ProductFilter, ProductCard } from '@/components';
 import { categoryMapping, getProductsByCategory } from '@/lib/categoryMapping';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ProductsPage() {
   const [selectedFilter, setSelectedFilter] = useState('all');
@@ -46,10 +47,6 @@ export default function ProductsPage() {
     }, 300);
   };
 
-  const handleProductClick = (product: Product) => {
-    // TODO: Implement product detail navigation
-  };
-
   const getFilteredProducts = () => {
     if (selectedFilter === 'all') {
       return {
@@ -84,7 +81,6 @@ export default function ProductsPage() {
               <ProductCard 
                 key={product.id} 
                 product={product}
-                onClick={handleProductClick}
                 showPrice={true}
                 showStock={true}
               />
@@ -111,9 +107,9 @@ export default function ProductsPage() {
           />
         </div>
 
-        {isLoading && <ProductsPageSkeleton />}
+        {isLoading && <ProductsListSkeleton />}
 
-        {!isLoading && isFilterLoading && <FilterLoadingSkeleton />}
+        {!isLoading && isFilterLoading && <FilterChangeSkeleton />}
 
         {error && (
           <div className="text-center py-8">
@@ -136,5 +132,69 @@ export default function ProductsPage() {
         )}
       </div>
     </>
+  );
+}
+
+// Skeleton Components
+function ProductCardSkeleton() {
+  return (
+    <div className="w-full h-auto bg-secondary transition-shadow duration-300 overflow-hidden">
+      <div className="relative aspect-video">
+        <Skeleton className="absolute inset-0" />
+      </div>
+      <div className="py-4">
+        <div className="mb-2">
+          <Skeleton className="h-6 w-48 rounded-full" />
+        </div>
+        <div className="space-y-2 mb-2">
+          <Skeleton className="h-6 w-full" />
+          <Skeleton className="h-6 w-3/4" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CategorySectionSkeleton({ itemCount = 6 }: { itemCount?: number }) {
+  return (
+    <div className="mb-12">
+      <div className="w-full px-4 mt-[2.4375rem]">
+        <Skeleton className="h-8 w-80" />
+      </div>
+      <div className="px-4 mt-8 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          {Array.from({ length: itemCount }).map((_, index) => (
+            <ProductCardSkeleton key={index} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProductsListSkeleton() {
+  return (
+    <div>
+      <CategorySectionSkeleton itemCount={6} />
+      <CategorySectionSkeleton itemCount={4} />
+      <CategorySectionSkeleton itemCount={3} />
+    </div>
+  );
+}
+
+function FilterChangeSkeleton() {
+  return (
+    <div className="mb-12">
+      <div className="w-full px-4 mt-[2.4375rem]">
+        <Skeleton className="h-8 w-80" />
+      </div>
+      <div className="px-4 mt-8 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <ProductCardSkeleton key={index} />
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }

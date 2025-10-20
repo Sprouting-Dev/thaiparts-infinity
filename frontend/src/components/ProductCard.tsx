@@ -1,5 +1,6 @@
 import { Product } from '@/types/product';
 import { getColorByTagName, getCategoryBadgeStyle } from '@/lib/categoryBadge';
+import { useRouter } from 'next/navigation';
 
 interface ProductCardProps {
   product: Product;
@@ -14,9 +15,13 @@ export const ProductCard = ({
   onClick, 
   className = "",
 }: ProductCardProps) => {
+  const router = useRouter();
+
   const handleClick = () => {
     if (onClick) {
       onClick(product);
+    } else if (product.slug) {
+      router.push(`/products/${product.slug}`);
     }
   };
 
@@ -34,7 +39,6 @@ export const ProductCard = ({
           alt={product.name}
           className="w-full h-full object-cover"
           onError={(e) => {
-            console.error('Image failed to load:', product.image);
             e.currentTarget.src = '/placeholder-image.jpg';
           }}
         />

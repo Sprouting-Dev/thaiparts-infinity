@@ -35,12 +35,9 @@ async function fetchItems(kind: Section['kind'], limit = 5) {
   try {
     const res = await fetch(`${base}${path}`, { next: { revalidate: 300 } });
     const json = await res.json();
-    if (kind === 'products' && Array.isArray(json?.data)) {
-      console.log('[GridPreview products] sample', json.data.slice(0, 2));
-    }
     return json?.data ?? [];
   } catch (error) {
-    console.error(`Failed to fetch ${kind}:`, error);
+    // Optional: route this to your monitoring instead of console
     return [];
   }
 }
