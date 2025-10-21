@@ -25,14 +25,6 @@ export default function Hero(props: {
   ctas: { label: string; href?: string; variant: string; newTab?: boolean }[];
   panel: { enabled: boolean; align: 'left' | 'center' | 'right' };
 }) {
-  // Debug logging for background prop
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[Hero] Props received:', {
-      background: props.background,
-      title: props.title,
-    });
-  }
-
   const color = (v: 'brandBlue' | 'accentRed' | 'white') => {
     switch (v) {
       case 'brandBlue':

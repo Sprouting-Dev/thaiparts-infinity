@@ -28,14 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const images = global?.seo?.ogImage
     ? [{ url: global.seo.ogImage, width: 1200, height: 630, alt: title }]
     : [];
-  if (process.env.NODE_ENV === 'development') {
-    console.log(
-      '[metadata] rawTitle from static data:',
-      rawTitle,
-      'final title:',
-      title
-    );
-  }
+
   return {
     title,
     description,
@@ -99,6 +92,7 @@ export default function RootLayout({
       </head>
       <body
         className={`${kanit.variable} antialiased flex flex-col items-center min-h-screen gap-24`}
+        suppressHydrationWarning={true}
       >
         <Header
           brand={global?.brand}

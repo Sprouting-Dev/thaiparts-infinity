@@ -6,6 +6,7 @@ const STRAPI_URL =
 // default pattern for local dev
 let remotePatterns: Array<Record<string, string | undefined>> = [
   { protocol: 'http', hostname: 'localhost', port: '1337', pathname: '/**' },
+  { protocol: 'https', hostname: 'intakohtlmqmpjajyenj.supabase.co', pathname: '/**' },
 ];
 
 try {
@@ -17,6 +18,7 @@ try {
       port: parsed.port || undefined,
       pathname: '/**',
     },
+    { protocol: 'https', hostname: 'intakohtlmqmpjajyenj.supabase.co', pathname: '/**' },
   ];
 } catch {
   // leave default
