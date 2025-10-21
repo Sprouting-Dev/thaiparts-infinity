@@ -86,21 +86,22 @@ export default function ProductDetailPage() {
 
         <div className="mb-8">
           <div 
-            className="text-foreground leading-relaxed text-base font-kanit"
+            className="product-description text-foreground leading-relaxed text-base lg:text-[1.375rem] [&_*]:!font-['Kanit']"
+            style={{ fontFamily: 'Kanit, sans-serif' }}
             dangerouslySetInnerHTML={{ __html: product.description || '' }}
           />
         </div>
 
         {product.specifications && Object.keys(product.specifications).length > 0 && (
           <div className="mb-8">
-            <table className="w-full border-collapse">
+            <table className="w-full" style={{ fontFamily: 'Kanit, sans-serif' }}>
               <tbody>
                 {Object.entries(product.specifications).map(([key, value]) => (
-                  <tr key={key} className="border-b border-gray-200">
-                    <td className="py-3 pr-6 font-medium text-gray-800 bg-gray-50 w-1/3">
+                  <tr key={key}>
+                    <td className="py-[0.375rem] pr-6 font-semibold text-foreground w-1/3 text-base lg:text-[1.375rem]">
                       {key}
                     </td>
-                    <td className="py-3 pl-6 text-gray-700">
+                    <td className="py-[0.375rem] pl-6 text-foreground text-base lg:text-[1.375rem]">
                       {String(value)}
                     </td>
                   </tr>
