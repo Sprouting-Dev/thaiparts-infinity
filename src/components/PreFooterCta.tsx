@@ -1,7 +1,8 @@
- 'use client';
-import { motion } from 'framer-motion';
+'use client';
+
 import Image from 'next/image';
 import CTAButton from '@/components/CTAButton';
+import { MotionReveal } from '@/components/MotionReveal';
 
 interface PreFooterCtaProps {
   title?: string;
@@ -10,7 +11,7 @@ interface PreFooterCtaProps {
   cta?: {
     label?: string;
     href?: string;
-    variant?: 'primary' | 'secondaryLight' | 'secondaryDark' | 'outline';
+    variant?: 'primary' | 'secondary' | 'hero-secondary' | 'content-primary';
   };
   embedded?: boolean; // when true, render without outer section wrapper (for combined block)
 }
@@ -31,15 +32,13 @@ export default function PreFooterCta({
   }
   const hasImage = !!bgUrl;
 
-  const fadeUp = {
-    hidden: { opacity: 0, y: 12 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-  };
+  // Pre-footer uses MotionReveal at the wrapper level to control reveal
+  // and respects prefers-reduced-motion via the utility.
 
   // Inner content is rendered as a plain div so the parent (Footer) can
   // choose to animate the combined pre-footer + footer as a single motion unit
   const Inner = (
-    <div className="relative w-full h-[260px] lg:h-[310px] rounded-[8px] rounded-b-none overflow-hidden flex flex-col items-center justify-center">
+    <div className="relative w-full py-16.25  rounded-[8px] rounded-b-none overflow-hidden flex flex-col items-center justify-center">
       {/* Background layer */}
       <div
         className="absolute inset-0"
@@ -68,20 +67,32 @@ export default function PreFooterCta({
       )}
 
       {/* Content */}
-      <div className="relative z-[1] flex flex-col items-center px-6 text-center max-w-[1150px] gap-8">
+      <div className="relative z-[1] flex flex-col items-center px-8 text-center gap-4 lg:gap-8">
         {(title || subtitle) && (
-          <div className="flex flex-col items-center gap-4">
+          <div className="flex flex-col items-center gap-2 lg:gap-4">
             {title && (
               <h2
-                className="font-['Kanit'] font-semibold text-[28px] leading-[42px] text-white"
+                className="font-['Kanit'] font-semibold text-[22px] leading-[33px] lg:text-[28px] lg:leading-[42px] text-white"
                 style={{ textShadow: '0 2px 16px rgba(0,0,0,0.5)' }}
               >
-                {title}
+                {
+                  // If title contains explicit newlines, split and render each
+                  // segment as `block lg:inline` so it breaks on mobile but
+                  // remains inline on larger screens. Otherwise render plain.
+                  typeof title === 'string' && title.includes('\n')
+                    ? title.split('\n').map((line, i, arr) => (
+                        <span key={i} className="block md:inline">
+                          {line.trim()}
+                          {i < arr.length - 1 ? ' ' : ''}
+                        </span>
+                      ))
+                    : title
+                }
               </h2>
             )}
             {subtitle && (
               <p
-                className="font-['Kanit'] font-normal text-[22px] leading-[33px] text-white"
+                className="font-['Kanit'] font-normal text-[16px] leading-[24px] lg:text-[22px] lg:leading-[33px] text-white"
                 style={{ textShadow: '0 2px 16px rgba(0,0,0,0.5)' }}
               >
                 {subtitle}
@@ -90,7 +101,7 @@ export default function PreFooterCta({
           </div>
         )}
         {cta?.label && (
-          <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+          <div>
             <CTAButton
               cta={{
                 label: cta.label,
@@ -101,7 +112,7 @@ export default function PreFooterCta({
               textSize="large"
               className="backdrop-blur-sm bg-[rgba(16,99,167,0.55)] hover:bg-[rgba(16,99,167,0.75)]"
             />
-          </motion.div>
+          </div>
         )}
       </div>
     </div>
@@ -121,17 +132,13 @@ export default function PreFooterCta({
   }
 
   return (
-    <motion.section
-      className="w-full flex justify-center items-center px-8"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
-      variants={fadeUp}
-    >
-      {Inner}
-      {!hasImage && (
-        <div className="sr-only">Pre-footer background image missing</div>
-      )}
-    </motion.section>
+    <MotionReveal>
+      <section className="w-full flex justify-center items-center px-8">
+        {Inner}
+        {!hasImage && (
+          <div className="sr-only">Pre-footer background image missing</div>
+        )}
+      </section>
+    </MotionReveal>
   );
 }

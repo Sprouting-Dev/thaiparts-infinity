@@ -1,5 +1,7 @@
 import { Metadata } from 'next';
 import Image from 'next/image';
+import { MotionReveal } from '@/components/MotionReveal';
+import MotionGridItem from '@/components/MotionGridItem';
 
 export const metadata: Metadata = {
   title: 'Services | THAIPARTS INFINITY',

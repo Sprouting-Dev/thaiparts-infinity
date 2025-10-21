@@ -23,10 +23,46 @@ export function toAbsolute(raw?: unknown): string {
   const attrs = (data as { attributes?: unknown })?.attributes ?? data;
   const urlPath =
     (attrs as { url?: string })?.url ||
-    (attrs as { formats?: { large?: { url?: string }; medium?: { url?: string }; small?: { url?: string }; thumbnail?: { url?: string } } })?.formats?.large?.url ||
-    (attrs as { formats?: { large?: { url?: string }; medium?: { url?: string }; small?: { url?: string }; thumbnail?: { url?: string } } })?.formats?.medium?.url ||
-    (attrs as { formats?: { large?: { url?: string }; medium?: { url?: string }; small?: { url?: string }; thumbnail?: { url?: string } } })?.formats?.small?.url ||
-    (attrs as { formats?: { large?: { url?: string }; medium?: { url?: string }; small?: { url?: string }; thumbnail?: { url?: string } } })?.formats?.thumbnail?.url ||
+    (
+      attrs as {
+        formats?: {
+          large?: { url?: string };
+          medium?: { url?: string };
+          small?: { url?: string };
+          thumbnail?: { url?: string };
+        };
+      }
+    )?.formats?.large?.url ||
+    (
+      attrs as {
+        formats?: {
+          large?: { url?: string };
+          medium?: { url?: string };
+          small?: { url?: string };
+          thumbnail?: { url?: string };
+        };
+      }
+    )?.formats?.medium?.url ||
+    (
+      attrs as {
+        formats?: {
+          large?: { url?: string };
+          medium?: { url?: string };
+          small?: { url?: string };
+          thumbnail?: { url?: string };
+        };
+      }
+    )?.formats?.small?.url ||
+    (
+      attrs as {
+        formats?: {
+          large?: { url?: string };
+          medium?: { url?: string };
+          small?: { url?: string };
+          thumbnail?: { url?: string };
+        };
+      }
+    )?.formats?.thumbnail?.url ||
     '';
 
   if (!urlPath) return '';

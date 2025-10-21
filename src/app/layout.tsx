@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import Footer, { FooterData } from '@/components/Footer';
 import PreFooterCta from '@/components/PreFooterCta';
 import { getStaticGlobal, getStaticGlobalFresh } from '@/lib/static-global';
+import { logger } from '@/lib/logger';
 
 const kanit = Kanit({
   variable: '--font-kanit',
@@ -32,6 +33,10 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title,
     description,
+    // metadataBase is required for resolving absolute URLs for Open Graph/Twitter images
+    metadataBase: new URL(
+      process.env.NEXT_PUBLIC_METADATA_BASE || 'http://localhost:3000'
+    ),
     openGraph: {
       title,
       description,
@@ -75,10 +80,10 @@ export default function RootLayout({
         phone: global.footer.phone,
         email: global.footer.email,
         facebook: global.footer.facebook,
-        columns: global.footer.columns?.map((c) => ({
+        columns: global.footer.columns?.map(c => ({
           title: c?.title || '',
           links:
-            c?.links?.map((l) => ({ label: l?.label || '', href: l?.href })) ||
+            c?.links?.map(l => ({ label: l?.label || '', href: l?.href })) ||
             [],
         })),
         copyright: global.footer.copyright,
@@ -91,7 +96,11 @@ export default function RootLayout({
         <meta name="theme-color" content="#1063A7" />
       </head>
       <body
-        className={`${kanit.variable} antialiased flex flex-col items-center min-h-screen gap-24`}
+        // Keep layout vertical but allow children to stretch horizontally so
+        // full-bleed elements (Hero: w-full) and constrained containers
+        // (container-970) align correctly with the viewport edges.
+        // Also suppress horizontal overflow which can appear from 100vw usage.
+        className={`${kanit.variable} antialiased flex flex-col min-h-screen overflow-x-hidden`}
         suppressHydrationWarning={true}
       >
         <Header
@@ -99,10 +108,8 @@ export default function RootLayout({
           footer={global?.footer}
           navbar={global?.navbar}
         />
-        <main className="w-full flex flex-col items-center flex-1">
-          {children}
-        </main>
-        <div className="w-full flex flex-col p-8">
+        <main className="w-full flex flex-col flex-1">{children}</main>
+        <div className="w-full flex flex-col p-4 lg:p-8">
           <div className="w-full flex flex-col">
             {global?.footerCta?.cta?.label && (
               <PreFooterCta
@@ -113,12 +120,11 @@ export default function RootLayout({
                 cta={{
                   label: global.footerCta.cta?.label,
                   href: global.footerCta.cta?.href,
-                  variant:
-                    (global.footerCta.cta?.variant as
-                      | 'primary'
-                      | 'secondaryLight'
-                      | 'secondaryDark'
-                      | 'outline') || 'primary',
+                  variant: global.footerCta.cta?.variant as
+                    | 'primary'
+                    | 'secondary'
+                    | 'hero-secondary'
+                    | 'content-primary',
                 }}
               />
             )}
