@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Product } from '@/types/product';
 import { productAPI } from '@/services/productService';
 import { ProductFilter, ProductCard } from '@/components';
@@ -14,11 +14,7 @@ export default function ProductsPage() {
   const [isFilterLoading, setIsFilterLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const fetchProducts = async (retryCount = 0) => {
+  const fetchProducts = useCallback(async (retryCount = 0) => {
     try {
       setIsLoading(true);
       const response = await productAPI.getProducts();
@@ -36,7 +32,11 @@ export default function ProductsPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   const handleFilterChange = (filterId: string) => {
     setIsFilterLoading(true);

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Product, ProductFilters } from '@/types/product';
 import { productAPI } from '@/services/productService';
 
@@ -9,7 +9,7 @@ export const useProducts = (filters?: ProductFilters) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     setIsLoading(true);
     setError(null);
 
@@ -21,11 +21,11 @@ export const useProducts = (filters?: ProductFilters) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [filters]);
 
   useEffect(() => {
     fetchProducts();
-  }, [filters?.category, filters?.tag, filters?.search, filters?.inStock]);
+  }, [fetchProducts]);
 
   return {
     products,
@@ -40,7 +40,7 @@ export const useProduct = (id: number) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchProduct = async () => {
+  const fetchProduct = useCallback(async () => {
     setIsLoading(true);
     setError(null);
 
@@ -53,13 +53,13 @@ export const useProduct = (id: number) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [id]);
 
   useEffect(() => {
     if (id) {
       fetchProduct();
     }
-  }, [id]);
+  }, [id, fetchProduct]);
 
   return {
     product,

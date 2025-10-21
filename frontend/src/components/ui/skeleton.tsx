@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 
-interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {}
+type SkeletonProps = React.HTMLAttributes<HTMLDivElement>;
 
 export function Skeleton({ className = '', ...props }: SkeletonProps) {
   const baseClasses = 'animate-pulse rounded-md bg-gray-200';

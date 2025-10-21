@@ -9,7 +9,7 @@ export interface Product {
   category?: string;
   price?: number;
   inStock?: boolean;
-  specifications?: Record<string, any>;
+  specifications?: Record<string, string | number | boolean>;
   createdAt?: string;
   updatedAt?: string;
 }

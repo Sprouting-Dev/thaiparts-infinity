@@ -37,7 +37,31 @@ const validateSlug = (slug: string): boolean => {
   return slugPattern.test(slug) && slug.length >= 3 && slug.length <= 100;
 };
 
-const mapStrapiProduct = (strapiProduct: any): Product => {
+interface StrapiProductAttributes {
+  title?: string;
+  main_title?: string;
+  slug?: string;
+  tag?: string;
+  image?: {
+    data?: {
+      attributes?: {
+        url: string;
+      };
+    };
+  };
+  description?: string;
+  category?: string;
+  specifications?: Record<string, string | number | boolean>;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+interface StrapiProduct {
+  id: number;
+  attributes: StrapiProductAttributes;
+}
+
+const mapStrapiProduct = (strapiProduct: StrapiProduct): Product => {
   const { id, attributes } = strapiProduct;
   
   let imageUrl = '/placeholder-image.jpg';
@@ -53,11 +77,9 @@ const mapStrapiProduct = (strapiProduct: any): Product => {
   
   const mainTitle = attributes.main_title || attributes.title || 'Unknown Product';
   
-  // ใช้ slug จาก Strapi ถ้ามีและ valid, ถ้าไม่ก็ generate ใหม่
   let slug = attributes.slug;
   if (!slug || !validateSlug(slug)) {
     slug = generateStandardSlug(mainTitle);
-    console.warn(`Invalid or missing slug for product ${id}. Generated: ${slug}`);
   }
   
   return {
@@ -120,7 +142,7 @@ export const productAPI = {
         try {
           const errorBody = await response.json();
           errorMessage = errorBody.error?.message || errorMessage;
-        } catch (e) {
+        } catch {
           // Error parsing response body
         }
         
@@ -238,7 +260,7 @@ export const searchProducts = productAPI.searchProducts;
 
 // Helper function สำหรับ suggest slug ให้ admin
 export const suggestSlugForProduct = (title: string, existingSlugs: string[] = []): string => {
-  let baseSlug = generateStandardSlug(title);
+  const baseSlug = generateStandardSlug(title);
   let finalSlug = baseSlug;
   let counter = 1;
   

@@ -36,8 +36,7 @@ async function fetchItems(kind: Section['kind'], limit = 5) {
     const res = await fetch(`${base}${path}`, { next: { revalidate: 300 } });
     const json = await res.json();
     return json?.data ?? [];
-  } catch (error) {
-    // Optional: route this to your monitoring instead of console
+  } catch {
     return [];
   }
 }

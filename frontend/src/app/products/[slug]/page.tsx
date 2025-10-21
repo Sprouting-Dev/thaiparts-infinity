@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { Product } from '@/types/product';
 import { productAPI } from '@/services/productService';
 import { getButtonStyle, getButtonClassName } from '@/lib/button-styles';
 import { Skeleton } from '@/components/ui/skeleton';
-
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -30,7 +30,7 @@ export default function ProductDetailPage() {
       const response = await productAPI.getProductBySlug(productSlug);
       setProduct(response);
       setError(null);
-    } catch (err) {
+    } catch {
       setError('Failed to fetch product details');
     } finally {
       setIsLoading(false);
@@ -75,11 +75,13 @@ export default function ProductDetailPage() {
         </div>
 
         <div className="mb-4 lg:mb-8">
-          <div className="w-full">
-            <img
+          <div className="w-full relative h-[21.4375rem] lg:h-[31.25rem]">
+            <Image
               src={product.image}
               alt={product.main_title || product.name}
-              className="w-full h-[21.4375rem] lg:w-full lg:h-[31.25rem] object-cover rounded-2xl lg:rounded-2xl"
+              fill
+              className="object-cover rounded-2xl"
+              priority
             />
           </div>
         </div>

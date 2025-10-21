@@ -25,17 +25,6 @@ export default function Features({
   description,
   cta,
 }: FeaturesProps) {
-  // Debug logging to see what props we receive
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[Features] Props received:', {
-      titleSegments,
-      description,
-      cta,
-      itemsCount: items.length,
-    });
-  }
-
-  // Simple fallbacks - no complex conditionals
   const paragraph =
     description ||
     'เราคือผู้ให้บริการ อะไหล่และระบบ Automation ครบวงจร (One Stop Service) สำหรับอุตสาหกรรมหนัก ด้วยพันธกิจหลักในการช่วยโรงงานของคุณ ลดความเสี่ยง (Reduce Risk) และ ลดการหยุดทำงาน (Minimize Downtime) อย่างแท้จริง';

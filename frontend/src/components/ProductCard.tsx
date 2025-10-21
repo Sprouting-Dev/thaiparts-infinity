@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { Product } from '@/types/product';
 import { getColorByTagName, getCategoryBadgeStyle } from '@/lib/categoryBadge';
 import { useRouter } from 'next/navigation';
@@ -34,13 +35,12 @@ export const ProductCard = ({
       onClick={handleClick}
     >
       <div className="relative aspect-video bg-gray-100">
-        <img
+        <Image
           src={product.image}
           alt={product.name}
-          className="w-full h-full object-cover"
-          onError={(e) => {
-            e.currentTarget.src = '/placeholder-image.jpg';
-          }}
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
       </div>
 
