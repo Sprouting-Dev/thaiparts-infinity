@@ -44,8 +44,17 @@ body {
   max-width: 970px;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 2rem; /* gutter similar to px-8 */
-  padding-right: 2rem;
+  padding-left: 1rem; /* gutter similar to px-4 */
+  padding-right: 1rem;
+}
+
+/* Force responsive sizing and include padding in width calc so container
+   does not overflow on small screens. */
+.container-970,
+.embla {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 970px;
 }
 
 /* Gentle transition for layout / color changes */
@@ -101,27 +110,207 @@ body {
   z-index: 1;
 }
 
-/* Small helpers for buttons and spacing used in page.tsx (when Tailwind utilities are not generated) */
-.bg-primary {
-  background-color: var(--color-primary);
+/* Glassmorphism token used by header and dropdown to ensure exact parity */
+.glass {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
 }
-.bg-accent {
-  background-color: var(--color-accent);
+
+.glassinput {
+  /* Use the same light glass pattern as .glass but tuned for form fields */
+  background: rgba(16, 99, 167, 0.04); /* light translucent blue for inputs */
+  /* Use a subtle outer shadow instead of a hard border so Tailwind's
+     focus:border utilities can override the border on :focus. */
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.6),
+    0 6px 18px rgba(16, 99, 167, 0.08);
+  backdrop-filter: blur(6px) saturate(120%);
+  -webkit-backdrop-filter: blur(6px) saturate(120%);
+  padding: 0.75rem 1rem;
+  color: var(--color-foreground);
+  transition:
+    box-shadow 160ms ease,
+    border-color 160ms ease;
 }
-.text-white {
-  color: #ffffff;
+
+/* Placeholder color for glass inputs (semi-opaque dark) */
+.glassinput::placeholder {
+  color: #33333340; /* hex with alpha (approx rgba(51,51,51,0.25)) */
 }
-.rounded-pill {
-  border-radius: var(--radius-pill);
+.glassinput::-webkit-input-placeholder {
+  color: #33333340;
 }
-.px-6 {
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
+.glassinput:-ms-input-placeholder {
+  color: #33333340;
 }
-.py-3 {
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
+
+/* Embla minimal styles for autoplaying carousel */
+.embla {
+  max-width: 100%;
+  margin: 0 auto;
+  /* explicit icon size and spacing for the clients logos carousel */
+  --slide-size: 64px;
+  /* default gap (mobile) — tuned per breakpoint below */
+  --slide-spacing: 12px;
 }
-.shadow-md-soft {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+
+.embla__viewport {
+  overflow: hidden;
+  width: 100%;
+}
+
+.embla__container {
+  display: flex;
+  touch-action: pan-y pinch-zoom;
+  /* Use per-slide margin instead of gap to make spacing consistent even when
+     Embla clones/loops slides. */
+  gap: 0;
+}
+
+/* Always show 4 slides per viewport and scale the slide size by adjusting
+   the --slide-spacing and image sizes per breakpoint. Using per-slide
+   margin-right keeps spacing consistent across clones/loops. */
+.embla__slide {
+  /* 4 slides per view by default (mobile first) */
+  flex: 0 0 calc((100% - (3 * var(--slide-spacing))) / 4);
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: var(--slide-spacing);
+  /* Fade-only animation: use opacity transition only */
+  opacity: 0.7; /* base opacity for slides away from center (subtle fade) */
+  transition: opacity 280ms ease;
+  will-change: opacity;
+}
+
+/* Tablet adjustments: slightly larger spacing and icon size */
+@media (min-width: 640px) {
+  .embla {
+    --slide-spacing: 24px;
+  }
+  .embla__slide {
+    /* Still 4 slides per view but with larger spacing */
+    flex: 0 0 calc((100% - (3 * var(--slide-spacing))) / 4);
+    min-width: 48px;
+  }
+  .embla__slide img,
+  .embla__slide picture,
+  .embla__slide .image {
+    width: 48px !important;
+    height: 48px !important;
+  }
+}
+
+/* Compensate the container padding so the viewport width doesn't grow
+   (keeps visual width consistent while adding end padding for the seam). */
+.embla__viewport {
+  /* mobile-friendly minimum height (fits 32px icons + vertical padding) */
+  min-height: 32px;
+  height: auto;
+}
+
+/* Edge fade mask so overflowing slides softly fade out at left/right edges */
+:root {
+  --embla-edge-fade: 48px; /* default fade width */
+}
+
+.embla__viewport {
+  /* prefer CSS mask; use linear-gradient mask to fade edges */
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0px,
+    black var(--embla-edge-fade),
+    black calc(100% - var(--embla-edge-fade)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0px,
+    black var(--embla-edge-fade),
+    black calc(100% - var(--embla-edge-fade)),
+    transparent 100%
+  );
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+/* Responsive fade width */
+@media (min-width: 640px) {
+  :root {
+    --embla-edge-fade: 64px;
+  }
+}
+@media (min-width: 768px) {
+  :root {
+    --embla-edge-fade: 96px;
+  }
+}
+
+/* Fallback for browsers without mask support: pseudo-element overlay gradients */
+.embla__viewport::before {
+  content: '';
+  pointer-events: none;
+  position: absolute;
+  inset: 0; /* top:0; right:0; bottom:0; left:0 */
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 1) 0px,
+      rgba(255, 255, 255, 0) var(--embla-edge-fade)
+    ),
+    linear-gradient(
+      270deg,
+      rgba(255, 255, 255, 1) 0px,
+      rgba(255, 255, 255, 0) var(--embla-edge-fade)
+    );
+  background-repeat: no-repeat;
+  background-position: left, right;
+  background-size:
+    var(--embla-edge-fade) 100%,
+    var(--embla-edge-fade) 100%;
+  mix-blend-mode: normal;
+}
+
+.embla__slide img,
+.embla__slide picture,
+.embla__slide .image {
+  /* Mobile: 32x32 by default */
+  width: 32px !important;
+  height: 32px !important;
+  display: block;
+  object-fit: contain;
+  margin: 0 auto;
+}
+
+/* Desktop: largest icons and spacing */
+@media (min-width: 768px) {
+  .embla {
+    --slide-spacing: 40px; /* moderate gap for 4-up layout */
+  }
+  .embla__slide {
+    flex: 0 0 calc((100% - (3 * var(--slide-spacing))) / 4);
+    min-width: 64px;
+  }
+  .embla__slide img,
+  .embla__slide picture,
+  .embla__slide .image {
+    width: 64px !important;
+    height: 64px !important;
+  }
+}
+
+/* Desktop: ensure viewport is taller to fit 64px icons comfortably */
+@media (min-width: 768px) {
+  .embla__viewport {
+    min-height: 64px;
+  }
+}
+
+/* Center container items vertically as well */
+.embla__container {
+  align-items: center;
 }

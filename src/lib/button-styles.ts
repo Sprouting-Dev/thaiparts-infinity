@@ -129,7 +129,9 @@ export function getButtonClassName(variant: CTAVariant): string {
     flex 
     items-center 
     justify-center 
-    whitespace-nowrap 
+    whitespace-normal md:whitespace-nowrap 
+    break-words 
+    text-center 
     hover:scale-[1.02] 
     active:scale-[0.98]
     ${paddingClasses}
