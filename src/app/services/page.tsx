@@ -35,7 +35,7 @@ async function fetchServices(): Promise<Service[]> {
     if (STRAPI_TOKEN) {
       headers.Authorization = `Bearer ${STRAPI_TOKEN}`;
     }
-
+    
     const res = await fetch(`${STRAPI_URL}/api/services?populate=*`, {
       headers,
       next: { revalidate: 300 },

@@ -120,7 +120,7 @@ export default function ContactInfo({ data }: ContactInfoProps) {
         {/* Map */}
         <div className="relative rounded-xl overflow-hidden shadow-md">
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3892.293257584682!2d101.22994948505483!3d12.694272588931957!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3102fb99960e24ab%3A0xc455a9b7e87ea2d5!2z4LmB4Lir4Lil4Lih4Lih4Liw4LiC4Liy4LihIOC4i-C4reC4oiA1IOC4leC4s-C4muC4peC4l-C4seC4muC4oeC4siDguK3guLPguYDguKDguK3guYDguKHguLfguK3guIfguKPguLDguKLguK3guIcg4Lij4Liw4Lii4Lit4LiHIDIxMDAw!5e0!3m2!1sth!2sth!4v1761036648283!5m2!1sth!2sth"
+            src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3368.7949894321937!2d101.2175247459237!3d12.703865915008702!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTLCsDQyJzE0LjMiTiAxMDHCsDEzJzA0LjUiRQ!5e0!3m2!1sth!2sth!4v1761109240848!5m2!1sth!2sth"
             width="100%"
             height="890"
             style={{ border: 0 }}
