@@ -7,9 +7,11 @@ export interface Product {
   category?: string;
   price?: number;
   inStock?: boolean;
-  specifications?: Record<string, any>;
+  specifications?: Record<string, unknown>;
   createdAt?: string;
   updatedAt?: string;
+  slug?: string; // strapi slug for routing
+  mainTitle?: string; // original main_title from Strapi (display on detail page)
 }
 
 export interface ProductCategory {

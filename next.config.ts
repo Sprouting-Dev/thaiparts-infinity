@@ -22,12 +22,21 @@ try {
   // leave default
 }
 
+// Allow common remote hosts in addition to Strapi (e.g., Supabase storage)
+remotePatterns.push(
+  {
+    protocol: 'https',
+    hostname: '**.supabase.co',
+    pathname: '/storage/v1/object/public/**',
+  },
+);
+
 const nextConfig: NextConfig = {
   images: {
     // TypeScript expects RemotePattern[]; cast here because we built the shape dynamically.
     // It's safe because entries follow the RemotePattern fields: protocol, hostname, port?, pathname
-  // Cast via unknown to the expected NextConfig images.remotePatterns type
-  remotePatterns: remotePatterns as unknown as NonNullable<NextConfig['images']>['remotePatterns'],
+    // Cast via unknown to the expected NextConfig images.remotePatterns type
+    remotePatterns: remotePatterns as unknown as NonNullable<NextConfig['images']>['remotePatterns'],
   },
 };
 

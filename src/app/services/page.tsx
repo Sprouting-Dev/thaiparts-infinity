@@ -63,9 +63,11 @@ export default function ServicesPage() {
           <div className="flex items-center gap-3">
             <div className="w-4 h-4 rounded-full bg-[#E92928] flex-shrink-0" />
             <h1 className="font-['Kanit'] font-medium text-[22px] leading-[33px] md:text-[28px] md:leading-[42px] text-[#1063A7]">
-              บริการและโซลูชันวิศวกรรม
+              บริการของเรา
             </h1>
           </div>
+            <p>บริการของเราครอบคลุมตั้งแต่การวิเคราะห์ความต้องการ การออกแบบสถาปัตยกรรม การติดตั้งฮาร์ดแวร์และซอฟต์แวร์ การ เชื่อมต่อกับ PLC/RTU ถึงการทำงานร่วมกับระบบ ERP/CMMSสำหรับการรายงานเชิงธุรกิจ</p>
+            <p>เราเน้นการออกแบบที่ แยกเครือข่าย OT/IT, ใช้มาตรการ defense-in-depth ตามแนวทาง NIST และ IEC62443, และใช้เทคโนโลยีมาตรฐานเช่น OPC UA เพื่อความมั่นคงและความยืดหยุ่นของระบบ</p>
 
           {/* Services Grid */}
           {services.length > 0 ? (

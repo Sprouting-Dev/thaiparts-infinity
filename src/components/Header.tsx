@@ -72,21 +72,9 @@ export default function Header({ brand, navbar }: Props) {
     }
   };
 
-  // Debug: log navbar data in development
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[Header] navbar data:', navbar);
-    console.log('[Header] navbar.ctas:', navbar?.ctas);
-  }
-
   // Get enabled CTAs from navbar (use Strapi data, minimal fallback)
   const enabledCTAs = navbar?.ctas?.filter(cta => cta.enabled !== false) || [];
 
-  // Show fallback message in development if no CTAs configured
-  if (process.env.NODE_ENV === 'development' && enabledCTAs.length === 0) {
-    console.log(
-      '[Header] No CTAs configured in Strapi navbar. Please add CTAs in Global > Navbar > CTAs'
-    );
-  }
   return (
     // Responsive Header positioned at top
     <motion.header
