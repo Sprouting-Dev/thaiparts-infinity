@@ -37,11 +37,15 @@ export const categoryMapping: Record<string, CategoryInfo> = {
   },
 };
 
+// Normalize helper to make tag comparisons robust to spacing/case differences
+const normalize = (value: string | undefined | null) =>
+  (value || '').trim().toLowerCase();
+
 export const getCategoryByTag = (tag: string): string | null => {
+  const nTag = normalize(tag);
   for (const [categoryKey, categoryInfo] of Object.entries(categoryMapping)) {
-    if (categoryInfo.tags.includes(tag)) {
-      return categoryKey;
-    }
+    const tagSet = new Set(categoryInfo.tags.map(t => normalize(t)));
+    if (tagSet.has(nTag)) return categoryKey;
   }
   return null;
 };
