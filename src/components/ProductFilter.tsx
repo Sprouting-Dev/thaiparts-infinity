@@ -19,8 +19,8 @@ interface ProductFilterProps {
 
 const defaultOptions: FilterOption[] = [
   { id: 'all', label: 'All' },
-  { id: 'spare-parts', label: 'Spare Part' },
   { id: 'plc-scada', label: 'PLC/SCADA/Automation' },
+  { id: 'spare-parts', label: 'Spare Part' },
   { id: 'instrumentation', label: 'Instrumentation & Measurement' }
 ];
 
