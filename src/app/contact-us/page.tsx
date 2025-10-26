@@ -1,38 +1,84 @@
+// src/app/contact-us/page.tsx  (ปรับให้ Hero มาจาก Strapi: pages[slug=contact-us])
 import Hero from '@/components/Hero';
 import ContactInfo from '@/components/ContactInfo';
 import ContactForm from '@/components/ContactForm';
 import { MotionReveal } from '@/components/MotionReveal';
+import {
+  fetchPageBySlug as fetchPageBySlugFromCms,
+  fetchLayout,
+} from '@/lib/cms';
+import { mediaUrl } from '@/lib/strapi';
 
-export default function ContactPage() {
-  // Static content for delivery - no Strapi dependency
+/** NOTE: Use centralized fetcher from src/lib/cms.ts (returns merged attributes) */
+
+// Use mediaUrl helper to resolve Strapi media objects to absolute URLs
+
+/** NOTE: Use centralized fetcher from src/lib/cms.ts (returns merged attributes) */
+
+/** ========== Page ========== */
+export default async function ContactPage() {
+  const contactPage = (await fetchPageBySlugFromCms('contact-us')) as Record<
+    string,
+    unknown
+  > | null;
+
+  /** ---------- Hero (เหมือน Home/About) ---------- */
+  const heroQuoteFromCMS = (contactPage as any)?.quote ?? '';
+  // Resolve hero image using centralized media helper. Prefer page.hero_image then fallback to page.image.
+  const heroMedia =
+    (contactPage as any)?.hero_image ?? (contactPage as any)?.image ?? null;
+  const bgHeroSrc = mediaUrl(heroMedia);
+  const hasHeroImageFromCMS = Boolean(bgHeroSrc);
+
+  // Render Hero only when Strapi provides both a hero image and a quote
+  const heroProps = {
+    title: '',
+    background: bgHeroSrc,
+    subtitle: '',
+    ctas: [],
+    panel: { enabled: false as const, align: 'left' as const },
+    hero_schema: heroQuoteFromCMS
+      ? {
+          quote: String(heroQuoteFromCMS),
+          hero_image: (contactPage as any)?.hero_image,
+        }
+      : undefined,
+  };
+
+  // Dev-time debug: print the fetched contact page so you can inspect fields
+  if (process.env.NODE_ENV === 'development') {
+    // eslint-disable-next-line no-console
+    console.debug('[ContactPage] fetched contactPage:', contactPage);
+    // eslint-disable-next-line no-console
+    console.debug(
+      '[ContactPage] resolved heroBgSrc:',
+      bgHeroSrc,
+      'quote:',
+      heroQuoteFromCMS ? 'yes' : 'no'
+    );
+  }
+
+  /** ---------- เนื้อหา Contact (คงเดิม) ---------- */
+  // Pull contact info from the shared Layout single in Strapi if available
+  const layout = (await fetchLayout()) as any;
+  const addr = layout?.address ?? {};
+  // Use neutral CMS fallback text when fields are missing instead of hard-coding company name
+  const CMS_FALLBACK = 'ข้อมูลกำลังอยู่ระหว่างการอัปเดต';
+  const companyName = addr?.company_name ?? addr?.company ?? CMS_FALLBACK;
+  const addressText =
+    addr?.address_text ?? addr?.address ?? addr?.adddress ?? CMS_FALLBACK;
+  const phonesRaw =
+    [addr?.phone_number_1, addr?.phone_number_2].filter(Boolean).join('\n') ||
+    CMS_FALLBACK;
+  const emailAddr = addr?.email ?? CMS_FALLBACK;
+
   const pageData = {
-    hero: {
-      title: {
-        desktop: {
-          segments: [
-            [
-              { text: 'เราพร้อมให้', color: 'brandBlue' as const },
-              { text: 'การสนับสนุนและบริการคุณ', color: 'accentRed' as const },
-            ],
-          ],
-        },
-        mobile: {
-          lines: [
-            { text: 'เราพร้อมให้', color: 'brandBlue' as const },
-            { text: 'การสนับสนุนและบริการคุณ', color: 'accentRed' as const },
-          ],
-        },
-      },
-      subtitle:
-        'ติดต่อทีมงานขายส่งของเรา เพื่อสอบถามราคา เปิดบัญชี หรือติดตามสถานะคำสั่งซื้อ',
-      background: '/contact-us/contact-hero.png',
-    },
     contactInfo: {
       title: 'ข้อมูลบริษัท',
-      companyName: 'บริษัท: THAIPARTS INFINITY CO., LTD.',
-      address: 'ที่อยู่: 5/17 M.2, Thap Ma, Mueang Rayong, Rayong, 21000',
-      phone: '(+66) 092-424-2144\n(+66)097-128-2707',
-      email: 'info@thaipartsinfinity.com',
+      companyName,
+      address: addressText,
+      phone: phonesRaw,
+      email: emailAddr,
     },
     contactForm: {
       title: 'ติดต่อเรา',
@@ -47,15 +93,11 @@ export default function ContactPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <Hero
-        title={pageData.hero.title}
-        subtitle={pageData.hero.subtitle}
-        background="/contact-us/contact-hero.png"
-        ctas={[]} // Contact page hero doesn't need CTA buttons
-        panel={{ enabled: false, align: 'left' }}
-      />
+    <main className="min-h-screen bg-gray-50 overflow-x-hidden">
+      {/* Hero Section: render only when Strapi provides both image + quote */}
+      {hasHeroImageFromCMS && heroQuoteFromCMS ? (
+        <Hero {...(heroProps as any)} panel="center" />
+      ) : null}
 
       {/* Contact Content */}
       <div className="container-970 px-4 py-12 lg:py-16">

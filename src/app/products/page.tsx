@@ -22,12 +22,15 @@ export default function ProductsPage() {
       setError(null);
     } catch (err) {
       if (retryCount < 2 && (err as Error).message.includes('401')) {
-        setTimeout(() => {
-          fetchProducts(retryCount + 1);
-        }, 1000 * (retryCount + 1));
+        setTimeout(
+          () => {
+            fetchProducts(retryCount + 1);
+          },
+          1000 * (retryCount + 1)
+        );
         return;
       }
-      
+
       setError('Failed to fetch products');
     } finally {
       setIsLoading(false);
@@ -41,7 +44,7 @@ export default function ProductsPage() {
   const handleFilterChange = (filterId: string) => {
     setIsFilterLoading(true);
     setSelectedFilter(filterId);
-    
+
     setTimeout(() => {
       setIsFilterLoading(false);
     }, 300);
@@ -52,11 +55,11 @@ export default function ProductsPage() {
       return {
         'spare-parts': getProductsByCategory(products, 'spare-parts'),
         'plc-scada': getProductsByCategory(products, 'plc-scada'),
-        'instrumentation': getProductsByCategory(products, 'instrumentation')
+        instrumentation: getProductsByCategory(products, 'instrumentation'),
       };
     } else {
       return {
-        [selectedFilter]: getProductsByCategory(products, selectedFilter)
+        [selectedFilter]: getProductsByCategory(products, selectedFilter),
       };
     }
   };
@@ -71,15 +74,15 @@ export default function ProductsPage() {
 
     return (
       <div key={categoryKey} className="mb-12">
-        <h2 className="text-primary lg:text-[1.375rem] font-medium w-full px-4 mt-[2.4375rem] underline decoration-[var(--color-accent)] decoration-1.5 underline-offset-8">
+        <h2 className="text-primary lg:text-[1.375rem] font-medium w-full mt-[2.4375rem] underline decoration-[var(--color-accent)] decoration-1.5 underline-offset-8">
           {categoryInfo.title}
         </h2>
-        
-        <div className="px-4 mt-5 lg:mt-8 w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+
+        <div className="mt-5 lg:mt-8 w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {sortedProducts.map(product => (
-              <ProductCard 
-                key={product.id} 
+              <ProductCard
+                key={product.id}
                 product={product}
                 showPrice={true}
                 showStock={true}
@@ -93,10 +96,10 @@ export default function ProductsPage() {
 
   return (
     <>
-      <div className="px-4 lg:px-58.75">
+      <div className="px-4 container-970">
         <div className="mt-32 lg:mt-61.5 w-full flex justify-between items-center">
           <h1 className="pl-5 text-primary font-medium lg:text-[1.375rem] flex items-baseline lg:items-center gap-4">
-            <span className="w-2 h-2 lg:w-4 lg:h-4 bg-accent rounded-full"></span>
+            <span className="w-2 h-2 lg:w-4 lg:h-4 bg-[var(--accent-red)] rounded-full"></span>
             อะไหล่และระบบที่เราเชี่ยวชาญ
           </h1>
 
@@ -119,13 +122,18 @@ export default function ProductsPage() {
 
         {!isLoading && !isFilterLoading && !error && (
           <div>
-            {Object.entries(filteredProductsByCategory).map(([categoryKey, categoryProducts]) => 
-              renderProductSection(categoryKey, categoryProducts)
+            {Object.entries(filteredProductsByCategory).map(
+              ([categoryKey, categoryProducts]) =>
+                renderProductSection(categoryKey, categoryProducts)
             )}
-            
-            {Object.values(filteredProductsByCategory).every(products => products.length === 0) && (
+
+            {Object.values(filteredProductsByCategory).every(
+              products => products.length === 0
+            ) && (
               <div className="text-center py-8">
-                <p className="text-gray-500 text-lg">ไม่พบสินค้าในหมวดหมู่นี้</p>
+                <p className="text-gray-500 text-lg">
+                  ไม่พบสินค้าในหมวดหมู่นี้
+                </p>
               </div>
             )}
           </div>

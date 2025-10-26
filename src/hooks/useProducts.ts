@@ -31,7 +31,7 @@ export const useProducts = (filters?: ProductFilters) => {
     products,
     isLoading,
     error,
-    refetch: fetchProducts
+    refetch: fetchProducts,
   };
 };
 
@@ -47,7 +47,6 @@ export const useProduct = (id: number) => {
     try {
       const product = await productAPI.getProductById(id);
       setProduct(product);
-      
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch product');
     } finally {
@@ -65,6 +64,6 @@ export const useProduct = (id: number) => {
     product,
     isLoading,
     error,
-    refetch: fetchProduct
+    refetch: fetchProduct,
   };
 };

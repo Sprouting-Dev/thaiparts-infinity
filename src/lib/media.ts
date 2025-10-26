@@ -1,4 +1,5 @@
 import { toOptimizedImage, type ImageOptimizeOptions } from './image-optimize';
+import { mediaUrl } from '@/lib/strapi';
 
 // Utility to normalize Strapi media shapes to absolute URLs
 export function toAbsolute(raw?: unknown): string {
@@ -6,13 +7,8 @@ export function toAbsolute(raw?: unknown): string {
 
   // already a string url
   if (typeof raw === 'string') {
-    if (/^https?:\/\//.test(raw)) return raw;
-    const base = process.env.NEXT_PUBLIC_STRAPI_URL ?? 'http://localhost:1337';
-    try {
-      return new URL(raw, base).href;
-    } catch {
-      return `${base}${raw}`;
-    }
+    // Delegate to centralized mediaUrl which handles both absolute and Strapi-relative paths
+    return mediaUrl(raw);
   }
 
   // Common Strapi media shapes:
@@ -66,14 +62,8 @@ export function toAbsolute(raw?: unknown): string {
     '';
 
   if (!urlPath) return '';
-  if (/^https?:\/\//.test(urlPath)) return urlPath;
-
-  const base = process.env.NEXT_PUBLIC_STRAPI_URL ?? 'http://localhost:1337';
-  try {
-    return new URL(urlPath, base).href;
-  } catch {
-    return `${base}${urlPath}`;
-  }
+  // Let mediaUrl handle absolute vs relative and add Strapi base when needed
+  return mediaUrl(urlPath);
 }
 
 /**

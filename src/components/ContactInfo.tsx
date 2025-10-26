@@ -1,6 +1,7 @@
 import MotionGridItem from '@/components/MotionGridItem';
 import LinkMotion from './LinkMotion';
 import Image from 'next/image';
+import { getTextClass } from '@/components/ColoredText';
 
 interface ContactInfoData {
   title: string;
@@ -23,7 +24,9 @@ export default function ContactInfo({ data }: ContactInfoProps) {
     <MotionGridItem>
       <div className="p-6 rounded-3xl bg-[#1063A70A] gap-6 flex flex-col">
         {/* Header */}
-        <h2 className="text-[22px] leading-[33px] lg:text-[28px] lg:leading-[42px] font-medium text-[#1063A7] text-center underline decoration-[#E92928] underline-offset-8">
+        <h2
+          className={`text-[22px] leading-[33px] lg:text-[28px] lg:leading-[42px] font-medium ${getTextClass('brandBlue')} text-center underline decoration-[#E92928] underline-offset-8`}
+        >
           {title}
         </h2>
 

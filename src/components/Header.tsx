@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import CTAButton from './CTAButton';
 import React, { useEffect, useRef, useState } from 'react';
+import { getTextClass } from '@/components/ColoredText';
 import { createPortal } from 'react-dom';
 import type { CTAVariant } from '@/lib/button-styles';
 
@@ -54,26 +55,13 @@ export default function Header({ brand, navbar }: Props) {
     // Fallback to default segments
     return (
       <>
-        <span className="text-[#1063A7]">THAIPARTS</span>{' '}
-        <span className="text-[#E92928]">INFINITY</span>
+        <span className={getTextClass('brandBlue')}>THAIPARTS</span>{' '}
+        <span className={getTextClass('accentRed')}>INFINITY</span>
       </>
     );
   };
 
-  const getColorClass = (color: string) => {
-    switch (color) {
-      case 'primary':
-        return 'text-[#1063A7]';
-      case 'blue':
-        return 'text-[#1063A7]';
-      case 'secondary':
-        return 'text-[#E92928]';
-      case 'red':
-        return 'text-[#E92928]';
-      default:
-        return 'text-[#1063A7]';
-    }
-  };
+  const getColorClass = (color: string) => getTextClass(color);
 
   // Debug: log navbar data in development
   if (process.env.NODE_ENV === 'development') {

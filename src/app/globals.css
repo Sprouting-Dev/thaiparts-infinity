@@ -9,7 +9,7 @@
   --color-background: #f5f5f5;
   --color-foreground: #333333;
   --color-muted: #d9d9d9;
-  
+
   /* Decoration colors for Tailwind */
   --color-decoration-accent: var(--color-accent);
 
@@ -25,6 +25,32 @@
 
   /* Radii */
   --radius-pill: 100px;
+
+  /* Design tokens (brand tokens exposed as CSS variables) */
+  --brand-blue: #1063a7;
+  --brand-blue-rgb: 16, 99, 167;
+  --accent-red: #e92928;
+  --accent-red-rgb: 233, 41, 40;
+
+  --blue-bg: #d7f5ff;
+  --teal-bg: #d7ffff;
+  --red-bg: #ffd7d7;
+  --navy-bg: #d5ecff;
+  --green-bg: #e7ffd5;
+  --green-alt-bg: #f7ffe8;
+  --orange-bg: #fff8e6;
+  --gray-bg: #d5ecff;
+  --red-alt-bg: #ffd6d5;
+
+  --teal-text: #008080;
+  --green-text: #629938;
+  --green-alt-text: #99cc33;
+  --orange-text: #ffb600;
+  --gray-text: #4a6f9e;
+  --blue-text: #007aa3;
+
+  /* Gradient start token used in a few places */
+  --gradient-start: #cce8ff;
 }
 
 @media (prefers-color-scheme: light) {
@@ -85,13 +111,79 @@ body {
   font-family: var(--font-sans);
 }
 
+/* Brand named utilities (explicit classes so we avoid depending on Tailwind generating
+   arbitrary [#hex] utilities). These map to the CSS variables defined above. */
+.bg-brand-blue-light {
+  background-color: var(--blue-bg);
+}
+/* Brand blue used for headings and prominent UI (now uses official brand token #1063A7) */
+.text-brand-blue {
+  color: var(--brand-blue);
+}
+/* Legacy badge color preserved under a new name so badges can keep the previous tone */
+.text-badge-blue {
+  color: var(--blue-text);
+}
+/* Strong brand blue utility explicitly using the brand token #1063A7 */
+.text-brand-blue-strong {
+  color: var(--brand-blue);
+}
+.bg-teal {
+  background-color: var(--teal-bg);
+}
+.text-teal {
+  color: var(--teal-text);
+}
+.bg-red-light {
+  background-color: var(--red-bg);
+}
+.text-accent-red {
+  color: var(--accent-red);
+}
+.bg-navy-light {
+  background-color: var(--navy-bg);
+}
+.text-navy {
+  color: var(--brand-blue);
+}
+.bg-green-light {
+  background-color: var(--green-bg);
+}
+.text-green {
+  color: var(--green-text);
+}
+.bg-green-alt {
+  background-color: var(--green-alt-bg);
+}
+.text-green-alt {
+  color: var(--green-alt-text);
+}
+.bg-orange-light {
+  background-color: var(--orange-bg);
+}
+.text-orange {
+  color: var(--orange-text);
+}
+.bg-gray-light {
+  background-color: var(--gray-bg);
+}
+.text-gray {
+  color: var(--gray-text);
+}
+.bg-red-alt {
+  background-color: var(--red-alt-bg);
+}
+.text-red-alt {
+  color: var(--accent-red);
+}
+
 /* Gradient border utility using pseudo-element approach */
 .gradient-border-btn {
   position: relative;
   border-radius: 9999px;
   background: var(
     --border-gradient,
-    linear-gradient(180deg, #cce8ff 0%, #1063a7 100%)
+    linear-gradient(180deg, var(--gradient-start) 0%, var(--brand-blue) 100%)
   );
   display: flex;
   align-items: center;
@@ -102,7 +194,7 @@ body {
   content: '';
   position: absolute;
   inset: var(--border-width, 2px);
-  background: var(--btn-bg, #1063a7);
+  background: var(--btn-bg, var(--brand-blue));
   border-radius: calc(9999px - var(--border-width, 2px));
   z-index: 0;
 }
@@ -340,4 +432,3 @@ body {
 .product-description td:first-child {
   font-weight: 500 !important;
 }
-

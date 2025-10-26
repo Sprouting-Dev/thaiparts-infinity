@@ -1,111 +1,131 @@
+// src/app/page.tsx
 import Hero from '@/components/Hero';
 import Features from '@/components/Features';
 import GridPreview from '@/components/GridPreview';
+import CTAButton from '@/components/CTAButton';
 import { MotionReveal } from '@/components/MotionReveal';
+import { fetchHome as fetchHomeFromCms, fetchPageBySlug } from '@/lib/cms';
+import { mediaUrl } from '@/lib/strapi';
+import { getColorByTagName } from '@/lib/categoryBadge';
 
-export default function Page() {
-  // Static content for delivery - no Strapi dependency
-  const hero = {
-    title: {
-      desktop: {
-        segments: [
-          [
-            { text: 'พาร์ทเนอร์ผู้เชี่ยวชาญระบบ', color: 'brandBlue' as const },
-            {
-              text: 'Automation, Electrical และ Instrument ครบวงจร',
-              color: 'accentRed' as const,
-            },
-          ],
-        ],
-      },
-      mobile: {
-        lines: [
-          { text: 'พาร์ทเนอร์ผู้เชี่ยวชาญระบบ', color: 'brandBlue' as const },
-          {
-            text: 'Automation, Electrical และ Instrument ครบวงจร',
-            color: 'accentRed' as const,
-          },
-        ],
-      },
-    },
-    background: '/homepage/homepage-hero.png',
-    subtitle:
-      'เราดูแลระบบและจัดหาอะไหล่ ตั้งแต่ต้นจนจบ\nมั่นใจได้ว่าเครื่องจักรของคุณจะเดินหน้าอย่างราบรื่น ไม่มีสะดุด',
-    ctas: [
-      {
-        label: 'ปรึกษาวิศวกร',
-        href: '/contact-us',
-        variant: 'primary',
-        newTab: false,
-      },
-      {
-        label: 'ดูสินค้าและอะไหล่ทั้งหมด',
-        href: '/products',
-        variant: 'secondary',
-        newTab: false,
-      },
-    ],
-    panel: {
-      enabled: true,
-      align: 'center' as const,
-    },
+/** ========== ENV / Debug ========== */
+const isDev = process.env.NODE_ENV !== 'production';
+
+function dbg(where: string, level: 'info' | 'warn' | 'error', msg: string) {
+  if (!isDev) return;
+  const tag = `[HOME][${where}]`;
+  (console as any)[level](`${tag} ${msg}`);
+}
+
+/** Dev-only overlay แจ้งฟิลด์ที่ยังขาด */
+function DebugOverlay({ missing }: { missing: string[] }) {
+  if (!isDev || missing.length === 0) return null;
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        left: 12,
+        bottom: 12,
+        zIndex: 9999,
+        background: 'rgba(233,41,40,0.92)',
+        color: '#fff',
+        padding: '10px 12px',
+        borderRadius: 8,
+        maxWidth: 360,
+        boxShadow: '0 6px 24px rgba(0,0,0,0.25)',
+        fontFamily:
+          'ui-sans-serif, system-ui, -apple-system, "Kanit", "Segoe UI"',
+        fontSize: 12,
+        lineHeight: '18px',
+      }}
+    >
+      <div style={{ fontWeight: 700, marginBottom: 6 }}>
+        Missing from Strapi
+      </div>
+      <ul style={{ paddingLeft: 16, margin: 0 }}>
+        {missing.map((m, i) => (
+          <li key={i} style={{ marginBottom: 2 }}>
+            {m}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/** ========== Helpers ========== */
+
+/** ========== Fetch Strapi ========== */
+// Use centralized CMS fetchers
+async function fetchHomeData() {
+  try {
+    const [page, home] = await Promise.all([
+      fetchPageBySlug('home'),
+      fetchHomeFromCms(),
+    ]);
+    return { page, home };
+  } catch (e: any) {
+    dbg('fetchHomeData', 'error', e?.message || String(e));
+    return { page: null, home: null };
+  }
+}
+
+/** ========== Page ========== */
+export default async function HomePage() {
+  const { page, home } = await fetchHomeData();
+  const missing: string[] = [];
+
+  /** ---------- Hero จาก Pages (ไม่มี fallback) ---------- */
+  const heroQuote = page?.quote ?? '';
+  if (!heroQuote) {
+    missing.push('Page(Hero): quote');
+    dbg('Hero', 'warn', 'missing quote');
+  }
+
+  // Resolve hero background via centralized mediaUrl helper
+  const heroBg = mediaUrl((page as any)?.hero_image);
+  if (!heroBg) {
+    missing.push('Page(Hero): hero_image');
+    dbg('Hero', 'warn', 'missing hero_image');
+  }
+
+  const heroProps = {
+    title: '',
+    background: heroBg,
+    subtitle: '',
+    ctas: [], // ถ้าต้องการ map button_1/button_2 เป็น CTA button ให้ต่อยอดตรงนี้ได้
+    panel: { enabled: true as const, align: 'center' as const },
+    hero_schema: heroQuote
+      ? {
+          quote: String(heroQuote),
+          button_1: page?.button_1,
+          button_2: page?.button_2,
+          isShowButton:
+            typeof page?.isShowButton === 'boolean'
+              ? page?.isShowButton
+              : undefined,
+        }
+      : undefined,
   };
 
-  const features = {
-    titleSegments: [
-      { text: 'THAIPARTS', color: 'blue' as const },
-      { text: 'INFINITY', color: 'red' as const },
-      {
-        text: 'พาร์ทเนอร์ผู้เชี่ยวชาญที่คุณวางใจได้',
-        color: 'blue' as const,
-        mobileBreak: true,
-      },
-    ],
-    description:
-      'เราคือผู้ให้บริการ อะไหล่และระบบ Automation ครบวงจร (One Stop Service) สำหรับอุตสาหกรรมทุกประเภท ด้วยพันธกิจหลักในการช่วยโรงงานของคุณ ลดความเสี่ยง (Reduce Risk) และ ลดการหยุดทำงาน (Minimize Downtime) อย่างแท้จริง',
-    cta: {
-      label: 'เรียนรู้เรื่องราวของเรา',
-      href: '/about-us',
-      variant: 'secondary',
-      newTab: false,
-    },
-    items: [
-      {
-        icon: '/homepage/icons/one-stop-service-icon.svg',
-        title: 'One Stop Service',
-        description: 'ครบวงจรในที่เดียว\n(จัดหา, ออกแบบ, ติดตั้ง, ซ่อมบำรุง)',
-      },
-      {
-        icon: '/homepage/icons/fast-delivery-icon.svg',
-        title: 'Fast Delivery',
-        description:
-          'จัดส่งไว แก้ปัญหาฉุกเฉิน\n(พร้อม On-site Support 24-48 ชม.)',
-      },
-      {
-        icon: '/homepage/icons/engineering-expertise-icon.svg',
-        title: 'Engineering Expertise',
-        description: 'ทีมวิศวกรผู้เชี่ยวชาญ\n(ให้คำปรึกษาเชิงเทคนิคทันที)',
-      },
-      {
-        icon: '/homepage/icons/Industrial-standard-icon.svg',
-        title: 'Industrial Standard',
-        description: 'สินค้ามาตรฐานสากล\n(รับประกันอะไหล่แท้ 100%)',
-      },
-      {
-        icon: '/homepage/icons/customized-solution-icon.svg',
-        title: 'Customized Solution',
-        description: 'ออกแบบระบบตาม Requirement\nโรงงานของคุณ 100%',
-      },
-      {
-        icon: '/homepage/icons/on-site-support-and-warranty.svg',
-        title: 'On-site Support & Warranty',
-        description:
-          'การรับประกันยืดหยุ่น\nพร้อม On-site Support ด่วน 24-48 ชม.',
-      },
-    ],
+  /** ---------- About (SharedTitleWithDescriptionComponent) ---------- */
+  const aboutTitle = home?.Home?.title ?? '';
+  const aboutDesc = home?.Home?.description ?? '';
+  if (!aboutTitle && !aboutDesc) missing.push('Home(About): title/description');
+
+  /** ---------- Normalizers ---------- */
+  const normalizeRel = (rel: any) => {
+    if (!rel?.data) return [];
+    return Array.isArray(rel.data)
+      ? rel.data.map((e: any) => ({ id: e.id, ...e.attributes }))
+      : [];
   };
 
-  const gridPreview = {
+  /** ---------- Products ---------- */
+  const productsList = normalizeRel(home?.products);
+  if (productsList.length === 0) missing.push('Home(products): empty');
+
+  const products = {
     kind: 'products' as const,
     title: 'อะไหล่และระบบที่เราเชี่ยวชาญ',
     cta: {
@@ -113,39 +133,23 @@ export default function Page() {
       href: '/products',
       variant: 'primary' as const,
     },
-    items: [
-      {
-        title: 'ตลับลูกปืน, ลูกกลิ้ง',
-        image: '/homepage/products/bearings-and-rollers.webp',
-        categoryBadge: { label: 'Mechanical Parts', color: 'blue' },
-        href: "/products/bearing-roller"
-      },
-      {
-        title: 'Hydraulic System',
-        image: '/homepage/products/hydraulic-system.webp',
-        categoryBadge: { label: 'Fluid Systems', color: 'teal' },
-        href: '/products/hydraulic-system',
-      },
-      {
-        title: 'Motor & Drive',
-        image: '/homepage/products/motor-and-drive.webp',
-        categoryBadge: { label: 'Electrical Hardware', color: 'red' },
-        href: '/products/motor-drive',
-      },
-      {
-        title: 'PLC Module',
-        image: '/homepage/products/plc-module.webp',
-        categoryBadge: { label: 'PLC/SCADA/Automation', color: 'navy' },
-        href: '/products/plc-module',
-      },
-      {
-        title: 'Pressure & Flow',
-        image: '/homepage/products/pressure-and-flow.webp',
-        categoryBadge: { label: 'Measurement Systems', color: 'green' },
-        href: '/products/pressure-flow',
-      },
-    ],
+    items: productsList.map((p: any) => ({
+      id: p.id,
+      title: p.title, // required
+      slug: p.slug, // required
+      tag: p.tag, // required
+      categoryBadge: { label: p.tag, color: getColorByTagName(p.tag) },
+      description: p.description,
+      mainTitle: p.main_title, // required by schema
+      image: mediaUrl(p.image),
+      seo: p.SEO,
+      href: `/products/${p.slug}`,
+    })),
   };
+
+  /** ---------- Services ---------- */
+  const servicesList = normalizeRel(home?.services);
+  if (servicesList.length === 0) missing.push('Home(services): empty');
 
   const services = {
     kind: 'services' as const,
@@ -155,24 +159,21 @@ export default function Page() {
       href: '/services',
       variant: 'primary' as const,
     },
-    items: [
-      {
-        title: 'System Design & Upgrade',
-        image: '/homepage/services/system-design-and-upgrade.webp',
-        href: '/services/system-design',
-      },
-      {
-        title: 'Preventive Maintenance',
-        image: '/homepage/services/preventive-maintenance.webp',
-        href: '/services/preventive-maintenance',
-      },
-      {
-        title: 'Rapid Response & On-site Support',
-        image: '/homepage/services/rapid-response-and-on-site-support.webp',
-        href: '/services/rapid-response',
-      },
-    ],
+    items: servicesList.map((s: any) => ({
+      id: s.id,
+      title: s.title, // required
+      slug: s.slug, // required
+      subtitle: s.subtitle,
+      content: s.content,
+      image: mediaUrl(s.image),
+      seo: s.SEO,
+      href: `/services/${s.slug}`,
+    })),
   };
+
+  /** ---------- Articles ---------- */
+  const articlesList = normalizeRel(home?.articles);
+  if (articlesList.length === 0) missing.push('Home(articles): empty');
 
   const articles = {
     kind: 'articles' as const,
@@ -182,57 +183,112 @@ export default function Page() {
       href: '/articles',
       variant: 'primary' as const,
     },
-    items: [
-      {
-        title: '5 สัญญาณเตือน! ถึงเวลาต้องอัปเกรด PLC/SCADA ในโรงงานคุณ',
-        image: '/homepage/articles/article-01.webp',
-        description:
-          'บทวิเคราะห์เชิงเทคนิคที่ช่วยให้ผู้บริหารและวิศวกรประเมินความเสี่ยงจากระบบควบคุมที่ล้าสมัย ก่อนเกิด Downtime ครั้งใหญ่',
-        href: '/articles/scada-plc-system',
-      },
-      {
-        title:
-          'Case Study: โรงงานอาหาร A ลด Downtime จาก 80 เหลือ 10 ชม./ปี ได้อย่างไร',
-        image: '/homepage/articles/article-02.webp',
-        description:
-          'เจาะลึกโซลูชัน Hydraulic & Pneumatic Systems ที่เราออกแบบและติดตั้ง พร้อมตัวเลขผลลัพธ์ที่วัดผลได้จริง',
-        href: '/articles/downtime-reduction',
-      },
-      {
-        title:
-          'เช็กด่วน! มอเตอร์ VFD: ทำไมการจัดส่งด่วนจึงช่วยประหยัดเงินได้มากกว่า',
-        image: '/homepage/articles/article-03.webp',
-        description:
-          'บทความที่เชื่อมโยงความสำคัญของ Fast Delivery เข้ากับผลกระทบทางเศรษฐกิจเมื่อเครื่องจักรหยุดเดิน',
-        href: '/articles/vfd-electrical-system',
-      },
-    ],
+    items: articlesList.map((a: any) => ({
+      id: a.id,
+      title: a.title, // required
+      slug: a.slug, // required
+      subtitle: a.subtitle,
+      readTime: a.read_time,
+      content: a.content,
+      image: mediaUrl(a.image),
+      seo: a.SEO,
+      href: `/articles/${a.slug}`,
+    })),
   };
 
   return (
     <div className="bg-[#F5F5F5]">
-      {/* Main page layout */}
       <main className="w-full flex flex-col gap-16 justify-center items-center">
-        {/* Full-bleed Hero (no max-width wrapper here) */}
-        <Hero {...hero} preserveSubtitleNewlines={true} />
+        {/* ✅ แสดง Hero เฉพาะเมื่อข้อมูลมาจริงจาก Strapi */}
+        {heroBg && heroQuote && <Hero {...(heroProps as any)} />}
 
-        {/* Constrained content wrapper (970px spec) */}
         <MotionReveal>
           <div className="container-970 flex flex-col gap-16">
-            {/* Features Section */}
-            <Features {...features} />
+            {/* About: ใช้สไตล์หัวข้อเดียวกับ Features (จุดแดง + ระยะห่าง) */}
+            {(aboutTitle || aboutDesc) && (
+              <section className="w-full flex flex-col items-start gap-4">
+                <div className="flex items-start lg:items-center gap-2">
+                  <div className="py-3">
+                    <span className="w-2 h-2 lg:w-4 lg:h-4 rounded-full inline-block bg-[#E92928]" />
+                  </div>
+                  {aboutTitle && (
+                    <h3 className="font-['Kanit'] font-medium text-[22px] lg:text-[28px] text-[#1063A7] leading-[33px] lg:leading-[42px]">
+                      {aboutTitle}
+                    </h3>
+                  )}
+                </div>
+                {aboutDesc && (
+                  <>
+                    <p className="font-['Kanit'] text-[16px] lg:text-[22px] text-[#333333] leading-[24px] lg:leading-[33px]">
+                      {aboutDesc}
+                    </p>
 
-            {/* Products Section */}
-            <GridPreview section={gridPreview} />
+                    {/* CTA under About description */}
+                    <div>
+                      <CTAButton
+                        cta={{
+                          label: 'เรียนรู้เรื่องราวของเรา',
+                          href: '/about-us',
+                          variant: 'content-primary',
+                        }}
+                        className="px-4 py-2 text-[16px] lg:text-[18px]"
+                        asMotion={true}
+                      />
+                    </div>
+                  </>
+                )}
+              </section>
+            )}
 
-            {/* Services Section */}
-            <GridPreview section={services} />
+            {/* Features: ใช้เฉพาะ items (ไม่ซ้ำกับ About) */}
+            <Features
+              items={[
+                {
+                  icon: '/homepage/icons/one-stop-service-icon.svg',
+                  title: 'One Stop Service',
+                  description:
+                    'ครบวงจรในที่เดียว \n(จัดหา, ออกแบบ, ติดตั้ง, ซ่อมบำรุง)',
+                },
+                {
+                  icon: '/homepage/icons/fast-delivery-icon.svg',
+                  title: 'Fast Delivery',
+                  description:
+                    'จัดส่งไว แก้ปัญหาฉุกเฉิน \n(พร้อม On-site Support 24-48 ชม.)',
+                },
+                {
+                  icon: '/homepage/icons/engineering-expertise-icon.svg',
+                  title: 'Engineering Expertise',
+                  description:
+                    'ทีมวิศวกรผู้เชี่ยวชาญ \n(ให้คำปรึกษาเชิงเทคนิคทันที)',
+                },
+                {
+                  icon: '/homepage/icons/Industrial-standard-icon.svg',
+                  title: 'Industrial Standard',
+                  description: 'สินค้ามาตรฐานสากล \n(รับประกันอะไหล่แท้ 100%)',
+                },
+                {
+                  icon: '/homepage/icons/customized-solution-icon.svg',
+                  title: 'Customized Solution',
+                  description: 'ออกแบบระบบตาม Requirement โรงงานของคุณ 100%',
+                },
+                {
+                  icon: '/homepage/icons/on-site-support-and-warranty.svg',
+                  title: 'On-site Support & Warranty',
+                  description:
+                    'การรับประกันยืดหยุ่น พร้อม On-site Support ด่วน 24-48 ชม.',
+                },
+              ]}
+            />
 
-            {/* Articles Section */}
-            <GridPreview section={articles} />
+            {products.items.length > 0 && <GridPreview section={products} />}
+            {services.items.length > 0 && <GridPreview section={services} />}
+            {articles.items.length > 0 && <GridPreview section={articles} />}
           </div>
         </MotionReveal>
       </main>
+
+      {/* Dev-only overlay */}
+      <DebugOverlay missing={missing} />
     </div>
   );
 }

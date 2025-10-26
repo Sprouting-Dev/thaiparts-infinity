@@ -215,7 +215,7 @@ export default function ContactForm({ data }: ContactFormProps) {
         className="flex flex-col p-6 gap-6 rounded-3xl"
         style={{ backgroundColor: 'rgba(16, 99, 167, 0.04)' }}
       >
-        <h2 className="text-[22px] leading-[33px] lg:text-[28px] lg:leading-[42px] font-medium text-[#1063A7] text-center underline decoration-[#E92928] underline-offset-4">
+        <h2 className="text-[22px] leading-[33px] lg:text-[28px] lg:leading-[42px] font-medium text-[var(--brand-blue)] text-center underline decoration-[var(--accent-red)] underline-offset-4">
           {title}
         </h2>
 
@@ -238,7 +238,7 @@ export default function ContactForm({ data }: ContactFormProps) {
                 autoComplete="name"
                 value={formData.name}
                 onChange={e => handleChange('name', e.target.value)}
-                className={`w-full px-4 py-4 border-2 rounded-full glassinput focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-[#1063A7] transition-all duration-200 text-lg ${
+                className={`w-full px-4 py-4 border-2 rounded-full glassinput focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-[var(--brand-blue)] transition-all duration-200 text-lg ${
                   errors.name
                     ? 'border-red-500 focus:border-red-500 focus:ring-red-100'
                     : 'border-gray-200 hover:border-gray-300'
@@ -277,7 +277,7 @@ export default function ContactForm({ data }: ContactFormProps) {
                 autoComplete="email"
                 value={formData.email}
                 onChange={e => handleChange('email', e.target.value)}
-                className={`w-full px-4 py-4 border-2 rounded-full glassinput focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-[#1063A7] transition-all duration-200 text-lg ${
+                className={`w-full px-4 py-4 border-2 rounded-full glassinput focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-[var(--brand-blue)] transition-all duration-200 text-lg ${
                   errors.email
                     ? 'border-red-500 focus:border-red-500 focus:ring-red-100'
                     : 'border-gray-200 hover:border-gray-300'
@@ -316,7 +316,7 @@ export default function ContactForm({ data }: ContactFormProps) {
                 autoComplete="tel"
                 value={formData.phone}
                 onChange={e => handleChange('phone', e.target.value)}
-                className={`w-full px-4 py-4 border-2 rounded-full glassinput focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-[#1063A7] transition-all duration-200 text-lg ${
+                className={`w-full px-4 py-4 border-2 rounded-full glassinput focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-[var(--brand-blue)] transition-all duration-200 text-lg ${
                   errors.phone
                     ? 'border-red-500 focus:border-red-500 focus:ring-red-100'
                     : 'border-gray-200 hover:border-gray-300'
@@ -355,7 +355,7 @@ export default function ContactForm({ data }: ContactFormProps) {
                 autoComplete="off"
                 value={formData.subject}
                 onChange={e => handleChange('subject', e.target.value)}
-                className={`w-full px-4 py-4 border-2 rounded-full glassinput focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-[#1063A7] transition-all duration-200 text-lg ${
+                className={`w-full px-4 py-4 border-2 rounded-full glassinput focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-[var(--brand-blue)] transition-all duration-200 text-lg ${
                   errors.subject
                     ? 'border-red-500 focus:border-red-500 focus:ring-red-100'
                     : 'border-gray-200 hover:border-gray-300'
@@ -394,7 +394,7 @@ export default function ContactForm({ data }: ContactFormProps) {
                 rows={6}
                 value={formData.message}
                 onChange={e => handleChange('message', e.target.value)}
-                className={`w-full px-4 py-4 border-2 rounded-3xl glassinput focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-[#1063A7] transition-all duration-200 text-lg resize-vertical ${
+                className={`w-full px-4 py-4 border-2 rounded-3xl glassinput focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-[var(--brand-blue)] transition-all duration-200 text-lg resize-vertical ${
                   errors.message
                     ? 'border-red-500 focus:border-red-500 focus:ring-red-100'
                     : 'border-gray-200 hover:border-gray-300'
