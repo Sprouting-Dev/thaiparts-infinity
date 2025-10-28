@@ -1,263 +1,217 @@
-import type { Metadata } from 'next';
-import { fetchServiceBySlug } from '@/lib/cms';
-import { sanitizeHtml } from '@/lib/sanitize';
-import { buildMetadataFromSeo, extractMediaMeta } from '@/lib/seo';
-import Features from '@/components/Features';
+import { Metadata } from 'next';
+import Image from 'next/image';
+import { notFound } from 'next/navigation';
+import { getServiceBySlug } from '@/services/serviceService';
+import FAQAccordion from '@/components/FAQAccordion';
+import CaseStudySection from '@/components/CaseStudySection';
+import TechnologySection from '@/components/TechnologySection';
+import ArchitecturalExample from '@/components/ArchitecturalExample';
+import FeaturesGrid from '@/components/FeaturesGrid';
+import CustomerReceive from '@/components/CustomerReceive';
+import SafetyAndStandards from '@/components/SafetyAndStandards';
+
+interface PageProps {
+  params: Promise<{ slug: string }>;
+}
 
 export async function generateMetadata({
   params,
-}: {
-  params: { slug: string };
-}): Promise<Metadata> {
-  try {
-    const { slug } = await params;
-    const res = await fetchServiceBySlug(slug);
-    const attrs = (res as { attributes?: unknown } | null)
-      ?.attributes as Record<string, unknown> | null;
-    if (!attrs) return {} as Metadata;
+}: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const serviceRes = await getServiceBySlug(slug);
 
-    const seo = (attrs['sharedSeo'] ?? attrs['seo'] ?? null) as Record<
-      string,
-      unknown
-    > | null;
-
-    return buildMetadataFromSeo(seo, {
-      defaultCanonical: `/services/${slug}`,
-      fallbackTitle:
-        typeof attrs['title'] === 'string' ? attrs['title'] : undefined,
-    });
-  } catch {
-    return {} as Metadata;
+  if (!serviceRes) {
+    return { title: 'Service Not Found' };
   }
+
+  const service = serviceRes.attributes;
+  return {
+    title: `${service.title || service.name} | THAIPARTS INFINITY`,
+    description: service.subtitle || 'Industrial automation service',
+  };
 }
 
-export default async function ServiceDetailPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+export default async function ServiceDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const res = await fetchServiceBySlug(slug);
-  const attrs = (res as { attributes?: unknown } | null)?.attributes as Record<
-    string,
-    unknown
-  > | null;
-  if (!attrs)
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        บริการไม่พบ
-      </div>
-    );
+  const serviceRes = await getServiceBySlug(slug);
 
-  const title = (attrs['title'] as string) || '';
-  const body = (attrs['content'] as string) || '';
-  // Local typed shapes for service sub-sections
-  interface SafetyStandardItem {
-    title?: string;
-    description?: string;
+  if (!serviceRes) {
+    notFound();
   }
-  interface CaseStudyItem {
-    title?: string;
-    case_study_detail?: string;
-    cover_image?: Array<{ url: string; alt?: string }>;
-  }
-  interface FeatureItemLocal {
-    icon?: string;
-    title?: string;
-    description?: string;
-  }
-  interface SimpleTitle {
-    title?: string;
-  }
-  interface CustomerReceiveItem {
-    title?: string;
-    description?: string;
-  }
-  interface ArchitecturalExampleItem {
-    title?: string;
-    article?: string;
-  }
-  // cover_image normalized in cms layer -> array of {url, alt}
-  const coverImages =
-    (attrs['cover_image'] as
-      | Array<{ url: string; alt?: string }>
-      | undefined) || [];
-  const mediaMeta = extractMediaMeta(attrs['image']);
-  const image = mediaMeta.url || '';
-  const imageAlt = mediaMeta.alt || title;
-  // other sections
-  const safetyAndStandard =
-    (attrs['safety_and_standard'] as SafetyStandardItem[] | undefined) || [];
-  const caseStudy = (attrs['case_study'] as CaseStudyItem[]) || [];
-  const features = (attrs['features'] as FeatureItemLocal[]) || [];
-  const technology = (attrs['technology'] as Array<SimpleTitle | string>) || [];
-  const customerReceive =
-    (attrs['customer_receive'] as CustomerReceiveItem[]) || [];
-  const architecturalExample =
-    (attrs['architectural_example'] as ArchitecturalExampleItem[]) || [];
-  // structuredData is injected into <head> via src/app/services/[slug]/head.tsx
+
+  const s = serviceRes.attributes;
+
+  const getImageUrl = (imageField: any) => {
+    const url = imageField?.data?.attributes?.url || imageField?.url;
+    if (!url) return null;
+    return url.startsWith('http')
+      ? url
+      : `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${url}`;
+  };
+
+  const heroImageUrl = getImageUrl(s.image);
+
+  const parseListItems = (data: any): string[] => {
+    if (Array.isArray(data) && typeof data[0] === 'string') {
+      return data;
+    }
+
+    if (Array.isArray(data)) {
+      const items: string[] = [];
+      data.forEach((block: any) => {
+        if (block.type === 'list') {
+          block.children?.forEach((listItem: any) => {
+            if (listItem.type === 'list-item') {
+              const text = listItem.children
+                ?.map((child: any) => child.text || '')
+                .join(' ')
+                .trim();
+              if (text) items.push(text);
+            }
+          });
+        } else if (block.type === 'paragraph') {
+          const text = block.children
+            ?.map((child: any) => child.text || '')
+            .join(' ')
+            .trim();
+          if (text) items.push(text);
+        }
+      });
+      return items;
+    }
+
+    if (typeof data === 'string') {
+      const liMatches = data.match(/<li[^>]*>(.*?)<\/li>/g);
+      if (liMatches) {
+        return liMatches.map(li => li.replace(/<[^>]+>/g, '').trim());
+      }
+      return data.split('\n').filter(item => item.trim());
+    }
+
+    return [];
+  };
+
+  const renderRichText = (data: any): string => {
+    if (typeof data === 'string') {
+      return data;
+    }
+
+    if (Array.isArray(data)) {
+      let html = '';
+      data.forEach((block: any) => {
+        if (block.type === 'paragraph') {
+          const text = block.children
+            ?.map((child: any) => {
+              let t = child.text || '';
+              if (child.bold) t = `<strong>${t}</strong>`;
+              if (child.italic) t = `<em>${t}</em>`;
+              return t;
+            })
+            .join('');
+          html += `<p>${text}</p>`;
+        } else if (block.type === 'heading') {
+          const level = block.level || 2;
+          const text = block.children
+            ?.map((child: any) => child.text || '')
+            .join('');
+          html += `<h${level}>${text}</h${level}>`;
+        } else if (block.type === 'list') {
+          const tag = block.format === 'ordered' ? 'ol' : 'ul';
+          const items = block.children
+            ?.map((item: any) => {
+              const text = item.children
+                ?.map((child: any) => child.text || '')
+                .join('');
+              return `<li>${text}</li>`;
+            })
+            .join('');
+          html += `<${tag}>${items}</${tag}>`;
+        }
+      });
+      return html;
+    }
+
+    return '';
+  };
+
   return (
-    <main className="min-h-screen container-970 px-4 py-12">
-      <article>
-        <h1 className="text-2xl font-bold mb-4">{title}</h1>
-        {coverImages && coverImages.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            {coverImages.map((ci, i) => (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                key={i}
-                src={ci.url}
-                alt={ci.alt || title}
-                className="w-full max-h-[420px] object-cover rounded"
-              />
-            ))}
-          </div>
-        ) : image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={image}
-            alt={imageAlt}
-            className="w-full max-h-[420px] object-cover mb-6"
-          />
-        ) : null}
+    <main className="w-full flex flex-col px-[14.6875rem] py-[15.375rem]">
+      <div className="flex flex-col">
+        <h1 className="flex items-center gap-2 font-['Kanit'] lg:font-medium lg:text-[1.75rem] text-primary">
+          <span className="w-4 h-4 rounded-full bg-accent"></span>
+          {s.title || s.name}
+        </h1>
 
-        <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(String(body)) }} />
+        {s.subtitle && (
+          <p className="ml-6 font-['Kanit'] lg:font-medium lg:text-[1.75rem] text-primary leading-relaxed">
+            {s.subtitle}
+          </p>
+        )}
+      </div>
 
-        {/* Safety and standard section */}
-        {Array.isArray(safetyAndStandard) && safetyAndStandard.length > 0 ? (
-          <section className="mt-10">
-            <h2 className="text-xl font-semibold mb-4">มาตรฐานความปลอดภัย</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {safetyAndStandard.map((s: SafetyStandardItem, idx: number) => (
-                <div key={idx} className="p-4 border rounded">
-                  {s.title ? (
-                    <h3 className="font-medium mb-2">{s.title}</h3>
-                  ) : null}
-                  {s.description ? (
-                    <div
-                      dangerouslySetInnerHTML={{
-                        __html: String(s.description),
-                      }}
-                    />
-                  ) : null}
-                </div>
-              ))}
-            </div>
-          </section>
-        ) : null}
+      {s.cover_image?.data &&
+        (() => {
+          const coverImageData = Array.isArray(s.cover_image.data)
+            ? s.cover_image.data[0]
+            : s.cover_image.data;
 
-        {/* Case studies */}
-        {Array.isArray(caseStudy) && caseStudy.length > 0 ? (
-          <section className="mt-10">
-            <h2 className="text-xl font-semibold mb-4">กรณีศึกษา</h2>
-            <div className="flex flex-col gap-6">
-              {caseStudy.map((c: CaseStudyItem, idx: number) => (
-                <div key={idx} className="p-4 border rounded">
-                  {c.title ? (
-                    <h3 className="font-medium mb-2">{c.title}</h3>
-                  ) : null}
-                  {c.cover_image &&
-                  Array.isArray(c.cover_image) &&
-                  c.cover_image.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-3">
-                      {c.cover_image.map(
-                        (ci: { url: string; alt?: string }, j: number) => (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            key={j}
-                            src={ci.url}
-                            alt={ci.alt || c.title || ''}
-                            className="w-full h-32 object-cover rounded"
-                          />
-                        )
-                      )}
-                    </div>
-                  ) : null}
-                  {c.case_study_detail ? (
-                    <div
-                      dangerouslySetInnerHTML={{
-                        __html: String(c.case_study_detail),
-                      }}
-                    />
-                  ) : null}
-                </div>
-              ))}
-            </div>
-          </section>
-        ) : null}
+          if (coverImageData?.attributes?.url) {
+            const url = coverImageData.attributes.url;
+            const coverImageUrl = url.startsWith('http')
+              ? url
+              : `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${url}`;
 
-        {/* Features */}
-        {Array.isArray(features) && features.length > 0 ? (
-          <section className="mt-10">
-            <h2 className="text-xl font-semibold mb-4">คุณสมบัติ</h2>
-            <Features
-              items={features.map((f: FeatureItemLocal) => ({
-                icon:
-                  f.icon ??
-                  ((f as Record<string, unknown>)['image'] as string) ??
-                  '',
-                title: f.title ?? '',
-                description: f.description ?? '',
-              }))}
-            />
-          </section>
-        ) : null}
+            return (
+              <div className="mt-8 w-full rounded-2xl overflow-hidden shadow-lg">
+                <Image
+                  src={coverImageUrl}
+                  alt={s.title || s.name}
+                  width={970}
+                  height={546}
+                  className="w-full h-[31.25rem] object-cover rounded-2xl"
+                  unoptimized
+                />
+              </div>
+            );
+          }
+          return null;
+        })()}
 
-        {/* Technology */}
-        {Array.isArray(technology) && technology.length > 0 ? (
-          <section className="mt-10">
-            <h2 className="text-xl font-semibold mb-4">เทคโนโลยี</h2>
-            <ul className="list-disc pl-6">
-              {technology.map((t: SimpleTitle | string, i: number) => (
-                <li key={i}>{typeof t === 'string' ? t : (t.title ?? '')}</li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
+      {s.safety_and_standard && s.safety_and_standard.length > 0 && (
+        <SafetyAndStandards
+          sections={s.safety_and_standard}
+          parseListItems={parseListItems}
+          renderRichText={renderRichText}
+        />
+      )}
 
-        {/* Customer receive */}
-        {Array.isArray(customerReceive) && customerReceive.length > 0 ? (
-          <section className="mt-10">
-            <h2 className="text-xl font-semibold mb-4">
-              สิ่งที่ลูกค้าจะได้รับ
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {customerReceive.map((cr: CustomerReceiveItem, i: number) => (
-                <div key={i} className="p-3 border rounded">
-                  {cr.title ? (
-                    <h3 className="font-medium">{cr.title}</h3>
-                  ) : null}
-                  {cr.description ? <p>{cr.description}</p> : null}
-                </div>
-              ))}
-            </div>
-          </section>
-        ) : null}
+      {s.customer_receive && s.customer_receive.length > 0 && (
+        <CustomerReceive 
+          sections={s.customer_receive}
+          parseListItems={parseListItems}
+        />
+      )}
 
-        {/* Architectural examples */}
-        {Array.isArray(architecturalExample) &&
-        architecturalExample.length > 0 ? (
-          <section className="mt-10">
-            <h2 className="text-xl font-semibold mb-4">ตัวอย่างการใช้งาน</h2>
-            <div className="flex flex-col gap-6">
-              {architecturalExample.map(
-                (ae: ArchitecturalExampleItem, i: number) => (
-                  <div key={i} className="p-4 border rounded">
-                    {ae.title ? (
-                      <h3 className="font-medium mb-2">{ae.title}</h3>
-                    ) : null}
-                    {ae.article ? (
-                      <div
-                        dangerouslySetInnerHTML={{ __html: String(ae.article) }}
-                      />
-                    ) : null}
-                  </div>
-                )
-              )}
-            </div>
-          </section>
-        ) : null}
-      </article>
+      {s.features && s.features.length > 0 && (
+        <FeaturesGrid sections={s.features} />
+      )}
+
+      {s.architectural_example && s.architectural_example.length > 0 && (
+        <ArchitecturalExample sections={s.architectural_example} />
+      )}
+
+      {s.technology && s.technology.length > 0 && (
+        <TechnologySection
+          sections={s.technology}
+          parseListItems={parseListItems}
+        />
+      )}
+
+      {s.case_study && s.case_study.length > 0 && (
+        <CaseStudySection sections={s.case_study} />
+      )}
+
+      {s.faqs && s.faqs.length > 0 && <FAQAccordion faqs={s.faqs} />}
     </main>
   );
 }
