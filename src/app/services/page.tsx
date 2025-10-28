@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import Image from 'next/image';
+import { ServicesGrid } from '@/components';
 
 export const metadata: Metadata = {
   title: 'Services | THAIPARTS INFINITY',
@@ -45,7 +45,7 @@ function getServices(): Service[] {
       attributes: {
         name: 'Rapid Response & On-site Support',
         slug: 'rapid-response',
-        subtitle: 'บริการฉุกเฉิน และการสนับสนุนในพื้นที่',
+        subtitle: 'บริการฉุกเฉิน แลการสนับสนุนในพื้นที่',
         thumbnail: { url: '/homepage/services/rapid-response-and-on-site-support.webp' }
       }
     }
@@ -70,65 +70,7 @@ export default function ServicesPage() {
             <p>เราเน้นการออกแบบที่ แยกเครือข่าย OT/IT, ใช้มาตรการ defense-in-depth ตามแนวทาง NIST และ IEC62443, และใช้เทคโนโลยีมาตรฐานเช่น OPC UA เพื่อความมั่นคงและความยืดหยุ่นของระบบ</p>
 
           {/* Services Grid */}
-          {services.length > 0 ? (
-            <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-7 lg:gap-8">
-              {services.map(service => {
-                if (!service || !service.attributes) return null;
-                const { attributes } = service;
-                const imageUrl =
-                  attributes.thumbnail?.data?.attributes?.url ||
-                  attributes.thumbnail?.url ||
-                  '';
-
-                return (
-                  <div
-                    key={service.id}
-                    className="group flex flex-col gap-3 hover:transform hover:scale-[1.02] transition-all duration-200"
-                  >
-                    {/* Image */}
-                    <div className="w-full aspect-[300/220] overflow-hidden rounded-lg relative">
-                      {imageUrl ? (
-                        (() => {
-                          const isExternal = imageUrl.startsWith('http');
-                          const src = isExternal
-                            ? imageUrl
-                            : imageUrl.startsWith('/')
-                            ? imageUrl
-                            : `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${imageUrl}`;
-                          return (
-                            <Image
-                              src={src}
-                              alt={attributes.name}
-                              fill
-                              className="object-cover group-hover:scale-105 transition-transform duration-300"
-                              unoptimized={isExternal}
-                            />
-                          );
-                        })()
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-neutral-200 to-neutral-300 flex items-center justify-center">
-                          <div className="text-neutral-400 text-4xl">🔧</div>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Title */}
-                    <h3 className="font-['Kanit'] font-medium text-[20px] leading-tight text-[#333333] group-hover:text-[#1063A7] transition-colors duration-200">
-                      {attributes.name}
-                    </h3>
-
-                    {/* Subtitle intentionally omitted on services page */}
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="w-full text-center py-16">
-              <p className="font-['Kanit'] text-[18px] text-[#666666]">
-                ไม่พบข้อมูลบริการในขณะนี้
-              </p>
-            </div>
-          )}
+          <ServicesGrid services={services} linkable={true} />
         </div>
       </main>
     </div>
