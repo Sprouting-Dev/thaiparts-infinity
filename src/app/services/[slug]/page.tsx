@@ -1,125 +1,217 @@
+import { Metadata } from 'next';
 import Image from 'next/image';
+import { notFound } from 'next/navigation';
 import { getServiceBySlug } from '@/services/serviceService';
+import FAQAccordion from '@/components/FAQAccordion';
+import CaseStudySection from '@/components/CaseStudySection';
+import TechnologySection from '@/components/TechnologySection';
+import ArchitecturalExample from '@/components/ArchitecturalExample';
+import FeaturesGrid from '@/components/FeaturesGrid';
+import CustomerReceive from '@/components/CustomerReceive';
+import SafetyAndStandards from '@/components/SafetyAndStandards';
 
 interface PageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const serviceRes = await getServiceBySlug(slug);
+
+  if (!serviceRes) {
+    return { title: 'Service Not Found' };
+  }
+
+  const service = serviceRes.attributes;
+  return {
+    title: `${service.title || service.name} | THAIPARTS INFINITY`,
+    description: service.subtitle || 'Industrial automation service',
+  };
 }
 
 export default async function ServiceDetailPage({ params }: PageProps) {
-  const { slug } = params;
+  const { slug } = await params;
   const serviceRes = await getServiceBySlug(slug);
+
   if (!serviceRes) {
-    return (
-      <div className="px-4 py-24">
-        <h1 className="text-primary text-2xl font-medium">ไม่พบข้อมูลบริการนี้</h1>
-      </div>
-    );
+    notFound();
   }
+
   const s = serviceRes.attributes;
 
+  const getImageUrl = (imageField: any) => {
+    const url = imageField?.data?.attributes?.url || imageField?.url;
+    if (!url) return null;
+    return url.startsWith('http')
+      ? url
+      : `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${url}`;
+  };
+
+  const heroImageUrl = getImageUrl(s.image);
+
+  const parseListItems = (data: any): string[] => {
+    if (Array.isArray(data) && typeof data[0] === 'string') {
+      return data;
+    }
+
+    if (Array.isArray(data)) {
+      const items: string[] = [];
+      data.forEach((block: any) => {
+        if (block.type === 'list') {
+          block.children?.forEach((listItem: any) => {
+            if (listItem.type === 'list-item') {
+              const text = listItem.children
+                ?.map((child: any) => child.text || '')
+                .join(' ')
+                .trim();
+              if (text) items.push(text);
+            }
+          });
+        } else if (block.type === 'paragraph') {
+          const text = block.children
+            ?.map((child: any) => child.text || '')
+            .join(' ')
+            .trim();
+          if (text) items.push(text);
+        }
+      });
+      return items;
+    }
+
+    if (typeof data === 'string') {
+      const liMatches = data.match(/<li[^>]*>(.*?)<\/li>/g);
+      if (liMatches) {
+        return liMatches.map(li => li.replace(/<[^>]+>/g, '').trim());
+      }
+      return data.split('\n').filter(item => item.trim());
+    }
+
+    return [];
+  };
+
+  const renderRichText = (data: any): string => {
+    if (typeof data === 'string') {
+      return data;
+    }
+
+    if (Array.isArray(data)) {
+      let html = '';
+      data.forEach((block: any) => {
+        if (block.type === 'paragraph') {
+          const text = block.children
+            ?.map((child: any) => {
+              let t = child.text || '';
+              if (child.bold) t = `<strong>${t}</strong>`;
+              if (child.italic) t = `<em>${t}</em>`;
+              return t;
+            })
+            .join('');
+          html += `<p>${text}</p>`;
+        } else if (block.type === 'heading') {
+          const level = block.level || 2;
+          const text = block.children
+            ?.map((child: any) => child.text || '')
+            .join('');
+          html += `<h${level}>${text}</h${level}>`;
+        } else if (block.type === 'list') {
+          const tag = block.format === 'ordered' ? 'ol' : 'ul';
+          const items = block.children
+            ?.map((item: any) => {
+              const text = item.children
+                ?.map((child: any) => child.text || '')
+                .join('');
+              return `<li>${text}</li>`;
+            })
+            .join('');
+          html += `<${tag}>${items}</${tag}>`;
+        }
+      });
+      return html;
+    }
+
+    return '';
+  };
+
   return (
-    <div className="w-full max-w-6xl mx-auto px-4">
-      {/* Hero Section */}
-      <div className="mt-12 flex flex-col lg:flex-row gap-8 items-start">
-        <div className="flex-1">
-          <h1 className="text-primary text-2xl lg:text-3xl font-bold">{s.title}</h1>
-          <p className="mt-2 text-lg text-foreground">{s.subtitle}</p>
-        </div>
-        {s.image?.data?.attributes?.url && (
-          <div className="flex-1">
-            <Image
-              src={s.image.data.attributes.url.startsWith('http') ? s.image.data.attributes.url : process.env.NEXT_PUBLIC_STRAPI_URL + s.image.data.attributes.url}
-              alt={s.title}
-              width={600}
-              height={340}
-              className="rounded-xl object-cover w-full h-auto"
-            />
-          </div>
+    <main className="w-full flex flex-col px-[14.6875rem] py-[15.375rem]">
+      <div className="flex flex-col">
+        <h1 className="flex items-center gap-2 font-['Kanit'] lg:font-medium lg:text-[1.75rem] text-primary">
+          <span className="w-4 h-4 rounded-full bg-accent"></span>
+          {s.title || s.name}
+        </h1>
+
+        {s.subtitle && (
+          <p className="ml-6 font-['Kanit'] lg:font-medium lg:text-[1.75rem] text-primary leading-relaxed">
+            {s.subtitle}
+          </p>
         )}
       </div>
 
-      {/* Highlights */}
-      {s.highlights && (
-        <div className="mt-10">
-          <h2 className="text-primary text-xl font-semibold mb-4">จุดเด่น/สิ่งที่ลูกค้าได้รับ</h2>
-          <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {s.highlights.map((item: string, idx: number) => (
-              <li key={idx} className="bg-secondary rounded-lg p-4">{item}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {s.cover_image?.data &&
+        (() => {
+          const coverImageData = Array.isArray(s.cover_image.data)
+            ? s.cover_image.data[0]
+            : s.cover_image.data;
 
-      {/* Features */}
-      {s.features && (
-        <div className="mt-10">
-          <h2 className="text-primary text-xl font-semibold mb-4">สิ่งที่ให้บริการ</h2>
-          <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {s.features.map((item: string, idx: number) => (
-              <li key={idx} className="bg-secondary rounded-lg p-4">{item}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+          if (coverImageData?.attributes?.url) {
+            const url = coverImageData.attributes.url;
+            const coverImageUrl = url.startsWith('http')
+              ? url
+              : `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${url}`;
 
-      {/* Process Steps */}
-      {s.process_steps && (
-        <div className="mt-10">
-          <h2 className="text-primary text-xl font-semibold mb-4">กระบวนการให้บริการ</h2>
-          <ol className="flex flex-col md:flex-row gap-4">
-            {s.process_steps.map((step: string, idx: number) => (
-              <li key={idx} className="flex-1 bg-white border rounded-lg p-4">{step}</li>
-            ))}
-          </ol>
-        </div>
-      )}
-
-      {/* Details */}
-      {s.details && (
-        <div className="mt-10">
-          <h2 className="text-primary text-xl font-semibold mb-4">รายละเอียดบริการ</h2>
-          <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: s.details }} />
-        </div>
-      )}
-
-      {/* Case Studies */}
-      {s.case_studies && (
-        <div className="mt-10">
-          <h2 className="text-primary text-xl font-semibold mb-4">ตัวอย่างผลงาน/เคสจริง</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {s.case_studies.map((cs: any, idx: number) => (
-              <div key={idx} className="bg-secondary rounded-lg p-4">
-                <h3 className="font-bold">{cs.title}</h3>
-                {cs.image?.data?.attributes?.url && (
-                  <Image
-                    src={cs.image.data.attributes.url.startsWith('http') ? cs.image.data.attributes.url : process.env.NEXT_PUBLIC_STRAPI_URL + cs.image.data.attributes.url}
-                    alt={cs.title}
-                    width={400}
-                    height={220}
-                    className="rounded-lg my-2"
-                  />
-                )}
-                <div className="text-sm" dangerouslySetInnerHTML={{ __html: cs.description }} />
+            return (
+              <div className="mt-8 w-full rounded-2xl overflow-hidden shadow-lg">
+                <Image
+                  src={coverImageUrl}
+                  alt={s.title || s.name}
+                  width={970}
+                  height={546}
+                  className="w-full h-[31.25rem] object-cover rounded-2xl"
+                  unoptimized
+                />
               </div>
-            ))}
-          </div>
-        </div>
+            );
+          }
+          return null;
+        })()}
+
+      {s.safety_and_standard && s.safety_and_standard.length > 0 && (
+        <SafetyAndStandards
+          sections={s.safety_and_standard}
+          parseListItems={parseListItems}
+          renderRichText={renderRichText}
+        />
       )}
 
-      {/* FAQ */}
-      {s.faqs && (
-        <div className="mt-10">
-          <h2 className="text-primary text-xl font-semibold mb-4">คำถามที่พบบ่อย</h2>
-          <ul>
-            {s.faqs.map((faq: any, idx: number) => (
-              <li key={idx} className="mb-4">
-                <strong>Q: {faq.question}</strong>
-                <div className="ml-2">{faq.answer}</div>
-              </li>
-            ))}
-          </ul>
-        </div>
+      {s.customer_receive && s.customer_receive.length > 0 && (
+        <CustomerReceive 
+          sections={s.customer_receive}
+          parseListItems={parseListItems}
+        />
       )}
-    </div>
+
+      {s.features && s.features.length > 0 && (
+        <FeaturesGrid sections={s.features} />
+      )}
+
+      {s.architectural_example && s.architectural_example.length > 0 && (
+        <ArchitecturalExample sections={s.architectural_example} />
+      )}
+
+      {s.technology && s.technology.length > 0 && (
+        <TechnologySection
+          sections={s.technology}
+          parseListItems={parseListItems}
+        />
+      )}
+
+      {s.case_study && s.case_study.length > 0 && (
+        <CaseStudySection sections={s.case_study} />
+      )}
+
+      {s.faqs && s.faqs.length > 0 && <FAQAccordion sections={s.faqs} />}
+    </main>
   );
 }
