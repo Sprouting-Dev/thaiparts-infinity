@@ -86,6 +86,38 @@ export default function CaseStudySection({ sections }: CaseStudySectionProps) {
       })}
       
       <style jsx global>{`
+        .case-study-content table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+        
+        .case-study-content table tr {
+          display: flex;
+          flex-direction: column;
+          margin-bottom: 1rem;
+        }
+        
+        .case-study-content table td {
+          padding: 0;
+          display: block;
+        }
+        
+        .case-study-content table td:first-child {
+          font-family: 'Kanit', sans-serif;
+          font-size: 1.375rem;
+          font-weight: 500;
+          color: var(--color-primary);
+          margin-bottom: 0.25rem;
+        }
+        
+        .case-study-content table td:last-child {
+          font-family: 'Kanit', sans-serif;
+          font-size: 1.375rem;
+          font-weight: 400;
+          color: var(--color-foreground);
+          line-height: 1.75;
+        }
+        
         .case-study-content h4 {
           font-family: 'Kanit', sans-serif;
           font-size: 1.375rem;
