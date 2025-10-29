@@ -2,86 +2,112 @@
 
 import { useState } from 'react';
 
-interface FAQ {
+interface AccordionItem {
   id?: number;
   question: string;
   answer: string;
 }
 
-interface FAQAccordionProps {
-  faqs: FAQ[];
+interface FAQSection {
+  id?: number;
+  title?: string;
+  acordian?: AccordionItem[];
 }
 
-export default function FAQAccordion({ faqs }: FAQAccordionProps) {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+interface FAQAccordionProps {
+  sections: FAQSection[];
+}
 
-  const toggleFAQ = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
+export default function FAQAccordion({ sections }: FAQAccordionProps) {
+  const [openIndex, setOpenIndex] = useState<string | null>(null);
+
+  const toggleFAQ = (key: string) => {
+    setOpenIndex(openIndex === key ? null : key);
   };
 
-  if (!faqs || faqs.length === 0) {
+  if (!sections || sections.length === 0) {
     return null;
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <h2 className="font-['Kanit'] font-semibold text-[24px] md:text-[28px] text-[#1063A7] flex items-center gap-3">
-        <div className="w-2 h-8 bg-[#E92928] rounded-full" />
-        FAQs
-      </h2>
-      
-      <div className="flex flex-col gap-4">
-        {faqs.map((faq, index) => (
-          <div
-            key={faq.id || index}
-            className="bg-[#F5F5F5] rounded-lg overflow-hidden transition-all duration-300"
-          >
-            {/* Question Button */}
-            <button
-              onClick={() => toggleFAQ(index)}
-              className="w-full flex items-center justify-between p-6 text-left hover:bg-[#EBEBEB] transition-colors"
-            >
-              <span className="font-['Kanit'] font-medium text-[16px] md:text-[18px] text-[#1063A7] flex-1 pr-4">
-                {faq.question}
-              </span>
-              
-              {/* Chevron Icon */}
-              <div
-                className={`flex-shrink-0 transition-transform duration-300 ${
-                  openIndex === index ? 'rotate-180' : ''
-                }`}
-              >
-                <svg
-                  className="w-6 h-6 text-[#1063A7]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </div>
-            </button>
+    <div className="flex flex-col gap-8">
+      {sections.map((section, sectionIndex) => {
+        const accordions = section.acordian || [];
+        const sectionId = section.id || `section-${sectionIndex}`;
+        
+        return (
+          <div key={sectionId} className="flex flex-col gap-6">
+            {section.title && (
+              <h2 className="mt-16 font-['Kanit'] font-medium text-[1.75rem] text-primary underline decoration-accent decoration-2 underline-offset-8">
+                {section.title}
+              </h2>
+            )}
 
-            {/* Answer Content */}
-            <div
-              className={`overflow-hidden transition-all duration-300 ${
-                openIndex === index ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
-              }`}
-            >
-              <div className="px-6 pb-6 pt-2">
-                <p className="font-['Kanit'] text-[15px] md:text-[16px] text-[#666666] leading-relaxed">
-                  {faq.answer}
-                </p>
+            {accordions.length > 0 && (
+              <div className=" grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[0, 1].map((col) => {
+                  const colItems = accordions.filter((_, idx) => idx % 2 === col);
+                  return (
+                    <div key={`col-${sectionId}-${col}`} className=" flex flex-col gap-4">
+                      {colItems.map((item, i) => {
+                        const originalIndex = col + i * 2;
+                        const uniqueKey = `faq-${sectionId}-${item.id ?? `idx${originalIndex}`}`;
+                        const isOpen = openIndex === uniqueKey;
+
+                        return (
+                          <div
+                            key={uniqueKey}
+                            className="bg-[#ECEFF2] rounded-2xl overflow-hidden transition-all duration-300 border border-white"
+                          >
+                            <button
+                              onClick={() => toggleFAQ(uniqueKey)}
+                              className="w-full flex items-center justify-between px-8 py-4 text-left cursor-pointer"
+                            >
+                              <span className="font-prompt text-[1.375rem] text-primary font-normal flex-1 pr-4">
+                                {item.question}
+                              </span>
+
+                              <div
+                                className={`flex-shrink-0 transition-transform duration-300 ${
+                                  isOpen ? 'rotate-180' : ''
+                                }`}
+                              >
+                                <svg
+                                  className="w-6 h-6 text-primary"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M19 9l-7 7-7-7"
+                                  />
+                                </svg>
+                              </div>
+                            </button>
+
+                            {isOpen && (
+                              <div className="overflow-hidden transition-all duration-300 max-h-[500px] opacity-100 px-8">
+                                <div className="py-4 border-t border-[#1063a7]/50">
+                                  <p className="font-prompt text-[1.375rem] text-primary font-normal leading-relaxed">
+                                    {item.answer}
+                                  </p>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })}
               </div>
-            </div>
+            )}
           </div>
-        ))}
-      </div>
+        );
+      })}
     </div>
   );
 }
