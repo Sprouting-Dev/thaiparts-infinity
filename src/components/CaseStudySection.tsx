@@ -38,48 +38,50 @@ export default function CaseStudySection({ sections }: CaseStudySectionProps) {
   };
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 ">
       {sections.map((section, sectionIndex) => {
         const coverImageUrl = getImageUrl(section.cover_image);
         
         return (
           <div key={section.id || sectionIndex} className="flex flex-col gap-6">
             {section.title && (
-              <h2 className="mt-16 font-['Kanit'] font-medium text-[1.75rem] text-primary underline decoration-accent decoration-2 underline-offset-8">
+              <h2 className="mt-16 font-['Kanit'] font-medium text-[1.375rem] lg:text-[1.75rem] text-primary underline decoration-accent decoration-2 underline-offset-8">
                 {section.title}
               </h2>
             )}
 
-            {coverImageUrl && (
-              <div className="w-full h-[25rem] relative rounded-3xl overflow-hidden">
-                <Image
-                  src={coverImageUrl}
-                  alt={section.case_study_name || 'Case study'}
-                  fill
-                  className="object-cover"
-                  unoptimized
-                />
-              </div>
-            )}
-
-            <div className="flex flex-col gap-4">
-              {section.case_study_name && (
-                <h3 className="font-['Kanit'] text-[1.375rem] font-bold text-primary">
-                  {section.case_study_name}
-                </h3>
-              )}
-              
-              {section.industry_name && (
-                <p className="text-end font-['Kanit'] text-base font-normal text-primary">
-                  {section.industry_name}
-                </p>
-              )}
-
-              {section.case_study_detail && (
-                <div className="case-study-content">
-                  <div dangerouslySetInnerHTML={{ __html: section.case_study_detail }} />
+            <div className="bg-[#ECEFF2] p-8 rounded-3xl flex flex-col gap-6">
+              {coverImageUrl && (
+                <div className="w-full aspect-square lg:aspect-auto lg:h-[25rem] relative rounded-3xl overflow-hidden">
+                  <Image
+                    src={coverImageUrl}
+                    alt={section.case_study_name || 'Case study'}
+                    fill
+                    className="object-cover"
+                    unoptimized
+                  />
                 </div>
               )}
+
+              <div className="flex flex-col gap-4">
+                {section.case_study_name && (
+                  <h3 className="font-['Kanit'] text-[1.375rem] font-bold text-primary">
+                    {section.case_study_name}
+                  </h3>
+                )}
+                
+                {section.industry_name && (
+                  <p className="text-end font-['Kanit'] text-base font-normal text-primary">
+                    {section.industry_name}
+                  </p>
+                )}
+
+                {section.case_study_detail && (
+                  <div className="case-study-content">
+                    <div dangerouslySetInnerHTML={{ __html: section.case_study_detail }} />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         );
@@ -129,11 +131,17 @@ export default function CaseStudySection({ sections }: CaseStudySectionProps) {
         
         .case-study-content h3 {
           font-family: 'Kanit', sans-serif;
-          font-size: 1.375rem;
+          font-size: 1rem;
           font-weight: 500;
           color: var(--color-primary);
           margin-top: 0.75rem;
           text-align: center;
+        }
+        
+        @media (min-width: 1024px) {
+          .case-study-content h3 {
+            font-size: 1.375rem;
+          }
         }
         
         .case-study-content p {
@@ -147,10 +155,17 @@ export default function CaseStudySection({ sections }: CaseStudySectionProps) {
         
         .case-study-content img {
           width: 100%;
-          height: 25rem;
+          aspect-ratio: 1 / 1;
           object-fit: cover;
           border-radius: 1.5rem;
           margin: 1rem 0;
+        }
+        
+        @media (min-width: 1024px) {
+          .case-study-content img {
+            aspect-ratio: auto;
+            height: 25rem;
+          }
         }
       `}</style>
     </div>

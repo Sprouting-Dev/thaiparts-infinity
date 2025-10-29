@@ -125,15 +125,15 @@ export default async function ServiceDetailPage({ params }: PageProps) {
   };
 
   return (
-    <main className="w-full flex flex-col px-[14.6875rem] py-[15.375rem]">
+    <main className="w-full flex flex-col px-4 lg:px-[14.6875rem] pt-32 pb-20 lg:py-[15.375rem]">
       <div className="flex flex-col">
-        <h1 className="flex items-center gap-2 font-['Kanit'] lg:font-medium lg:text-[1.75rem] text-primary">
-          <span className="w-4 h-4 rounded-full bg-accent"></span>
+        <h1 className="flex items-center gap-2 font-['Kanit'] font-medium text-base lg:text-[1.75rem] text-primary">
+          <span className="w-2 lg:w-4 h-2 lg:h-4 rounded-full bg-accent"></span>
           {s.title || s.name}
         </h1>
 
         {s.subtitle && (
-          <p className="ml-6 font-['Kanit'] lg:font-medium lg:text-[1.75rem] text-primary leading-relaxed">
+          <p className="ml-4 lg:ml-6 font-['Kanit'] font-medium text-base lg:text-[1.75rem] text-primary leading-relaxed">
             {s.subtitle}
           </p>
         )}
@@ -158,7 +158,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
                   alt={s.title || s.name}
                   width={970}
                   height={546}
-                  className="w-full h-[31.25rem] object-cover rounded-2xl"
+                  className="w-full aspect-square lg:aspect-auto lg:h-[31.25rem] object-cover rounded-2xl"
                   unoptimized
                 />
               </div>
