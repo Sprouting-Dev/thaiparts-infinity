@@ -72,6 +72,7 @@ export default function Header({ brand, navbar }: Props) {
     }
   };
 
+  // Get enabled CTAs from navbar (use Strapi data, minimal fallback)
   const enabledCTAs = navbar?.ctas?.filter(cta => cta.enabled !== false) || [];
 
   return (

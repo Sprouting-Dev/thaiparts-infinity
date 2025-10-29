@@ -1,6 +1,11 @@
-'use client';
+"use client";
 
+<<<<<<< HEAD
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+=======
 import { useState, useEffect, useCallback } from 'react';
+>>>>>>> origin/dev
 import { Product } from '@/types/product';
 import { productAPI } from '@/services/productService';
 import { ProductFilter, ProductCard } from '@/components';
@@ -8,6 +13,7 @@ import { categoryMapping, getProductsByCategory } from '@/lib/categoryMapping';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ProductsPage() {
+  const router = useRouter();
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -27,7 +33,6 @@ export default function ProductsPage() {
         }, 1000 * (retryCount + 1));
         return;
       }
-      
       setError('Failed to fetch products');
     } finally {
       setIsLoading(false);
@@ -47,11 +52,19 @@ export default function ProductsPage() {
     }, 300);
   };
 
+<<<<<<< HEAD
+  const handleProductClick = (product: Product) => {
+    const slugOrId = product.slug || String(product.id);
+    router.push(`/products/${slugOrId}`);
+  };
+
+=======
+>>>>>>> origin/dev
   const getFilteredProducts = () => {
     if (selectedFilter === 'all') {
       return {
-        'spare-parts': getProductsByCategory(products, 'spare-parts'),
         'plc-scada': getProductsByCategory(products, 'plc-scada'),
+        'spare-parts': getProductsByCategory(products, 'spare-parts'),
         'instrumentation': getProductsByCategory(products, 'instrumentation')
       };
     } else {
@@ -66,18 +79,14 @@ export default function ProductsPage() {
   const renderProductSection = (categoryKey: string, products: Product[]) => {
     const categoryInfo = categoryMapping[categoryKey];
     if (!categoryInfo || products.length === 0) return null;
-
-    const sortedProducts = getProductsByCategory(products, categoryKey);
-
     return (
       <div key={categoryKey} className="mb-12">
         <h2 className="text-primary lg:text-[1.375rem] font-medium w-full px-4 mt-[2.4375rem] underline decoration-[var(--color-accent)] decoration-1.5 underline-offset-8">
           {categoryInfo.title}
         </h2>
-        
         <div className="px-4 mt-5 lg:mt-8 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-            {sortedProducts.map(product => (
+            {products.map(product => (
               <ProductCard 
                 key={product.id} 
                 product={product}
@@ -92,6 +101,19 @@ export default function ProductsPage() {
   };
 
   return (
+<<<<<<< HEAD
+    <div className="px-4 lg:px-58.75">
+      <div className="mt-32 lg:mt-61.5 w-full flex justify-between items-center">
+        <h1 className="pl-5 text-primary font-medium lg:text-[1.375rem] flex items-baseline lg:items-center gap-4">
+          <span className="w-2 h-2 lg:w-4 lg:h-4 bg-accent rounded-full"></span>
+          อะไหล่และระบบที่เราเชี่ยวชาญ
+        </h1>
+        <ProductFilter
+          selectedOption={selectedFilter}
+          onOptionSelect={handleFilterChange}
+          className="mr-5"
+        />
+=======
     <>
       <div className="px-4 lg:px-58.75">
         <div className="mt-32 lg:mt-61.5 w-full flex justify-between items-center">
@@ -130,8 +152,28 @@ export default function ProductsPage() {
             )}
           </div>
         )}
+>>>>>>> origin/dev
       </div>
-    </>
+      {isLoading && <ProductsPageSkeleton />}
+      {!isLoading && isFilterLoading && <FilterLoadingSkeleton />}
+      {error && (
+        <div className="text-center py-8">
+          <p className="text-red-500 text-lg ">{error}</p>
+        </div>
+      )}
+      {!isLoading && !isFilterLoading && !error && (
+        <div>
+          {Object.entries(filteredProductsByCategory).map(([categoryKey, categoryProducts]) => 
+            renderProductSection(categoryKey, categoryProducts)
+          )}
+          {Object.values(filteredProductsByCategory).every(products => products.length === 0) && (
+            <div className="text-center py-8">
+              <p className="text-gray-500 text-lg">ไม่พบสินค้าในหมวดหมู่นี้</p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 

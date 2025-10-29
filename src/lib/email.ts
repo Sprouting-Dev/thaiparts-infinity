@@ -1,6 +1,17 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let resend: Resend;
+
+function getResendClient() {
+  if (!resend) {
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      throw new Error('RESEND_API_KEY is not configured');
+    }
+    resend = new Resend(apiKey);
+  }
+  return resend;
+}
 
 export interface EmailData {
   name: string;
@@ -12,8 +23,9 @@ export interface EmailData {
 
 export async function sendContactEmail(data: EmailData) {
   try {
-    // ส่ง email ไปยัง admin
-    const adminEmail = await resend.emails.send({
+    const client = getResendClient();
+    
+    const adminEmail = await client.emails.send({
       from: process.env.RESEND_FROM_EMAIL!,
       to: [process.env.ADMIN_EMAIL!],
       subject: `ข้อความใหม่จาก Contact Form - ${data.name}`,
@@ -42,8 +54,7 @@ export async function sendContactEmail(data: EmailData) {
       `,
     });
 
-    // ส่ง confirmation email กลับไปยัง user
-    const userEmail = await resend.emails.send({
+    const userEmail = await client.emails.send({
       from: process.env.RESEND_FROM_EMAIL!,
       to: [data.email],
       subject: 'Thank you for contacting Thai Parts Infinity',

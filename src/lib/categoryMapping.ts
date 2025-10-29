@@ -37,11 +37,15 @@ export const categoryMapping: Record<string, CategoryInfo> = {
   }
 };
 
+// Normalize helper to make tag comparisons robust to spacing/case differences
+const normalize = (value: string | undefined | null) =>
+  (value || '').trim().toLowerCase();
+
 export const getCategoryByTag = (tag: string): string | null => {
+  const nTag = normalize(tag);
   for (const [categoryKey, categoryInfo] of Object.entries(categoryMapping)) {
-    if (categoryInfo.tags.includes(tag)) {
-      return categoryKey;
-    }
+    const tagSet = new Set(categoryInfo.tags.map(t => normalize(t)));
+    if (tagSet.has(nTag)) return categoryKey;
   }
   return null;
 };
@@ -66,12 +70,15 @@ export const groupProductsByCategory = (products: Product[]): Record<string, Pro
 export const getProductsByCategory = (products: Product[], categoryKey: string): Product[] => {
   const categoryInfo = categoryMapping[categoryKey];
   if (!categoryInfo) return [];
-  
-  const filteredProducts = products.filter(product => categoryInfo.tags.includes(product.tag));
-  
+
+  const normalizedTags = categoryInfo.tags.map(t => normalize(t));
+  const filteredProducts = products.filter(product =>
+    normalizedTags.includes(normalize(product.tag))
+  );
+
   return filteredProducts.sort((a, b) => {
-    const tagIndexA = categoryInfo.tags.indexOf(a.tag);
-    const tagIndexB = categoryInfo.tags.indexOf(b.tag);
+    const tagIndexA = normalizedTags.indexOf(normalize(a.tag));
+    const tagIndexB = normalizedTags.indexOf(normalize(b.tag));
     
     if (tagIndexA !== tagIndexB) {
       return tagIndexA - tagIndexB;

@@ -76,6 +76,14 @@ body {
   font-family: var(--font-sans);
 }
 
+/* Decoration utilities for underline */
+.decoration-accent {
+  text-decoration-color: var(--color-accent);
+}
+.decoration-2 {
+  text-decoration-thickness: 2px;
+}
+
 /* Gradient border utility using pseudo-element approach */
 .gradient-border-btn {
   position: relative;
@@ -129,6 +137,52 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
 
+<<<<<<< HEAD
+/* Rich text content styling (tables, images) used in product detail */
+.richtext-content table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.richtext-content td,
+.richtext-content th {
+  padding: 0.375rem 0.5rem;
+  vertical-align: top;
+}
+.richtext-content td:first-child,
+.richtext-content th:first-child {
+  font-weight: 600; /* left column bold */
+}
+.richtext-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.75rem; /* 12px similar to rounded-xl */
+}
+
+/* Mobile: stack table rows so label is on top and detail below */
+@media (max-width: 1023px) {
+  .richtext-content table,
+  .richtext-content tbody,
+  .richtext-content tr,
+  .richtext-content td,
+  .richtext-content th {
+    display: block;
+    width: 100%;
+  }
+  .richtext-content tr {
+    margin-bottom: 0.75rem;
+    padding: 0.5rem 0.25rem;
+    background: transparent;
+  }
+  .richtext-content td:first-child,
+  .richtext-content th:first-child {
+    padding-bottom: 0.25rem;
+  }
+  .richtext-content td + td,
+  .richtext-content th + td {
+    padding-top: 0;
+  }
+}
+=======
 /* Product description table styles */
 .product-description table {
   margin-top: 32px !important;
@@ -152,3 +206,4 @@ body {
   font-weight: 500 !important;
 }
 
+>>>>>>> origin/dev

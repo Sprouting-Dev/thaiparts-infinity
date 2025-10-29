@@ -1,17 +1,17 @@
 export interface Product {
   id: number;
   name: string;
-  main_title?: string;
-  slug?: string;
   tag: string;
   image: string;
   description?: string;
   category?: string;
   price?: number;
   inStock?: boolean;
-  specifications?: Record<string, string | number | boolean>;
+  specifications?: Record<string, unknown>;
   createdAt?: string;
   updatedAt?: string;
+  slug?: string; // strapi slug for routing
+  mainTitle?: string; // original main_title from Strapi (display on detail page)
 }
 
 export interface ProductCategory {
