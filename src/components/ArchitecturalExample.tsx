@@ -20,15 +20,15 @@ export default function ArchitecturalExample({ sections }: ArchitecturalExampleP
       {sections.map((section, index) => (
         <div key={section.id || index} className="flex flex-col gap-6 ">
           {section.title && (
-            <h2 className="mt-16 font-['Kanit'] font-medium text-[1.75rem] text-primary underline decoration-accent decoration-2 underline-offset-8">
+            <h2 className="mt-16 font-['Kanit'] font-medium text-[1.375rem] lg:text-[1.75rem] text-primary underline decoration-accent decoration-2 underline-offset-8">
               {section.title}
             </h2>
           )}
           
           {section.article && (
-            <div className="bg-[#ECEFF2] p-6 rounded-3xl overflow-hidden">
+            <div className="bg-[#ECEFF2] p-6 rounded-3xl overflow-hidden ">
               <div 
-                className="architectural-example-content font-['Kanit']"
+                className="architectural-example-content font-['Kanit'] "
                 dangerouslySetInnerHTML={{ __html: section.article }}
               />
             </div>
@@ -38,9 +38,17 @@ export default function ArchitecturalExample({ sections }: ArchitecturalExampleP
       
       <style jsx global>{`
         .architectural-example-content h4 {
-          font-size: 1.375rem;
+          font-size: 1rem;
           font-weight: 500;
           color: var(--color-primary);
+          text-align: center;
+        }
+        
+        @media (min-width: 1024px) {
+          .architectural-example-content h4 {
+            font-size: 1.375rem;
+            text-align: left;
+          }
         }
         
         .architectural-example-content h1,
@@ -56,11 +64,18 @@ export default function ArchitecturalExample({ sections }: ArchitecturalExampleP
         }
         
         .architectural-example-content p {
-          line-height: 1.75;
+          margin-top: 2rem;
           margin-bottom: 1rem;
-          font-size: 1.375rem;
+          font-size: 1rem;
           color: var(--color-foreground);
           font-weight: 400;
+        }
+        
+        @media (min-width: 1024px) {
+          .architectural-example-content p {
+            font-size: 1.375rem;
+            margin-top: 0;
+          }
         }
         
         .architectural-example-content img {

@@ -57,7 +57,7 @@ export default function SafetyAndStandards({
       {sections.map((section, index) => (
         <div key={section.id || index} className="flex flex-col gap-6">
           {section.title && (
-            <h2 className="mt-16 font-['Kanit'] font-medium text-[1.75rem] text-primary underline decoration-accent decoration-2 underline-offset-8">
+            <h2 className="mt-16 font-['Kanit'] font-medium text-[1.375rem] lg:text-[1.75rem] text-primary underline decoration-accent decoration-2 underline-offset-8">
               {section.title}
             </h2>
           )}
@@ -78,10 +78,10 @@ export default function SafetyAndStandards({
                   key={idx}
                   className="bg-[#ECEFF2] rounded-2xl p-6 md:p-8 flex flex-col gap-4 hover:shadow-lg transition-shadow duration-300 cursor-pointer "
                 >
-                  <h3 className="font-['Kanit'] font-bold text-[1.75rem] text-primary text-center">
+                  <h3 className="font-['Kanit'] font-bold text-[1.375rem] lg:text-[1.75rem] text-primary text-center">
                     {card.title}
                   </h3>
-                  <p className="font-['Kanit'] font-medium text-[1.375rem]  text-primary text-center">
+                  <p className="font-['Kanit'] font-medium text-base lg:text-[1.375rem]  text-primary text-center">
                     {card.description}
                   </p>
                 </div>
