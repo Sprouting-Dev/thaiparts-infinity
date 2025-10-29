@@ -25,7 +25,7 @@ export default function CustomerReceive({
         return (
           <div key={section.id || index} className="flex flex-col gap-6">
             {section.title && (
-              <h2 className="mt-16 font-['Kanit'] font-medium text-[1.75rem] text-primary underline decoration-accent decoration-2 underline-offset-8">
+              <h2 className="mt-16 font-['Kanit'] font-medium text-[1.375rem] lg:text-[1.75rem] text-primary underline decoration-accent decoration-2 underline-offset-8">
                 {section.title}
               </h2>
             )}

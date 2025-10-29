@@ -38,7 +38,7 @@ export default function FAQAccordion({ sections }: FAQAccordionProps) {
         return (
           <div key={sectionId} className="flex flex-col gap-6">
             {section.title && (
-              <h2 className="mt-16 font-['Kanit'] font-medium text-[1.75rem] text-primary underline decoration-accent decoration-2 underline-offset-8">
+              <h2 className="mt-16 font-['Kanit'] font-medium text-[1.375rem] lg:text-[1.75rem] text-primary underline decoration-accent decoration-2 underline-offset-8">
                 {section.title}
               </h2>
             )}
@@ -63,7 +63,7 @@ export default function FAQAccordion({ sections }: FAQAccordionProps) {
                               onClick={() => toggleFAQ(uniqueKey)}
                               className="w-full flex items-center justify-between px-8 py-4 text-left cursor-pointer"
                             >
-                              <span className="font-prompt text-[1.375rem] text-primary font-normal flex-1 pr-4">
+                              <span className="font-prompt text-base lg:text-[1.375rem] text-primary font-normal flex-1 pr-4">
                                 {item.question}
                               </span>
 
@@ -91,7 +91,7 @@ export default function FAQAccordion({ sections }: FAQAccordionProps) {
                             {isOpen && (
                               <div className="overflow-hidden transition-all duration-300 max-h-[500px] opacity-100 px-8">
                                 <div className="py-4 border-t border-[#1063a7]/50">
-                                  <p className="font-prompt text-[1.375rem] text-primary font-normal leading-relaxed">
+                                  <p className="font-prompt text-base lg:text-[1.375rem] text-primary font-normal leading-relaxed">
                                     {item.answer}
                                   </p>
                                 </div>
