@@ -176,7 +176,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
       )}
 
       {s.customer_receive && s.customer_receive.length > 0 && (
-        <CustomerReceive 
+        <CustomerReceive
           sections={s.customer_receive}
           parseListItems={parseListItems}
         />
