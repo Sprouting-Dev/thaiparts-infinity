@@ -20,20 +20,17 @@ export default function ServiceCard({
   showSubtitle = false,
   linkable = false,
 }: ServiceCardProps) {
-  const imageUrl = thumbnailUrl || '';
-
   const CardContent = () => (
     <div className="group flex flex-col gap-3 hover:transform hover:scale-[1.02] transition-all duration-200">
-      {/* Image */}
       <div className="w-full aspect-[300/220] overflow-hidden rounded-lg relative">
-        {imageUrl ? (
+        {thumbnailUrl ? (
           (() => {
-            const isExternal = imageUrl.startsWith('http');
+            const isExternal = thumbnailUrl.startsWith('http');
             const src = isExternal
-              ? imageUrl
-              : imageUrl.startsWith('/')
-              ? imageUrl
-              : `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${imageUrl}`;
+              ? thumbnailUrl
+              : thumbnailUrl.startsWith('/')
+              ? thumbnailUrl
+              : `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${thumbnailUrl}`;
             return (
               <Image
                 src={src}
@@ -51,12 +48,10 @@ export default function ServiceCard({
         )}
       </div>
 
-      {/* Title */}
       <h3 className="font-['Kanit'] font-medium text-[20px] leading-tight text-[#333333] group-hover:text-[#1063A7] transition-colors duration-200">
         {name}
       </h3>
 
-      {/* Subtitle (optional) */}
       {showSubtitle && subtitle && (
         <p className="font-['Kanit'] text-[16px] text-[#666666] -mt-1">
           {subtitle}
