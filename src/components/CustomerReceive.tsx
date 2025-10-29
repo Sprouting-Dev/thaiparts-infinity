@@ -1,12 +1,12 @@
 interface CustomerReceiveSection {
   id?: number;
   title?: string;
-  cards?: any;
+  cards?: unknown;
 }
 
 interface CustomerReceiveProps {
   sections: CustomerReceiveSection[];
-  parseListItems: (data: any) => string[];
+  parseListItems: (data: unknown) => string[];
 }
 
 export default function CustomerReceive({ 

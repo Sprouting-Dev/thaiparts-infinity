@@ -1,12 +1,12 @@
 interface TechnologySection {
   id?: number;
   title?: string;
-  detail?: any;
+  detail?: unknown;
 }
 
 interface TechnologySectionProps {
   sections: TechnologySection[];
-  parseListItems: (data: any) => string[];
+  parseListItems: (data: unknown) => string[];
 }
 
 export default function TechnologySection({ sections, parseListItems }: TechnologySectionProps) {
