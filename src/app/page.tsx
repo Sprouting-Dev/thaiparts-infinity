@@ -91,7 +91,7 @@ export default function Page() {
         title: "ตลับลูกปืน, ลูกกลิ้ง",
         image: "/homepage/products/bearings-and-rollers.webp",
         categoryBadge: { label: 'Mechanical Parts', color: 'blue' },
-        href: "/products/bearings-rollers"
+        href: "/products/bearing-roller"
       },
       {
         title: "Hydraulic System",

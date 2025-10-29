@@ -9,126 +9,117 @@ export const metadata: Metadata = {
 type Service = {
   id: number;
   attributes: {
-    name: string;
+    title: string;
     slug: string;
     subtitle?: string;
-    thumbnail?: {
-      data?: { attributes?: { url?: string } };
-      url?: string; // flattened fallback
+    image?: {
+      data?: Array<{
+        attributes?: {
+          url?: string;
+          formats?: Record<string, unknown>;
+        };
+      }>;
     };
   };
 };
 
-function getServices(): Service[] {
-  // Static services data (mirror homepage services)
-  return [
-    {
-      id: 1,
-      attributes: {
-        name: 'System Design & Upgrade',
-        slug: 'system-design',
-        subtitle: 'ออกแบบและยกระดับระบบ',
-        thumbnail: { url: '/homepage/services/system-design-and-upgrade.webp' }
-      }
-    },
-    {
-      id: 2,
-      attributes: {
-        name: 'Preventive Maintenance',
-        slug: 'preventive-maintenance',
-        subtitle: 'บำรุงรักษาเชิงป้องกัน',
-        thumbnail: { url: '/homepage/services/preventive-maintenance.webp' }
-      }
-    },
-    {
-      id: 3,
-      attributes: {
-        name: 'Rapid Response & On-site Support',
-        slug: 'rapid-response',
-        subtitle: 'บริการฉุกเฉิน และการสนับสนุนในพื้นที่',
-        thumbnail: { url: '/homepage/services/rapid-response-and-on-site-support.webp' }
-      }
+async function fetchServices(): Promise<Service[]> {
+  const STRAPI_URL =
+    process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
+  const STRAPI_TOKEN = process.env.STRAPI_API_TOKEN;
+
+  try {
+    const headers: HeadersInit = {};
+    if (STRAPI_TOKEN) {
+      headers.Authorization = `Bearer ${STRAPI_TOKEN}`;
     }
-  ];
+
+    const res = await fetch(`${STRAPI_URL}/api/services?populate=*`, {
+      headers,
+      next: { revalidate: 300 },
+      cache: 'no-store',
+    });
+
+    if (!res.ok) {
+      return [];
+    }
+
+    const json = await res.json();
+    return json?.data ?? [];
+  } catch {
+    return [];
+  }
 }
 
-export default function ServicesPage() {
-  const services = getServices();
+export default async function ServicesPage() {
+  const services = await fetchServices();
 
   return (
-    <div className="bg-[#F5F5F5] min-h-screen">
-      <main className="w-full flex flex-col items-center pt-24">
-        <div className="container-970 flex flex-col gap-8 py-8">
-          {/* Header */}
-          <div className="flex items-center gap-3">
-            <div className="w-4 h-4 rounded-full bg-[#E92928] flex-shrink-0" />
-            <h1 className="font-['Kanit'] font-medium text-[22px] leading-[33px] md:text-[28px] md:leading-[42px] text-[#1063A7]">
-              บริการและโซลูชันวิศวกรรม
-            </h1>
-          </div>
-
-          {/* Services Grid */}
-          {services.length > 0 ? (
-            <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-7 lg:gap-8">
-              {services.map(service => {
-                if (!service || !service.attributes) return null;
-                const { attributes } = service;
-                const imageUrl =
-                  attributes.thumbnail?.data?.attributes?.url ||
-                  attributes.thumbnail?.url ||
-                  '';
-
-                return (
-                  <div
-                    key={service.id}
-                    className="group flex flex-col gap-3 hover:transform hover:scale-[1.02] transition-all duration-200"
-                  >
-                    {/* Image */}
-                    <div className="w-full aspect-[300/220] overflow-hidden rounded-lg relative">
-                      {imageUrl ? (
-                        (() => {
-                          const isExternal = imageUrl.startsWith('http');
-                          const src = isExternal
-                            ? imageUrl
-                            : imageUrl.startsWith('/')
-                            ? imageUrl
-                            : `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${imageUrl}`;
-                          return (
-                            <Image
-                              src={src}
-                              alt={attributes.name}
-                              fill
-                              className="object-cover group-hover:scale-105 transition-transform duration-300"
-                              unoptimized={isExternal}
-                            />
-                          );
-                        })()
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-neutral-200 to-neutral-300 flex items-center justify-center">
-                          <div className="text-neutral-400 text-4xl">🔧</div>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Title */}
-                    <h3 className="font-['Kanit'] font-medium text-[20px] leading-tight text-[#333333] group-hover:text-[#1063A7] transition-colors duration-200">
-                      {attributes.name}
-                    </h3>
-
-                    {/* Subtitle intentionally omitted on services page */}
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="w-full text-center py-16">
-              <p className="font-['Kanit'] text-[18px] text-[#666666]">
-                ไม่พบข้อมูลบริการในขณะนี้
-              </p>
-            </div>
-          )}
+    <div className="min-h-screen w-full bg-gradient-to-b from-white to-[#F5F5F5]">
+      <div className="px-4 lg:px-[14.6875rem] mt-32 lg:mt-[15.375rem]">
+        <div className="flex items-center gap-3 lg:gap-4 mb-6 lg:mb-8">
+          <span className="w-2 h-2 lg:w-4 lg:h-4 rounded-full bg-accent flex-shrink-0"></span>
+          <h1 className="font-['Kanit'] font-medium text-[1.375rem] lg:text-[1.75rem] text-primary">
+            บริการของเรา
+            <span className="hidden lg:inline">และโซลูชันวิศวกรรม</span>
+          </h1>
         </div>
-      </main>
+
+        <p className="font-['Kanit'] font-normal text-base lg:text-[1.375rem] text-foreground mb-8 lg:mb-12 leading-relaxed">
+          บริการของเราครอบคลุมตั้งแต่ การวิเคราะห์ความต้องการ
+          การออกแบบสถาปัตยกรรม การติดตั้งฮาร์ดแวร์ และซอฟต์แวร์ การเชื่อมต่อกับ
+          PLC/RTU ถึงการทำงานร่วมกับระบบ ERP/CMMS สำหรับการรายงานเชิงธุรกิจ
+          เราเน้นการออกแบบที่แยกเครือข่าย OT/IT, ใช้มาตรการ defense-in-depth
+          ตามแนวทาง NIST และ IEC62443, และใช้เทคโนโลยีมาตรฐานเช่น OPC UA
+          เพื่อความมั่นคงและความยืดหยุ่นของระบบ
+        </p>
+
+        {services.length > 0 ? (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-[2.1875rem] pb-16">
+            {services.map(service => {
+              if (!service?.attributes) return null;
+
+              const { attributes } = service;
+              const imageArray = attributes.image?.data;
+              const firstImage =
+                Array.isArray(imageArray) && imageArray.length > 0
+                  ? imageArray[0]
+                  : null;
+              const imageUrl = firstImage?.attributes?.url || '';
+
+              return (
+                <div key={service.id} className="flex flex-col">
+                  <div className="w-full h-[13.75rem] relative rounded-lg overflow-hidden mb-4">
+                    {imageUrl ? (
+                      <Image
+                        src={imageUrl}
+                        alt={attributes.title}
+                        fill
+                        className="object-cover"
+                        unoptimized
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                        <span className="text-4xl">🔧</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <h2 className="font-['Kanit'] font-medium text-base lg:text-[1.375rem] text-foreground">
+                    {attributes.title}
+                  </h2>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="text-center py-16">
+            <p className="font-['Kanit'] text-base lg:text-[1.125rem] text-gray-500">
+              ไม่พบข้อมูลบริการในขณะนี้
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

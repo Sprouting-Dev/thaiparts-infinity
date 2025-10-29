@@ -1,185 +1,200 @@
-import { Metadata } from 'next';
-import { getCategoryBadgeStyle } from '@/lib/categoryBadge';
-import Image from 'next/image';
+'use client';
 
-export const metadata: Metadata = {
-  title: 'Products | THAIPARTS INFINITY',
-  description: 'Industrial automation products and spare parts',
-};
-
-type Product = {
-  id: number;
-  attributes: {
-    name: string;
-    slug: string;
-    subtitle?: string;
-    thumbnail?: {
-      data?: { attributes?: { url?: string } };
-      url?: string; // flattened fallback
-    };
-    categoryBadge?: { label?: string; color?: string } | null;
-  };
-};
-
-function getProducts(): Product[] {
-  // Static product data
-  return [
-    {
-      id: 1,
-      attributes: {
-        // Match homepage title
-        name: "ตลับลูกปืน, ลูกกลิ้ง",
-        slug: "bearings-rollers",
-        subtitle: "Bearings & Rollers",
-        thumbnail: { url: '/homepage/products/bearings-and-rollers.webp' },
-        categoryBadge: { label: 'Mechanical Parts', color: 'blue' }
-      }
-    },
-    {
-      id: 2,
-      attributes: {
-        name: "Hydraulic System",
-        slug: "hydraulic-system",
-        subtitle: "Hydraulic Components & Systems",
-        thumbnail: { url: '/homepage/products/hydraulic-system.webp' },
-        categoryBadge: { label: 'Fluid Systems', color: 'teal' }
-      }
-    },
-    {
-      id: 3,
-      attributes: {
-        name: "Motor & Drive",
-        slug: "motor-drive",
-        subtitle: "Motors & Drive Systems",
-        thumbnail: { url: '/homepage/products/motor-and-drive.webp' },
-        categoryBadge: { label: 'Electrical Hardware', color: 'red' }
-      }
-    },
-    {
-      id: 4,
-      attributes: {
-        name: "PLC Module",
-        slug: "plc-module",
-        subtitle: "Programmable Logic Controllers",
-        thumbnail: { url: '/homepage/products/plc-module.webp' },
-        categoryBadge: { label: 'PLC/SCADA/Automation', color: 'navy' }
-      }
-    },
-    {
-      id: 5,
-      attributes: {
-        name: "Pressure & Flow",
-        slug: "pressure-flow",
-        subtitle: "Pressure & Flow Control Systems",
-        thumbnail: { url: '/homepage/products/pressure-and-flow.webp' },
-        categoryBadge: { label: 'Measurement Systems', color: 'green' }
-      }
-    }
-  ];
-}
+import { useState, useEffect, useCallback } from 'react';
+import { Product } from '@/types/product';
+import { productAPI } from '@/services/productService';
+import { ProductFilter, ProductCard } from '@/components';
+import { categoryMapping, getProductsByCategory } from '@/lib/categoryMapping';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ProductsPage() {
-  const products = getProducts();
+  const [selectedFilter, setSelectedFilter] = useState('all');
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isFilterLoading, setIsFilterLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchProducts = useCallback(async (retryCount = 0) => {
+    try {
+      setIsLoading(true);
+      const response = await productAPI.getProducts();
+      setProducts(response.products);
+      setError(null);
+    } catch (err) {
+      if (retryCount < 2 && (err as Error).message.includes('401')) {
+        setTimeout(() => {
+          fetchProducts(retryCount + 1);
+        }, 1000 * (retryCount + 1));
+        return;
+      }
+      
+      setError('Failed to fetch products');
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
+  const handleFilterChange = (filterId: string) => {
+    setIsFilterLoading(true);
+    setSelectedFilter(filterId);
+    
+    setTimeout(() => {
+      setIsFilterLoading(false);
+    }, 300);
+  };
+
+  const getFilteredProducts = () => {
+    if (selectedFilter === 'all') {
+      return {
+        'spare-parts': getProductsByCategory(products, 'spare-parts'),
+        'plc-scada': getProductsByCategory(products, 'plc-scada'),
+        'instrumentation': getProductsByCategory(products, 'instrumentation')
+      };
+    } else {
+      return {
+        [selectedFilter]: getProductsByCategory(products, selectedFilter)
+      };
+    }
+  };
+
+  const filteredProductsByCategory = getFilteredProducts();
+
+  const renderProductSection = (categoryKey: string, products: Product[]) => {
+    const categoryInfo = categoryMapping[categoryKey];
+    if (!categoryInfo || products.length === 0) return null;
+
+    const sortedProducts = getProductsByCategory(products, categoryKey);
+
+    return (
+      <div key={categoryKey} className="mb-12">
+        <h2 className="text-primary lg:text-[1.375rem] font-medium w-full px-4 mt-[2.4375rem] underline decoration-[var(--color-accent)] decoration-1.5 underline-offset-8">
+          {categoryInfo.title}
+        </h2>
+        
+        <div className="px-4 mt-5 lg:mt-8 w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            {sortedProducts.map(product => (
+              <ProductCard 
+                key={product.id} 
+                product={product}
+                showPrice={true}
+                showStock={true}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
-    <div className="bg-[#F5F5F5] min-h-screen">
-      <main className="w-full flex flex-col items-center pt-24">
-        <div className="container-970 flex flex-col gap-8 py-8">
-          {/* Header */}
-          <div className="flex items-center gap-3">
-            <div className="w-4 h-4 rounded-full bg-[#E92928] flex-shrink-0" />
-            <h1 className="font-['Kanit'] font-medium text-[22px] leading-[33px] md:text-[28px] md:leading-[42px] text-[#1063A7]">
-              อะไหล่และระบบที่เราเชี่ยวชาญ
-            </h1>
-          </div>
+    <>
+      <div className="px-4 lg:px-58.75">
+        <div className="mt-32 lg:mt-61.5 w-full flex justify-between items-center">
+          <h1 className="pl-5 text-primary font-medium lg:text-[1.375rem] flex items-baseline lg:items-center gap-4">
+            <span className="w-2 h-2 lg:w-4 lg:h-4 bg-accent rounded-full"></span>
+            อะไหล่และระบบที่เราเชี่ยวชาญ
+          </h1>
 
-          {/* Products Grid */}
-          {products.length > 0 ? (
-            <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-7 lg:gap-8">
-              {products.map(product => {
-                if (!product || !product.attributes) return null;
-                const { attributes } = product;
-                const imageUrl =
-                  attributes.thumbnail?.data?.attributes?.url ||
-                  attributes.thumbnail?.url ||
-                  '';
-                const categoryBadge = attributes.categoryBadge || null;
-
-                const categoryStyle = getCategoryBadgeStyle(
-                  categoryBadge?.color
-                );
-
-                return (
-                  <div
-                    key={product.id}
-                    className="group flex flex-col gap-3 hover:transform hover:scale-[1.02] transition-all duration-200"
-                  >
-                    {/* Image */}
-                    <div className="w-full aspect-[300/220] overflow-hidden rounded-lg relative">
-                      {imageUrl ? (
-                        (() => {
-                          const isExternal = imageUrl.startsWith('http');
-                          const src = isExternal
-                            ? imageUrl
-                            : imageUrl.startsWith('/')
-                            ? imageUrl
-                            : `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${imageUrl}`;
-
-                          return (
-                            <Image
-                              src={src}
-                              alt={attributes.name}
-                              fill
-                              className="object-cover group-hover:scale-105 transition-transform duration-300"
-                              // Allow external images without next.config domains
-                              unoptimized={isExternal}
-                            />
-                          );
-                        })()
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-neutral-200 to-neutral-300 flex items-center justify-center">
-                          <div className="text-neutral-400 text-4xl">📦</div>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Badge */}
-                    {categoryBadge?.label && categoryStyle && (
-                      <div
-                        className={`${categoryStyle.bg} rounded-full flex justify-center items-center px-3 py-1 w-fit`}
-                      >
-                        <span
-                          className={`font-['Kanit'] font-semibold text-sm ${categoryStyle.text}`}
-                        >
-                          {categoryBadge.label}
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Title */}
-                    <h3 className="font-['Kanit'] font-medium text-[20px] leading-tight text-[#333333] group-hover:text-[#1063A7] transition-colors duration-200">
-                      {attributes.name}
-                    </h3>
-
-                    {/* Subtitle */}
-                    {attributes.subtitle && (
-                      <p className="font-['Kanit'] font-normal text-[14px] leading-relaxed text-[#666666]">
-                        {attributes.subtitle}
-                      </p>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="w-full text-center py-16">
-              <p className="font-['Kanit'] text-[18px] text-[#666666]">
-                ไม่พบข้อมูลสินค้าในขณะนี้
-              </p>
-            </div>
-          )}
+          <ProductFilter
+            selectedOption={selectedFilter}
+            onOptionSelect={handleFilterChange}
+            className="mr-5"
+          />
         </div>
-      </main>
+
+        {isLoading && <ProductsListSkeleton />}
+
+        {!isLoading && isFilterLoading && <FilterChangeSkeleton />}
+
+        {error && (
+          <div className="text-center py-8">
+            <p className="text-red-500 text-lg">{error}</p>
+          </div>
+        )}
+
+        {!isLoading && !isFilterLoading && !error && (
+          <div>
+            {Object.entries(filteredProductsByCategory).map(([categoryKey, categoryProducts]) => 
+              renderProductSection(categoryKey, categoryProducts)
+            )}
+            
+            {Object.values(filteredProductsByCategory).every(products => products.length === 0) && (
+              <div className="text-center py-8">
+                <p className="text-gray-500 text-lg">ไม่พบสินค้าในหมวดหมู่นี้</p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
+// Skeleton Components
+function ProductCardSkeleton() {
+  return (
+    <div className="w-full h-auto bg-secondary transition-shadow duration-300 overflow-hidden">
+      <div className="relative aspect-video">
+        <Skeleton className="absolute inset-0" />
+      </div>
+      <div className="py-4">
+        <div className="mb-2">
+          <Skeleton className="h-6 w-48 rounded-full" />
+        </div>
+        <div className="space-y-2 mb-2">
+          <Skeleton className="h-6 w-full" />
+          <Skeleton className="h-6 w-3/4" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CategorySectionSkeleton({ itemCount = 6 }: { itemCount?: number }) {
+  return (
+    <div className="mb-12">
+      <div className="w-full px-4 mt-[2.4375rem]">
+        <Skeleton className="h-8 w-80" />
+      </div>
+      <div className="px-4 mt-8 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          {Array.from({ length: itemCount }).map((_, index) => (
+            <ProductCardSkeleton key={index} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProductsListSkeleton() {
+  return (
+    <div>
+      <CategorySectionSkeleton itemCount={6} />
+      <CategorySectionSkeleton itemCount={4} />
+      <CategorySectionSkeleton itemCount={3} />
+    </div>
+  );
+}
+
+function FilterChangeSkeleton() {
+  return (
+    <div className="mb-12">
+      <div className="w-full px-4 mt-[2.4375rem]">
+        <Skeleton className="h-8 w-80" />
+      </div>
+      <div className="px-4 mt-8 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <ProductCardSkeleton key={index} />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,4 +1,3 @@
-// Button style utility based on CTA variants from Strapi
 export type CTAVariant =
   | 'hero-secondary'
   | 'secondary'
@@ -15,8 +14,8 @@ export interface ButtonStyle {
   };
   boxShadow?: string;
   textShadow?: string;
-  border?: string; // simple border (not gradient)
-  borderGradient?: string; // gradient for pseudo-element approach
+  border?: string;
+  borderGradient?: string;
   borderWidth?: string;
 }
 
@@ -24,7 +23,7 @@ export function getButtonStyle(variant: CTAVariant): ButtonStyle {
   switch (variant) {
     case 'hero-secondary':
       return {
-        bg: 'rgba(0, 0, 0, 1)', // Black background
+        bg: 'rgba(0, 0, 0, 1)',
         hoverBg: 'rgba(0, 0, 0, 0.8)',
         color: '#FFFFFF',
         padding: {
@@ -39,7 +38,7 @@ export function getButtonStyle(variant: CTAVariant): ButtonStyle {
 
     case 'secondary':
       return {
-        bg: 'rgba(233, 41, 40, 1)', // Solid red background
+        bg: 'rgba(233, 41, 40, 1)', 
         hoverBg: 'rgba(233, 41, 40, 0.8)',
         color: '#FFFFFF',
         padding: {
@@ -79,7 +78,6 @@ export function getButtonStyle(variant: CTAVariant): ButtonStyle {
         textShadow: '0px 2px 8px rgba(0, 0, 0, 0.5)',
         borderGradient: 'linear-gradient(180deg, #CCE8FF 0%, #1063A7 100%)',
         borderWidth: '2px',
-        // Only content-primary keeps gradient border for special content
       };
 
     default:
@@ -95,7 +93,6 @@ export function getButtonStyle(variant: CTAVariant): ButtonStyle {
   }
 }
 
-// Helper function to convert responsive padding to Tailwind classes
 export function getResponsivePaddingClasses(padding: {
   mobile: string;
   desktop: string;
