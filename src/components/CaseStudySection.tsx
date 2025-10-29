@@ -22,16 +22,20 @@ export default function CaseStudySection({ sections }: CaseStudySectionProps) {
     return null;
   }
 
-  const getImageUrl = (imageField: any): string | null => {
-    if (!imageField?.data) return null;
+  const getImageUrl = (imageField: unknown): string | null => {
+    if (!imageField || typeof imageField !== 'object' || !('data' in imageField)) return null;
     
-    const imageData = Array.isArray(imageField.data) 
-      ? imageField.data[0] 
-      : imageField.data;
+    const { data } = imageField as { data: unknown };
+    const imageData = Array.isArray(data) 
+      ? data[0] 
+      : data;
     
-    if (!imageData?.attributes?.url) return null;
+    if (!imageData || typeof imageData !== 'object' || !('attributes' in imageData)) return null;
     
-    const url = imageData.attributes.url;
+    const { attributes } = imageData as { attributes: { url?: string } };
+    if (!attributes?.url) return null;
+    
+    const url = attributes.url;
     return url.startsWith('http') 
       ? url 
       : `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${url}`;

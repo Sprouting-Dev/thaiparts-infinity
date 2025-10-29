@@ -26,3 +26,23 @@ export async function getServiceBySlug(slug: string) {
     throw error;
   }
 }
+
+export async function getAllServices() {
+  try {
+    const url = `${STRAPI_URL}/api/services?populate[cover_image]=*`;
+    
+    const res = await fetch(url, { 
+      headers: getStrapiHeaders(),
+      cache: 'no-store'
+    });
+    
+    if (!res.ok) {
+      throw new Error(`Failed to fetch services: ${res.status}`);
+    }
+    
+    const data = await res.json();
+    return data.data || [];
+  } catch {
+    return [];
+  }
+}

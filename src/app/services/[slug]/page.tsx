@@ -41,19 +41,37 @@ export default async function ServiceDetailPage({ params }: PageProps) {
 
   const s = serviceRes.attributes;
 
-  const parseListItems = (data: any): string[] => {
+  type RichTextChild = {
+    text?: string;
+    bold?: boolean;
+    italic?: boolean;
+  };
+
+  type RichTextListItem = {
+    type: string;
+    children?: RichTextChild[];
+  };
+
+  type RichTextBlock = {
+    type: string;
+    level?: number;
+    format?: string;
+    children?: (RichTextChild | RichTextListItem)[];
+  };
+
+  const parseListItems = (data: unknown): string[] => {
     if (Array.isArray(data) && typeof data[0] === 'string') {
       return data;
     }
 
     if (Array.isArray(data)) {
       const items: string[] = [];
-      data.forEach((block: any) => {
+      data.forEach((block: RichTextBlock) => {
         if (block.type === 'list') {
-          block.children?.forEach((listItem: any) => {
-            if (listItem.type === 'list-item') {
+          block.children?.forEach((listItem) => {
+            if ('type' in listItem && listItem.type === 'list-item') {
               const text = listItem.children
-                ?.map((child: any) => child.text || '')
+                ?.map((child: RichTextChild) => child.text || '')
                 .join(' ')
                 .trim();
               if (text) items.push(text);
@@ -61,7 +79,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
           });
         } else if (block.type === 'paragraph') {
           const text = block.children
-            ?.map((child: any) => child.text || '')
+            ?.map((child) => ('text' in child ? child.text || '' : ''))
             .join(' ')
             .trim();
           if (text) items.push(text);
@@ -81,17 +99,18 @@ export default async function ServiceDetailPage({ params }: PageProps) {
     return [];
   };
 
-  const renderRichText = (data: any): string => {
+  const renderRichText = (data: unknown): string => {
     if (typeof data === 'string') {
       return data;
     }
 
     if (Array.isArray(data)) {
       let html = '';
-      data.forEach((block: any) => {
+      data.forEach((block: RichTextBlock) => {
         if (block.type === 'paragraph') {
           const text = block.children
-            ?.map((child: any) => {
+            ?.map((child) => {
+              if (!('text' in child)) return '';
               let t = child.text || '';
               if (child.bold) t = `<strong>${t}</strong>`;
               if (child.italic) t = `<em>${t}</em>`;
@@ -102,15 +121,16 @@ export default async function ServiceDetailPage({ params }: PageProps) {
         } else if (block.type === 'heading') {
           const level = block.level || 2;
           const text = block.children
-            ?.map((child: any) => child.text || '')
+            ?.map((child) => ('text' in child ? child.text || '' : ''))
             .join('');
           html += `<h${level}>${text}</h${level}>`;
         } else if (block.type === 'list') {
           const tag = block.format === 'ordered' ? 'ol' : 'ul';
           const items = block.children
-            ?.map((item: any) => {
+            ?.map((item) => {
+              if (!('type' in item)) return '';
               const text = item.children
-                ?.map((child: any) => child.text || '')
+                ?.map((child: RichTextChild) => child.text || '')
                 .join('');
               return `<li>${text}</li>`;
             })
@@ -139,33 +159,32 @@ export default async function ServiceDetailPage({ params }: PageProps) {
         )}
       </div>
 
-      {s.cover_image?.data &&
-        (() => {
-          const coverImageData = Array.isArray(s.cover_image.data)
-            ? s.cover_image.data[0]
-            : s.cover_image.data;
+      {s.cover_image?.data && (() => {
+        const coverImageData = Array.isArray(s.cover_image.data)
+          ? s.cover_image.data[0]
+          : s.cover_image.data;
 
-          if (coverImageData?.attributes?.url) {
-            const url = coverImageData.attributes.url;
-            const coverImageUrl = url.startsWith('http')
-              ? url
-              : `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${url}`;
+        if (coverImageData?.attributes?.url) {
+          const url = coverImageData.attributes.url;
+          const coverImageUrl = url.startsWith('http')
+            ? url
+            : `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${url}`;
 
-            return (
-              <div className="mt-8 w-full rounded-2xl overflow-hidden shadow-lg">
-                <Image
-                  src={coverImageUrl}
-                  alt={s.title || s.name}
-                  width={970}
-                  height={546}
-                  className="w-full aspect-square lg:aspect-auto lg:h-[31.25rem] object-cover rounded-2xl"
-                  unoptimized
-                />
-              </div>
-            );
-          }
-          return null;
-        })()}
+          return (
+            <div className="mt-8 w-full rounded-2xl overflow-hidden shadow-lg">
+              <Image
+                src={coverImageUrl}
+                alt={s.title || s.name}
+                width={970}
+                height={546}
+                className="w-full aspect-square lg:aspect-auto lg:h-[31.25rem] object-cover rounded-2xl"
+                unoptimized
+              />
+            </div>
+          );
+        }
+        return null;
+      })()}
 
       {s.safety_and_standard && s.safety_and_standard.length > 0 && (
         <SafetyAndStandards
@@ -201,7 +220,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
         <CaseStudySection sections={s.case_study} />
       )}
 
-      {s.faqs && s.faqs.length > 0 && <FAQAccordion faqs={s.faqs} />}
+      {s.faqs && s.faqs.length > 0 && <FAQAccordion sections={s.faqs} />}
     </main>
   );
 }
