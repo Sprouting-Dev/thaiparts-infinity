@@ -28,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const images = global?.seo?.ogImage
     ? [{ url: global.seo.ogImage, width: 1200, height: 630, alt: title }]
     : [];
-  
+
   return {
     title,
     description,

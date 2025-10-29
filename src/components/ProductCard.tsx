@@ -1,5 +1,7 @@
+import Image from 'next/image';
 import { Product } from '@/types/product';
 import { getColorByTagName, getCategoryBadgeStyle } from '@/lib/categoryBadge';
+import { useRouter } from 'next/navigation';
 
 interface ProductCardProps {
   product: Product;
@@ -14,9 +16,13 @@ export const ProductCard = ({
   onClick, 
   className = "",
 }: ProductCardProps) => {
+  const router = useRouter();
+
   const handleClick = () => {
     if (onClick) {
       onClick(product);
+    } else if (product.slug) {
+      router.push(`/products/${product.slug}`);
     }
   };
 
@@ -29,14 +35,12 @@ export const ProductCard = ({
       onClick={handleClick}
     >
       <div className="relative aspect-video bg-gray-100">
-        <img
+        <Image
           src={product.image}
           alt={product.name}
-          className="w-full h-full object-cover"
-          onError={(e) => {
-            console.error('Image failed to load:', product.image);
-            e.currentTarget.src = '/placeholder-image.jpg';
-          }}
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
       </div>
 
