@@ -41,16 +41,6 @@ export default async function ServiceDetailPage({ params }: PageProps) {
 
   const s = serviceRes.attributes;
 
-  const getImageUrl = (imageField: any) => {
-    const url = imageField?.data?.attributes?.url || imageField?.url;
-    if (!url) return null;
-    return url.startsWith('http')
-      ? url
-      : `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${url}`;
-  };
-
-  const heroImageUrl = getImageUrl(s.image);
-
   const parseListItems = (data: any): string[] => {
     if (Array.isArray(data) && typeof data[0] === 'string') {
       return data;
