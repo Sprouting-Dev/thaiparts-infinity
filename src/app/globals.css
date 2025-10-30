@@ -76,6 +76,14 @@ body {
   font-family: var(--font-sans);
 }
 
+/* Decoration utilities for underline */
+.decoration-accent {
+  text-decoration-color: var(--color-accent);
+}
+.decoration-2 {
+  text-decoration-thickness: 2px;
+}
+
 /* Gradient border utility using pseudo-element approach */
 .gradient-border-btn {
   position: relative;
