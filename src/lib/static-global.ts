@@ -43,80 +43,55 @@ export interface StaticGlobalData {
 }
 
 export const staticGlobalData: StaticGlobalData = {
-  favicon: "/favicon.svg",
+  favicon: '/favicon.ico',
   seo: {
-    metaTitle: "THAIPARTS INFINITY - Industrial Automation & Spare Parts",
-    metaDescription: "ผู้ให้บริการอะไหล่และระบบ Automation ครบวงจร (One Stop Service) สำหรับอุตสาหกรรมหนัก ด้วยพันธกิจหลักในการช่วยโรงงานของคุณ ลดความเสี่ยง (Reduce Risk) และ ลดการหยุดทำงาน (Minimize Downtime)",
-    ogImage: "/homepage/homepage-hero.png"
+    metaTitle: 'THAIPARTS INFINITY - Industrial Automation & Spare Parts',
+    metaDescription:
+      'ผู้ให้บริการอะไหล่และระบบ Automation ครบวงจร (One Stop Service) สำหรับอุตสาหกรรมหนัก ด้วยพันธกิจหลักในการช่วยโรงงานของคุณ ลดความเสี่ยง (Reduce Risk) และ ลดการหยุดทำงาน (Minimize Downtime)',
+    ogImage: '/homepage/homepage-hero.png',
   },
   brand: {
     segments: [
       {
-        text: "THAIPARTS",
-        color: "primary"
+        text: 'THAIPARTS',
+        color: 'primary',
       },
       {
-        text: "INFINITY", 
-        color: "red"
-      }
+        text: 'INFINITY',
+        color: 'red',
+      },
     ],
-  logo: "/thaiparts-infinity-logo.svg"
+    logo: '/thaiparts-infinity-logo.svg',
   },
-  navbar: {
-    ctas: [
-      {
-        label: "ติดต่อด่วน 092-424-2144",
-        href: "tel:0924242144",
-        variant: "secondary",
-        newTab: false,
-        enabled: true
-      },
-      {
-        label: "ติดต่อเรา",
-        href: "/contact-us",
-        variant: "primary", 
-        newTab: false,
-        enabled: true
-      }
-    ]
-  },
+  // Navbar CTAs are intentionally omitted so the site uses the CMS-provided
+  // navbar. This prevents hard-coded CTAs from masking Strapi edits.
   footer: {
     columns: [
       {
-        title: "บริษัท",
-        links: [
-          { label: "เกี่ยวกับเรา", href: "/about" },
-          { label: "ผลงาน", href: "/products" },
-          { label: "บริการ", href: "/services" },
-          { label: "บทความ", href: "/posts" }
-        ]
+        title: 'บริษัท',
+        links: [],
       },
       {
-        title: "ติดต่อ",
-        links: [
-          { label: "ติดต่อเรา", href: "/contact-us" },
-          { label: "02-123-4567", href: "tel:021234567" },
-          { label: "info@thaiparts-infinity.com", href: "mailto:info@thaiparts-infinity.com" }
-        ]
+        title: 'ติดต่อ',
+        links: [],
       },
       {
-        title: "ที่อยู่",
-        links: [
-          { label: "123 ถนนอุตสาหกรรม", href: "#" },
-          { label: "กรุงเทพมหานคร 10400", href: "#" }
-        ]
-      }
-    ]
+        title: 'ที่อยู่',
+        links: [],
+      },
+    ],
   },
   footerCta: {
-    title: "เครื่องจักรหยุดเดิน? อย่าให้ Downtime ทำลายกำไรของคุณ",
-    subtitle: "ติดต่อสายด่วนวิศวกรของเราทันที บริการ On-site Support ภายใน 24-48 ชม.",
+    // Intentionally include newline markers so PreFooterCta can render
+    // Placeholder fallback shown when Strapi doesn't provide prefooter CTA
+    title: 'ข้อมูลกำลังอยู่ระหว่างการอัปเดต',
+    subtitle: 'ข้อมูลกำลังอยู่ระหว่างการอัปเดต',
     cta: {
-      label: "แจ้งปัญหาด่วน/ติดต่อเรา",
-      href: "/contact-us",
-      variant: "content-primary"
-    }
-  }
+      label: 'ข้อมูลกำลังอยู่ระหว่างการอัปเดต',
+      href: '/contact-us',
+      variant: 'content-primary',
+    },
+  },
 };
 
 // Static helper functions to replace dynamic ones

@@ -1,153 +1,343 @@
 'use client';
-import React from 'react';
-import { motion } from 'framer-motion';
+
+import React, { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
-import PreFooterCta from './PreFooterCta';
+import Link from 'next/link';
+import CTAButton from './CTAButton';
+import type { CTAVariant } from '@/lib/button-styles';
+import { mediaUrl } from '@/lib/strapi';
+import type { LayoutAttributes } from '@/types/cms';
+import type { PossibleMediaInput } from '@/types/strapi';
+import { sanitizeHtml } from '@/lib/sanitize';
 
-interface FooterColumn {
-  title?: string;
-  links?: { label: string; href?: string }[];
-}
-
-export interface FooterData {
-  companyName?: string;
-  address?: string;
-  // Legacy single string (may contain comma or newline separated numbers)
-  phone?: string;
-  // Future-proof array form if backend adds repeatable component e.g. footer.phones
-  phones?: string[];
+interface SharedContactComponent {
+  company_name?: string;
+  adddress?: string; // ชื่อที่บาง schema ใช้
+  address?: string; // เผื่อสะกดปกติ
+  address_text?: string; // เผื่ออีกชื่อ
+  phone_number_1?: string;
+  phone_number_2?: string;
   email?: string;
-  facebook?: string;
-  columns?: FooterColumn[];
-  copyright?: string;
+  map_url?: string;
 }
 
-interface Props {
-  data?: FooterData | null;
-  embedded?: boolean; // when true, omit outer <footer> wrapper margins/padding container adjustments
+interface FooterProps {
+  layout?: LayoutAttributes | null;
+  embedded?: boolean;
 }
 
-// Global site footer now supports dynamic data from Strapi global.footer
-export default function Footer({ data, embedded }: Props) {
-  // Now 100% Strapi-driven - no fallback data
+// Development overlay removed for production cleanliness
 
-  const Content = (
-    <div className="w-full mx-auto bg-white shadow-[0px_2px_8px_rgba(0,0,0,0.12)] rounded-b-[8px] rounded-t-none flex flex-col items-start p-4 gap-6">
-      {/* Top area: main columns */}
-      <div className="w-full flex flex-col lg:flex-row justify-between items-start gap-8">
-        {/* Left column: logo + vertical nav + social icons */}
-        <div className="w-full lg:w-[50%] flex flex-col items-start gap-4">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-[40px] h-[40px] bg-[url('/thaiparts-infinity-logo.svg')] bg-contain bg-no-repeat" />
-            <span className="font-['Kanit'] font-medium text-[18px] leading-[24px]">
-              <span className="text-[#1063A7]">THAIPARTS</span>
-              <span className="ml-1 text-[#E92928]">INFINITY</span>
+const socialIcon = (type?: string) => {
+  switch ((type || '').toLowerCase()) {
+    case 'line':
+      return '/layout/footer/icons/line-square.svg';
+    case 'email':
+      return '/layout/footer/icons/email-square.svg';
+    case 'facebook':
+      return '/layout/footer/icons/facebook-square.svg';
+    case 'youtube':
+      return '/layout/footer/icons/youtube-square.svg';
+    case 'tiktok':
+      return '/layout/footer/icons/tiktok-square.svg';
+    case 'x':
+      return '/layout/footer/icons/x-square.svg';
+    default:
+      return '/layout/footer/icons/link-square.svg';
+  }
+};
+
+export default function Footer({ layout, embedded }: FooterProps) {
+  const contact: SharedContactComponent =
+    (layout?.address as Record<string, unknown>) ?? {};
+  const companyAddress =
+    contact.adddress ?? contact.address ?? contact.address_text ?? '';
+  const phones = [contact.phone_number_1, contact.phone_number_2].filter(
+    Boolean
+  ) as string[];
+
+  // Format a footer phone line to display as (+66) 092-424-2144 and return an international tel: href
+  const formatPhoneForFooter = (raw?: string | null) => {
+    if (!raw) return null;
+    const digitsOnly = String(raw).replace(/[^+\d]/g, '');
+    let normalized = digitsOnly;
+
+    if (normalized.startsWith('+66')) normalized = normalized.slice(3);
+    else if (normalized.startsWith('66')) normalized = normalized.slice(2);
+
+    if (normalized.length === 9) normalized = `0${normalized}`;
+
+    if (normalized.length !== 10) {
+      const tel = digitsOnly.startsWith('+') ? digitsOnly : digitsOnly;
+      return { display: raw, href: `tel:${tel}` };
+    }
+
+    const display = `(+66) ${normalized.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3')}`;
+    const international = `+66${normalized.slice(1)}`;
+    return { display, href: `tel:${international}` };
+  };
+
+  const preImage = (layout?.image ??
+    (layout?.prefooter_image as PossibleMediaInput) ??
+    (layout?.banner as PossibleMediaInput)) as PossibleMediaInput | undefined;
+  const preBg = mediaUrl(preImage);
+
+  // Dev overlay and missing-field checks removed
+
+  // Use a neutral fallback string for missing CMS content
+  const CMS_FALLBACK = 'ข้อมูลกำลังอยู่ระหว่างการอัปเดต';
+  const preTitle = layout?.quote || CMS_FALLBACK;
+  const preButton = layout?.button || CMS_FALLBACK;
+
+  // Normalize and split quote from Strapi into two rich-text lines using <hr> as separator
+  const rawQuote = typeof layout?.quote === 'string' ? layout.quote.trim() : '';
+  const normalizedQuote = useMemo(
+    () =>
+      rawQuote
+        .replace(/\r\n/g, '\n')
+        .replace(/\u00A0/g, ' ')
+        .replace(/\s+$/g, ''),
+    [rawQuote]
+  );
+  const [line1HTML, line2HTML] = useMemo(() => {
+    const parts = normalizedQuote.split(/<hr\s*\/?\>/i);
+    const t = typeof parts[0] === 'string' ? parts[0].trim() : '';
+    const s = typeof parts[1] === 'string' ? parts[1].trim() : '';
+    // Sanitize immediately so server HTML matches client and to reduce XSS risk.
+    return [sanitizeHtml(t), sanitizeHtml(s)];
+  }, [normalizedQuote]);
+
+  // Guard for dangerouslySetInnerHTML to avoid hydration mismatch
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const content = (
+    <div className="w-full mx-auto bg-white shadow-[0px_2px_8px_rgba(0,0,0,0.12)] rounded-b-xl rounded-t-none flex flex-col items-start p-4 md:p-6 lg:p-8 gap-5">
+      {/* Top */}
+      <div className="w-full flex flex-col lg:flex-row justify-between items-start gap-6">
+        {/* Left brand + nav */}
+        <div className="w-full lg:w-1/2 flex flex-col items-start gap-4">
+          <div className="flex items-center gap-2">
+            <Image
+              src="/thaiparts-infinity-logo.svg"
+              alt="THAIPARTS INFINITY logo"
+              width={32}
+              height={32}
+              className="w-8 h-8 object-contain"
+            />
+            <span className="font-['Kanit'] font-medium text-[16px] leading-[24px]">
+              <span className="text-[#1063A7]">THAIPARTS</span>{' '}
+              <span className="text-[#E92928]">INFINITY</span>
             </span>
           </div>
 
-          <div className="flex flex-col gap-2 px-8">
-            {/* Navigation links matching the screenshot */}
+          <nav className="flex flex-col gap-2 md:px-8">
             {[
               { label: 'Home', href: '/' },
               { label: 'Products & Spare Parts', href: '/products' },
               { label: 'Engineering & Solutions', href: '/services' },
-              { label: 'Knowledge Center', href: '/posts' },
+              { label: 'Knowledge Center', href: '/articles' },
               { label: 'About Us', href: '/about-us' },
-              { label: 'Contact', href: '/contact-us' }
-            ].map((link) => (
+              { label: 'Contact', href: '/contact-us' },
+            ].map(link => (
               <div key={link.label} className="flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-[#E92928]" />
-                <a href={link.href} className="font-['Kanit'] font-medium text-[15px] leading-[24px] text-[#1063A7] hover:text-[#E92928] transition-colors">
+                <Link
+                  href={link.href}
+                  className="font-['Kanit'] font-medium text-[14px] leading-[21px] text-[#1063A7] hover:text-[#E92928] transition-colors"
+                >
                   {link.label}
-                </a>
+                </Link>
               </div>
             ))}
-          </div>
+          </nav>
 
-          <div className="pt-2 flex items-center gap-3 px-8">
-            {/* Social media icons using Next.js Image - no border */}
-            <a href="https://lin.ee/E2Zf5YS" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition-opacity">
-              <Image src="/layout/footer/icons/line-square.svg" alt="LINE" width={32} height={32} />
-            </a>
-            <a href="mailto:info@thaipartsinfinity.com" className="hover:opacity-70 transition-opacity">
-              <Image src="/layout/footer/icons/email-square.svg" alt="Email" width={32} height={32} />
-            </a>
-            <a href="#" className="hover:opacity-70 transition-opacity">
-              <Image src="/layout/footer/icons/whatsapp-square.svg" alt="WhatsApp" width={32} height={32} />
-            </a>
-          </div>
+          {/* Socials */}
+          {Array.isArray(layout?.social_media) &&
+            layout.social_media.length > 0 && (
+              <div className="w-full flex items-center justify-center md:justify-start gap-2 px-8">
+                {layout.social_media.map(s => {
+                  const rec = s as Record<string, unknown> | undefined;
+                  const type =
+                    rec && typeof rec['type'] === 'string'
+                      ? (rec['type'] as string)
+                      : '';
+                  const isEmail = type.toLowerCase() === 'email';
+                  const href =
+                    isEmail && contact.email
+                      ? `mailto:${contact.email}`
+                      : rec && typeof rec['url'] === 'string' && rec['url']
+                        ? (rec['url'] as string)
+                        : 'mailto:info@thaipartsinfinity.com';
+                  const idPart =
+                    rec &&
+                    (typeof rec['id'] === 'number' ||
+                      typeof rec['id'] === 'string')
+                      ? String(rec['id'])
+                      : `${type}-${String(rec?.['url'] ?? '')}`;
+                  return (
+                    <Link
+                      key={idPart}
+                      href={href}
+                      target={href.startsWith('http') ? '_blank' : undefined}
+                      rel="noopener noreferrer"
+                      className="hover:opacity-80 transition-opacity"
+                    >
+                      <Image
+                        src={socialIcon(type)}
+                        alt={String(type || 'social')}
+                        width={32}
+                        height={32}
+                        className="w-8 h-8"
+                      />
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
         </div>
 
-        {/* Right column: contact info in exact order from image */}
-        <div className="w-full lg:w-fit flex flex-col items-start gap-4 p-4">
-          {/* Address */}
-          <div className="flex items-center gap-3">
-            <Image src="/layout/footer/icons/location-round.svg" alt="Location" width={32} height={32} className="flex-shrink-0 mt-1" />
-            <span className="font-['Kanit'] text-[14px] leading-[20px] text-[#1063A7]">
-              5/17 M.2, Thap Ma, Mueang Rayong, Rayong, 21000
-            </span>
-          </div>
-
-          {/* Phone numbers */}
-          <div className="flex items-center gap-3">
-            <Image src="/layout/footer/icons/phone-round.svg" alt="Phone" width={32} height={32} className="flex-shrink-0" />
-            <div className="font-['Kanit'] text-[14px] leading-[20px] text-[#1063A7]">
-              <div>(+66) 092-424-2144</div>
-              <div>(+66)097-128-2707</div>
+        {/* Right contact */}
+        <div className="w-full lg:w-auto flex flex-col items-start gap-2 py-4 lg:p-4">
+          {companyAddress ? (
+            <div className="flex items-center gap-2">
+              <Image
+                src="/layout/footer/icons/location-round.svg"
+                alt="Location"
+                width={32}
+                height={32}
+                className="flex-shrink-0"
+              />
+              <span className="font-['Kanit'] text-[14px] leading-[21px] text-[#1063A7]">
+                {companyAddress}
+              </span>
             </div>
-          </div>
+          ) : null}
 
-          {/* Email */}
-          <div className="flex items-center gap-3">
-            <Image src="/layout/footer/icons/email-round.svg" alt="Email" width={32} height={32} className="flex-shrink-0" />
-            <span className="font-['Kanit'] text-[14px] leading-[20px] text-[#1063A7]">
-              info@thaipartsinfinity.com
-            </span>
-          </div>
+          {!!phones.length && (
+            <div className="flex items-center gap-2">
+              <Image
+                src="/layout/footer/icons/phone-round.svg"
+                alt="Phone"
+                width={32}
+                height={32}
+                className="flex-shrink-0"
+              />
+              <div className="font-['Kanit'] text-[14px] leading-[21px] text-[#1063A7]">
+                {phones.map(p => {
+                  const formatted = formatPhoneForFooter(p);
+                  return (
+                    <div key={p}>
+                      <Link
+                        href={
+                          formatted?.href ??
+                          `tel:${String(p).replace(/\s+/g, '')}`
+                        }
+                        className="text-[#1063A7]"
+                      >
+                        {formatted?.display ?? p}
+                      </Link>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
-          {/* Facebook */}
-          {/* <div className="flex items-center gap-3">
-            <Image src="/layout/footer/icons/email-round.svg" alt="Facebook" width={32} height={32} className="flex-shrink-0" />
-            <span className="font-['Kanit'] text-[14px] leading-[20px] text-[#1063A7]">
-              thaipartsinfinity Co.,Ltd.
-            </span>
-          </div> */}
+          {contact?.email ? (
+            <div className="flex items-center gap-2">
+              <Image
+                src="/layout/footer/icons/email-round.svg"
+                alt="Email"
+                width={32}
+                height={32}
+                className="flex-shrink-0"
+              />
+              <Link
+                href={`mailto:${contact.email}`}
+                className="font-['Kanit'] text-[14px] leading-[21px] text-[#1063A7]"
+              >
+                {contact.email}
+              </Link>
+            </div>
+          ) : null}
         </div>
       </div>
 
       {/* Divider + copyright */}
-      <div className="w-full h-[1px] bg-[rgba(233,41,40,0.25)] rounded-full mt-4" />
+      <div className="w-full h-px bg-[rgba(233,41,40,0.25)] rounded-full" />
       <div className="w-full flex justify-start">
-        <div className="font-['Kanit'] text-[14px] leading-[21px] text-[#1063A7] mt-3">
-          {data?.copyright || '© 2003 by THAIPARTS INFINITY CO., LTD.'}
+        <div className="font-['Kanit'] text-[14px] leading-[24px] text-[#1063A7]">
+          {'© 2003 by THAIPARTS INFINITY CO., LTD.'}
         </div>
       </div>
     </div>
   );
 
-  const fadeUp = {
-    hidden: { opacity: 0, y: 12 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  const ctaObj = {
+    label: preButton,
+    href: '/contact-us',
+    variant: 'content-primary' as CTAVariant,
   };
 
-  if (embedded) {
-    return Content;
-  }
+  const wrapped = (
+    <div className="w-full">
+      <section className="relative w-full overflow-hidden rounded-t-2xl">
+        {preBg ? (
+          <Image
+            src={preBg}
+            alt="pre-footer background"
+            width={1920}
+            height={640}
+            className="w-full h-[310px] object-cover"
+            priority
+          />
+        ) : (
+          <div className="w-full h-[310px] bg-gray-200" />
+        )}
 
-  // Non-embedded: animate pre-footer + footer as one block
-  return (
-    <motion.footer
-      className="w-full mx-auto px-8 mb-8"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
-      variants={fadeUp}
-    >
-      {/* Pre-footer (embedded so it doesn't animate independently) */}
-      <PreFooterCta embedded />
+        <div className="absolute inset-0 bg-black/35" />
 
-      {/* Footer content */}
-      {Content}
-    </motion.footer>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-full flex flex-col items-center px-8 gap-4 lg:gap-8">
+            <div className="mx-auto flex flex-col gap-2 lg:gap-4 items-center text-center">
+              {/* First line (rich text from Strapi) */}
+              {(line1HTML || preTitle) && (
+                <div
+                  className="text-[22px] leading-[33px] lg:text-[28px] lg:leading-[42px] text-[#FFFFFF] font-semibold"
+                  suppressHydrationWarning
+                >
+                  {mounted && line1HTML ? (
+                    <div dangerouslySetInnerHTML={{ __html: line1HTML }} />
+                  ) : (
+                    <>{line1HTML || preTitle}</>
+                  )}
+                </div>
+              )}
+
+              {/* Second line (subtitle) - only render if present in the CMS quote after <hr> */}
+              {line2HTML ? (
+                <div
+                  className="text-[16px] leading-[24px] lg:text-[22px] lg:leading-[33px] text-[#FFFFFF] font-normal"
+                  suppressHydrationWarning
+                  {...(mounted && line2HTML
+                    ? { dangerouslySetInnerHTML: { __html: line2HTML } }
+                    : { children: line2HTML })}
+                />
+              ) : null}
+            </div>
+            <div className="w-fit">
+              <CTAButton
+                cta={{ ...ctaObj, label: String(ctaObj.label) }}
+                textSize="large"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+      <div>{content}</div>
+    </div>
   );
+
+  return <>{embedded ? content : wrapped}</>;
 }

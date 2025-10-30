@@ -25,66 +25,66 @@ export function getButtonStyle(variant: CTAVariant): ButtonStyle {
       return {
         bg: 'rgba(0, 0, 0, 1)',
         hoverBg: 'rgba(0, 0, 0, 0.8)',
-        color: '#FFFFFF',
+        color: 'var(--color-secondary)',
         padding: {
           mobile: '8px 16px',
           desktop: '12px 24px',
         },
         boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.12)',
         textShadow: '0px 0px 8px rgba(0, 0, 0, 0.5)',
-        borderGradient: 'linear-gradient(180deg, #CCE8FF 0%, #E92928 100%)',
+        borderGradient: `linear-gradient(180deg, var(--gradient-start) 0%, var(--accent-red) 100%)`,
         borderWidth: '2px',
       };
 
     case 'secondary':
       return {
-        bg: 'rgba(233, 41, 40, 1)', 
-        hoverBg: 'rgba(233, 41, 40, 0.8)',
-        color: '#FFFFFF',
+        bg: 'var(--accent-red)',
+        hoverBg: 'rgba(var(--accent-red-rgb), 0.8)',
+        color: 'var(--color-secondary)',
         padding: {
           mobile: '8px 16px',
           desktop: '12px 24px',
         },
         boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.12)',
         textShadow: '0px 0px 8px rgba(0, 0, 0, 0.5)',
-        borderGradient: 'linear-gradient(180deg, #CCE8FF 0%, #E92928 100%)',
+        borderGradient: `linear-gradient(180deg, var(--gradient-start) 0%, var(--accent-red) 100%)`,
         borderWidth: '2px',
       };
 
     case 'primary':
       return {
-        bg: '#1063A7',
-        hoverBg: '#0d5491',
-        color: '#FFFFFF',
+        bg: 'var(--brand-blue)',
+        hoverBg: 'rgba(var(--brand-blue-rgb), 0.9)',
+        color: 'var(--color-secondary)',
         padding: {
           mobile: '8px 16px',
           desktop: '12px 24px',
         },
         boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.12)',
         textShadow: '0px 2px 8px rgba(0, 0, 0, 0.5)',
-        borderGradient: 'linear-gradient(180deg, #CCE8FF 0%, #1063A7 100%)',
+        borderGradient: `linear-gradient(180deg, var(--gradient-start) 0%, var(--brand-blue) 100%)`,
         borderWidth: '2px',
       };
 
     case 'content-primary':
       return {
-        bg: '#1063A7',
-        hoverBg: '#0d5491',
-        color: '#FFFFFF',
+        bg: 'var(--brand-blue)',
+        hoverBg: 'rgba(var(--brand-blue-rgb), 0.9)',
+        color: 'var(--color-secondary)',
         padding: {
           mobile: '8px 16px',
           desktop: '12px 24px',
         },
         textShadow: '0px 2px 8px rgba(0, 0, 0, 0.5)',
-        borderGradient: 'linear-gradient(180deg, #CCE8FF 0%, #1063A7 100%)',
+        borderGradient: `linear-gradient(180deg, var(--gradient-start) 0%, var(--brand-blue) 100%)`,
         borderWidth: '2px',
       };
 
     default:
       return {
-        bg: '#1063A7',
-        hoverBg: '#0d5491',
-        color: '#FFFFFF',
+        bg: 'var(--brand-blue)',
+        hoverBg: 'rgba(var(--brand-blue-rgb), 0.9)',
+        color: 'var(--color-secondary)',
         padding: {
           mobile: '8px 16px',
           desktop: '12px 24px',
@@ -126,7 +126,9 @@ export function getButtonClassName(variant: CTAVariant): string {
     flex 
     items-center 
     justify-center 
-    whitespace-nowrap 
+    whitespace-normal md:whitespace-nowrap 
+    break-words 
+    text-center 
     hover:scale-[1.02] 
     active:scale-[0.98]
     ${paddingClasses}

@@ -1,3 +1,5 @@
+import { logger } from './logger';
+import { mediaUrl, STRAPI_URL } from '@/lib/strapi';
 // Image optimization helper for Strapi media URLs
 // Converts images to .webp format for better performance, except .svg files
 
@@ -24,11 +26,9 @@ export function toOptimizedImage(
   const urlString = typeof url === 'string' ? url : (url.url ?? '');
   if (!urlString) return '';
 
-  // Get base URL
-  const base = process.env.NEXT_PUBLIC_STRAPI_URL ?? 'http://localhost:1337';
-  const absoluteUrl = urlString.startsWith('http')
-    ? urlString
-    : `${base}${urlString}`;
+  // Resolve to an absolute URL using centralized mediaUrl helper. This
+  // will prefix Strapi base when necessary and preserve absolute URLs.
+  const absoluteUrl = mediaUrl(urlString);
 
   // Don't optimize SVG files
   if (absoluteUrl.toLowerCase().includes('.svg')) {
@@ -36,7 +36,7 @@ export function toOptimizedImage(
   }
 
   // Don't optimize external URLs (not from Strapi)
-  if (!absoluteUrl.includes(base)) {
+  if (!absoluteUrl.includes(STRAPI_URL)) {
     return absoluteUrl;
   }
 
@@ -66,6 +66,12 @@ export function toOptimizedImage(
   }
 
   const optimizedUrl = `/_next/image?${params.toString()}`;
+
+  // Debug log in development
+  if (process.env.NODE_ENV === 'development') {
+    logger.debug(`[Image Optimize] Original: ${absoluteUrl}`);
+    logger.debug(`[Image Optimize] Optimized: ${optimizedUrl}`);
+  }
 
   return optimizedUrl;
 }

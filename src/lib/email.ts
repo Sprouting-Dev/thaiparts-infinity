@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { logger } from '@/lib/logger';
 
 let resend: Resend;
 
@@ -72,7 +73,7 @@ export async function sendContactEmail(data: EmailData) {
             <p style="white-space: pre-wrap; background: white; padding: 15px; border-radius: 4px;">${data.message}</p>
           </div>
           
-          <p>If you have any urgent inquiries, please call us at <strong>+66 2 123 4567</strong>.</p>
+          <p>If you have any urgent inquiries, please call us at <strong>(+66)92-424-2144</strong>.</p>
           
           <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
             <p style="color: #6b7280; font-size: 14px;">
@@ -90,7 +91,7 @@ export async function sendContactEmail(data: EmailData) {
       userEmailId: userEmail.data?.id,
     };
   } catch (error) {
-    console.error('Email sending failed:', error);
+    logger.error('Email sending failed:', error);
     throw new Error('Failed to send email. Please try again later.');
   }
 }

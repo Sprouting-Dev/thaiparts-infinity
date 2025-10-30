@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import React from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
+import React, { useEffect, useState } from 'react';
 import {
   getButtonStyle,
   getButtonClassName,
@@ -23,6 +23,8 @@ interface Props {
   asMotion?: boolean; // Use framer-motion or regular Link
   className?: string; // Additional CSS classes
   textSize?: TextSize; // 'small' (navbar/grid), 'medium' (default), 'large' (hero/feature/pre-footer)
+  loading?: boolean; // show spinner and disabled state
+  loadingLabel?: string; // text to display while loading (defaults to Thai 'กำลังส่ง...')
 }
 
 export default function CTAButton({
@@ -30,7 +32,15 @@ export default function CTAButton({
   asMotion = false,
   className,
   textSize = 'medium',
+  loading = false,
+  loadingLabel = '',
 }: Props) {
+  // Avoid rendering framer-motion markup on the server to prevent
+  // hydration mismatch when the motion DOM differs from the server HTML.
+  // We render a regular Link on the server and switch to motion on the
+  // client once mounted if `asMotion` is requested.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const style = getButtonStyle(cta.variant);
   const baseClassName = getButtonClassName(cta.variant);
 
@@ -48,10 +58,22 @@ export default function CTAButton({
   };
 
   const textSizeClasses = getTextSizeClasses(textSize);
+  // Allow CTA text to wrap on small screens but keep single-line on larger
+  // viewports so long labels don't overflow on mobile.
+  const wrapClass = 'whitespace-normal sm:whitespace-nowrap break-words';
+
   const combinedClassName =
-    `${baseClassName} ${textSizeClasses} ${cta.className || ''} ${
+    `${baseClassName} ${textSizeClasses} ${wrapClass} ${cta.className || ''} ${
       className || ''
     }`.trim();
+
+  // When loading, add muted/disabled Tailwind classes instead of using an overlay
+  const loadingClass = loading ? 'opacity-60 cursor-not-allowed' : '';
+  // Add accessible focus-visible ring so keyboard users can see focus
+  const focusRing =
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--color-primary)]';
+  const finalClassName =
+    `${combinedClassName} ${focusRing} ${loadingClass}`.trim();
 
   const buttonStyle = {
     color: style.color,
@@ -81,39 +103,179 @@ export default function CTAButton({
         }),
   };
 
-  // Use href directly (no special contact logic needed)
-  const finalHref = cta.href ?? '#';
+  const reduceMotion = useReducedMotion();
+  const hoverTransition = { duration: 0.18 };
 
-  if (asMotion) {
+  // Use href directly (no special contact logic needed)
+  // If no href is provided, render a <button> instead of an anchor to
+  // avoid a default '#' that would navigate the page to the top when
+  // clicked (common for onClick-only CTAs like form submit).
+  const finalHref = cta.href ?? undefined;
+
+  if (asMotion && mounted && !reduceMotion) {
+    if (finalHref && !loading) {
+      return (
+        <motion.a
+          href={finalHref}
+          className={combinedClassName}
+          style={buttonStyle}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          transition={hoverTransition}
+          onHoverStart={e => {
+            const el = (e && (e.currentTarget as HTMLElement)) || null;
+            if (!el) return;
+            if (style.borderGradient) {
+              el.style.setProperty('--btn-bg', style.hoverBg || '');
+            } else if (style.hoverBg) {
+              el.style.background = style.hoverBg as string;
+            }
+          }}
+          onHoverEnd={e => {
+            const el = (e && (e.currentTarget as HTMLElement)) || null;
+            if (!el) return;
+            if (style.borderGradient) {
+              el.style.setProperty('--btn-bg', (style.bg as string) || '');
+            } else if (style.bg) {
+              el.style.background = style.bg as string;
+            }
+          }}
+          onClick={cta.onClick}
+        >
+          <span style={{ position: 'relative', zIndex: 1 }}>{cta.label}</span>
+        </motion.a>
+      );
+    }
+
+    // Render a motion.button (used for no-href flows or when loading)
     return (
-      <motion.a
-        href={finalHref}
-        className={combinedClassName}
+      <motion.button
+        type="button"
+        className={finalClassName}
         style={buttonStyle}
-        whileHover={{
-          scale: 1.02,
-          ...(style.borderGradient
-            ? {
-                '--btn-bg': style.hoverBg,
-              }
-            : {
-                background: style.hoverBg,
-              }),
+        whileHover={loading ? undefined : { scale: 1.02 }}
+        whileTap={loading ? undefined : { scale: 0.98 }}
+        transition={hoverTransition}
+        onHoverStart={e => {
+          const el = (e && (e.currentTarget as HTMLElement)) || null;
+          if (!el) return;
+          if (style.borderGradient) {
+            el.style.setProperty('--btn-bg', style.hoverBg || '');
+          } else if (style.hoverBg) {
+            el.style.background = style.hoverBg as string;
+          }
         }}
-        whileTap={{ scale: 0.98 }}
-        onClick={cta.onClick}
+        onHoverEnd={e => {
+          const el = (e && (e.currentTarget as HTMLElement)) || null;
+          if (!el) return;
+          if (style.borderGradient) {
+            el.style.setProperty('--btn-bg', (style.bg as string) || '');
+          } else if (style.bg) {
+            el.style.background = style.bg as string;
+          }
+        }}
+        onClick={loading ? undefined : cta.onClick}
+        disabled={loading}
+        aria-busy={loading}
+        aria-disabled={loading}
       >
-        <span style={{ position: 'relative', zIndex: 1 }}>{cta.label}</span>
-      </motion.a>
+        {loading ? (
+          <span
+            style={{ position: 'relative', zIndex: 1 }}
+            className="flex items-center justify-center"
+            aria-live="polite"
+          >
+            {/* Motion-based spinner when reduced motion is not preferred */}
+            {!reduceMotion ? (
+              <motion.svg
+                className="-ml-1 mr-3 h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                role="status"
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 0.9, ease: 'linear' }}
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  fill="none"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
+              </motion.svg>
+            ) : (
+              <svg
+                className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                role="status"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+            )}
+            <span className="sr-only">{loadingLabel || 'Loading'}</span>
+            <span className="ml-1">{loadingLabel}</span>
+          </span>
+        ) : (
+          <span style={{ position: 'relative', zIndex: 1 }}>{cta.label}</span>
+        )}
+        {/* loading state handled via disabled + Tailwind classes (opacity/cursor) */}
+      </motion.button>
     );
   }
 
+  // If reduced motion is preferred, fall back to the static Link variant even when asMotion is requested.
+
+  if (finalHref && !loading) {
+    return (
+      <Link
+        href={finalHref}
+        className={combinedClassName}
+        style={buttonStyle}
+        onClick={cta.onClick}
+        onMouseEnter={e => {
+          Object.assign(e.currentTarget.style, hoverStyle);
+        }}
+        onMouseLeave={e => {
+          if (style.borderGradient) {
+            e.currentTarget.style.setProperty('--btn-bg', style.bg);
+          } else {
+            e.currentTarget.style.background = style.bg;
+          }
+        }}
+      >
+        <span style={{ position: 'relative', zIndex: 1 }}>{cta.label}</span>
+      </Link>
+    );
+  }
+
+  // Default: render a non-motion button (handles loading or no-href flows)
   return (
-    <Link
-      href={finalHref}
-      className={combinedClassName}
+    <button
+      type="button"
+      className={finalClassName}
       style={buttonStyle}
-      onClick={cta.onClick}
+      onClick={loading ? undefined : cta.onClick}
       onMouseEnter={e => {
         Object.assign(e.currentTarget.style, hoverStyle);
       }}
@@ -124,8 +286,40 @@ export default function CTAButton({
           e.currentTarget.style.background = style.bg;
         }
       }}
+      disabled={loading}
+      aria-busy={loading}
+      aria-disabled={loading}
     >
-      <span style={{ position: 'relative', zIndex: 1 }}>{cta.label}</span>
-    </Link>
+      {loading ? (
+        <span
+          className="flex items-center justify-center"
+          style={{ position: 'relative', zIndex: 1 }}
+        >
+          <svg
+            className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+          {loadingLabel}
+        </span>
+      ) : (
+        <span style={{ position: 'relative', zIndex: 1 }}>{cta.label}</span>
+      )}
+    </button>
   );
 }
