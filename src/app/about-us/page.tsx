@@ -1,37 +1,31 @@
 // src/app/about-us/page.tsx
 import Hero from '@/components/Hero';
+import type { Metadata } from 'next';
 import Features from '@/components/Features';
 import Image from 'next/image';
 import LogoCarousel from '@/components/LogoCarousel';
 import CTAButton from '@/components/CTAButton';
 import { MotionReveal } from '@/components/MotionReveal';
 import { fetchPageBySlug } from '@/lib/cms';
+import { logger } from '@/lib/logger';
 import { mediaUrl, STRAPI_URL } from '@/lib/strapi';
+import type { AboutAttributes, PageAttributes } from '@/types/cms';
+import type { PossibleMediaInput } from '@/types/strapi';
+import type { CTAVariant } from '@/lib/button-styles';
 
-/** ========== ENV / Debug ========== */
-const isDev = process.env.NODE_ENV !== 'production';
+import { buildMetadataFromSeo } from '@/lib/seo';
+
+// Local helpers/constants used by this page
 const STRAPI_TOKEN = process.env.STRAPI_API_TOKEN;
-function dbg(where: string, level: 'info' | 'warn' | 'error', msg: string) {
-  if (!isDev) return;
-  const tag = `[ABOUT-US][${where}]`;
-  (console as any)[level](`${tag} ${msg}`);
-}
 
-/** ========== Fetchers ========== */
-/** 1) Hero จาก Collection Type: pages (re-use ได้หลายหน้า) */
-// Use centralized page fetcher for hero (ensures hero_image handling is consistent)
-async function fetchPageHeroBySlug(slug: string) {
-  try {
-    const entry = await fetchPageBySlug(slug);
-    return entry as Record<string, unknown> | null;
-  } catch (e: any) {
-    dbg('fetchPageHero', 'error', e?.message || String(e));
-    return null;
-  }
-}
-
+type CTA = {
+  label: string;
+  href?: string;
+  variant?: CTAVariant;
+  newTab?: boolean;
+};
 /** 2) เนื้อหาอื่น ๆ จาก Single Type: about-us */
-async function fetchAboutSingle() {
+async function fetchAboutSingle(): Promise<unknown> {
   const headers: Record<string, string> = {};
   if (STRAPI_TOKEN) headers['Authorization'] = `Bearer ${STRAPI_TOKEN}`;
 
@@ -48,150 +42,155 @@ async function fetchAboutSingle() {
   try {
     const res = await fetch(url, { headers, cache: 'no-store' });
     if (!res.ok) {
-      dbg('fetchAboutSingle', 'error', `HTTP ${res.status}`);
+      logger.error('[ABOUT][fetchAboutSingle] HTTP', res.status);
       return null;
     }
-    return (await res.json()) as any;
-  } catch (e: any) {
-    dbg('fetchAboutSingle', 'error', e?.message || String(e));
+    return (await res.json()) as unknown;
+  } catch (errUnknown) {
+    const err =
+      errUnknown instanceof Error ? errUnknown : new Error(String(errUnknown));
+    logger.error('[ABOUT][fetchAboutSingle]', err.message);
     return null;
   }
 }
 
 /** ========== Helpers ========== */
 
-const pickTitleDesc = (v: any): { title: string; description: string } => {
+const pickTitleDesc = (v: unknown): { title: string; description: string } => {
   if (!v) return { title: '', description: '' };
-  if (v?.title || v?.description) {
-    return { title: v.title ?? '', description: v.description ?? '' };
-  }
-  const att = v?.data?.attributes;
-  if (att) {
-    return { title: att.title ?? '', description: att.description ?? '' };
+  // If v is a plain object with title/description
+  if (typeof v === 'object' && v !== null) {
+    const o = v as Record<string, unknown>;
+    const t = o['title'];
+    const d = o['description'];
+    if (typeof t === 'string' || typeof d === 'string') {
+      return { title: (t as string) ?? '', description: (d as string) ?? '' };
+    }
+    // Check for Strapi single shape: { data: { attributes: { title, description } } }
+    if ('data' in o) {
+      const maybeData = o['data'];
+      if (typeof maybeData === 'object' && maybeData !== null) {
+        const attrs = (maybeData as Record<string, unknown>)['attributes'];
+        if (attrs && typeof attrs === 'object') {
+          const tt = (attrs as Record<string, unknown>)['title'];
+          const dd = (attrs as Record<string, unknown>)['description'];
+          return {
+            title: typeof tt === 'string' ? tt : '',
+            description: typeof dd === 'string' ? dd : '',
+          };
+        }
+      }
+    }
   }
   return { title: '', description: '' };
 };
 
-/** Dev-only overlay แจ้งฟิลด์ที่ยังขาด */
-function DebugOverlay({ missing }: { missing: string[] }) {
-  if (!isDev || missing.length === 0) return null;
-  return (
-    <div
-      style={{
-        position: 'fixed',
-        left: 12,
-        bottom: 12,
-        zIndex: 9999,
-        background: 'rgba(233,41,40,0.92)',
-        color: '#fff',
-        padding: '10px 12px',
-        borderRadius: 8,
-        maxWidth: 360,
-        boxShadow: '0 6px 24px rgba(0,0,0,0.25)',
-        fontFamily:
-          'ui-sans-serif, system-ui, -apple-system, "Kanit", "Segoe UI"',
-        fontSize: 12,
-        lineHeight: '18px',
-      }}
-    >
-      <div style={{ fontWeight: 700, marginBottom: 6 }}>
-        Missing from Strapi
-      </div>
-      <ul style={{ paddingLeft: 16, margin: 0 }}>
-        {missing.map((m, i) => (
-          <li key={i} style={{ marginBottom: 2 }}>
-            {m}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
+// Removed development-only DebugOverlay to clean production output.
 
 /** ========== Page ========== */
 export default async function AboutUsPage() {
   // ดึง Hero จาก pages (slug=about-us) และเนื้อหาอื่นจาก about-us single type
   const [pageHero, aboutJson] = await Promise.all([
-    fetchPageHeroBySlug('about-us'),
+    fetchPageBySlug('about-us'),
     fetchAboutSingle(),
   ]);
 
-  const aboutAttrs = (aboutJson?.data?.attributes ?? null) as Record<
-    string,
-    unknown
-  > | null;
+  let aboutAttrs: AboutAttributes | null = null;
+  if (
+    typeof aboutJson === 'object' &&
+    aboutJson !== null &&
+    'data' in aboutJson
+  ) {
+    const aj = aboutJson as { data?: { attributes?: unknown } };
+    aboutAttrs = (aj.data?.attributes ?? null) as AboutAttributes | null;
+  }
 
-  const missing: string[] = [];
-
+  // Dev missing-field tracking removed; keep debug logging only
   /** ---------- Hero จาก Pages (re-use) ---------- */
-  const heroQuote = (pageHero as any)?.quote ?? '';
+  const heroQuote = (pageHero as PageAttributes | null)?.quote ?? '';
   if (!heroQuote) {
-    missing.push('Page(Hero): quote');
-    dbg('Hero', 'warn', 'missing quote from pages');
+    logger.warn('[ABOUT][Hero] missing quote from pages');
   } else {
-    dbg('Hero', 'info', 'quote OK from pages');
+    logger.info('[ABOUT][Hero] quote OK from pages');
   }
 
-  const heroBg = mediaUrl((pageHero as any)?.hero_image);
+  const heroBg = mediaUrl(
+    (pageHero as PageAttributes | null)?.hero_image as PossibleMediaInput
+  );
   if (!heroBg) {
-    missing.push('Page(Hero): hero_image');
-    dbg('Hero', 'warn', 'missing hero_image from pages');
+    logger.warn('[ABOUT][Hero] missing hero_image from pages');
   } else {
-    dbg('Hero', 'info', 'background OK from pages');
+    logger.info('[ABOUT][Hero] background OK from pages');
   }
 
-  const heroProps = {
+  const heroProps: {
+    title: string;
+    background?: string | undefined;
+    subtitle: string;
+    ctas: CTA[];
+    panel: { enabled: false; align: 'left' };
+    hero_schema?: { quote: string } | undefined;
+  } = {
     title: '', // no fallback text
     background: heroBg,
     subtitle: '',
-    ctas: [],
+    ctas: [] as CTA[],
     panel: { enabled: false as const, align: 'left' as const },
     hero_schema: heroQuote ? { quote: String(heroQuote) } : undefined,
   };
 
   /** ---------- เนื้อหาอื่นจาก Single Type: about-us ---------- */
   // About block
-  const aboutBlock = pickTitleDesc((aboutAttrs as any)?.About);
+  const aboutBlock = pickTitleDesc(
+    (aboutAttrs as AboutAttributes | null)?.About
+  );
   if (!aboutBlock.title && !aboutBlock.description) {
-    missing.push('About: title/description');
+    logger.warn('[ABOUT][About] About: title/description missing');
   }
 
   // Vision & Mission
-  const vision = pickTitleDesc((aboutAttrs as any)?.vision);
-  if (!vision.title) missing.push('Vision: title');
-  if (!vision.description) missing.push('Vision: description');
+  const vision = pickTitleDesc((aboutAttrs as AboutAttributes | null)?.vision);
+  if (!vision.title) logger.warn('[ABOUT][Vision] Vision: title missing');
+  if (!vision.description)
+    logger.warn('[ABOUT][Vision] Vision: description missing');
 
-  const mission = pickTitleDesc((aboutAttrs as any)?.mission);
-  if (!mission.title) missing.push('Mission: title');
-  if (!mission.description) missing.push('Mission: description');
+  const mission = pickTitleDesc(
+    (aboutAttrs as AboutAttributes | null)?.mission
+  );
+  if (!mission.title) logger.warn('[ABOUT][Mission] Mission: title missing');
+  if (!mission.description)
+    logger.warn('[ABOUT][Mission] Mission: description missing');
 
   // Team
-  const teamComp = (aboutAttrs as any)?.Team as
-    | { image?: unknown; description?: string }
-    | undefined;
-  const teamImage = mediaUrl(teamComp?.image);
-  const teamCaption = teamComp?.description ?? '';
-  if (!teamComp) missing.push('Team: component');
+  const teamComp = (aboutAttrs as AboutAttributes | null)?.Team;
+  const teamImage = mediaUrl(
+    (teamComp?.image as PossibleMediaInput) ?? undefined
+  );
+  const teamCaption = (teamComp?.description as string) ?? '';
+  if (!teamComp) logger.warn('[ABOUT][Team] Team: component missing');
   else {
-    if (!teamImage) missing.push('Team: image');
-    if (!teamCaption) missing.push('Team: description');
+    if (!teamImage) logger.warn('[ABOUT][Team] Team: image missing');
+    if (!teamCaption) logger.warn('[ABOUT][Team] Team: description missing');
   }
 
   // Warehouse
-  const warehouseComp = (aboutAttrs as any)?.Warehouse as
-    | { image?: unknown; description?: string }
-    | undefined;
-  const warehouseImage = mediaUrl(warehouseComp?.image);
-  const warehouseCaption = warehouseComp?.description ?? '';
-  if (!warehouseComp) missing.push('Warehouse: component');
+  const warehouseComp = (aboutAttrs as AboutAttributes | null)?.Warehouse;
+  const warehouseImage = mediaUrl(
+    (warehouseComp?.image as PossibleMediaInput) ?? undefined
+  );
+  const warehouseCaption = (warehouseComp?.description as string) ?? '';
+  if (!warehouseComp)
+    logger.warn('[ABOUT][Warehouse] Warehouse: component missing');
   else {
-    if (!warehouseImage) missing.push('Warehouse: image');
-    if (!warehouseCaption) missing.push('Warehouse: description');
+    if (!warehouseImage)
+      logger.warn('[ABOUT][Warehouse] Warehouse: image missing');
+    if (!warehouseCaption)
+      logger.warn('[ABOUT][Warehouse] Warehouse: description missing');
   }
 
   // Standards
   const standardsArr: string[] = [];
-  const standards = (aboutAttrs as any)?.Standards?.data;
+  const standards = (aboutAttrs as AboutAttributes | null)?.Standards?.data;
   if (Array.isArray(standards)) {
     for (const d of standards) {
       // Use centralized mediaUrl to resolve icon URLs or media objects
@@ -200,7 +199,7 @@ export default async function AboutUsPage() {
     }
   }
   if (standardsArr.length === 0) {
-    missing.push('Standards: icons');
+    logger.warn('[ABOUT][Standards] Standards: icons missing');
   }
 
   /** ---------- Static Features (เดิม) ---------- */
@@ -255,9 +254,12 @@ export default async function AboutUsPage() {
 
   return (
     <div className="bg-[#F5F5F5]">
+      {/* JSON-LD is injected via src/app/about-us/head.tsx (in document head) */}
       <main className="w-full flex flex-col gap-16 justify-center">
         {/* ✅ Hero จาก Pages เท่านั้น (ไม่มี fallback) */}
-        {heroBg && heroQuote && <Hero {...(heroProps as any)} panel="center" />}
+        {heroBg && heroQuote && (
+          <Hero {...heroProps} panel={{ enabled: true, align: 'center' }} />
+        )}
 
         <MotionReveal>
           <div className="w-full container-970 flex flex-col gap-24 lg:gap-16">
@@ -265,9 +267,9 @@ export default async function AboutUsPage() {
             {(aboutBlock.title || aboutBlock.description) && (
               <section className="w-full flex flex-col items-start gap-4">
                 <div className="flex items-start lg:items-center justify-start gap-2">
-                  <div className="py-3">
+                  <div className="py-3 flex">
                     <span
-                      className="w-[8px] h-[8px] lg:w-4 lg:h-4 rounded-full inline-block"
+                      className="w-2 h-2 lg:w-4 lg:h-4 rounded-full inline-block"
                       style={{ background: '#E92928' }}
                     />
                   </div>
@@ -433,8 +435,18 @@ export default async function AboutUsPage() {
         </MotionReveal>
       </main>
 
-      {/* Dev-only overlay */}
-      <DebugOverlay missing={missing} />
+      {/* Dev overlay removed */}
     </div>
   );
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const page = await fetchPageBySlug('about-us');
+    const attrs = page as unknown as Record<string, unknown> | null;
+    const seo = (attrs && (attrs['SEO'] as Record<string, unknown>)) || null;
+    return buildMetadataFromSeo(seo, { defaultCanonical: '/about-us' });
+  } catch {
+    return {} as Metadata;
+  }
 }

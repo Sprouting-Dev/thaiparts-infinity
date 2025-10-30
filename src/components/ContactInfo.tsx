@@ -16,9 +16,42 @@ interface ContactInfoData {
 interface ContactInfoProps {
   data: ContactInfoData;
 }
+interface ContactInfoProps {
+  data: ContactInfoData;
+  mapUrl?: string | null;
+}
 
-export default function ContactInfo({ data }: ContactInfoProps) {
+export default function ContactInfo({ data, mapUrl }: ContactInfoProps) {
   const { title, companyName, address, phone, email } = data;
+
+  // Normalize and format a phone line for display and tel: href
+  const formatPhoneLine = (raw: string) => {
+    if (!raw) return null;
+    // strip spaces and common separators but keep leading +
+    const digitsOnly = raw.replace(/[^+\d]/g, '');
+    let normalized = digitsOnly;
+
+    // handle leading +66 or 66 country code -> produce national 0-prefixed for display
+    if (normalized.startsWith('+66')) normalized = normalized.slice(3);
+    else if (normalized.startsWith('66')) normalized = normalized.slice(2);
+
+    // now normalized should be national digits like 924242144 or 0924242144
+    // if 9 digits, prepend 0
+    if (normalized.length === 9) normalized = `0${normalized}`;
+
+    // If normalized isn't 10 digits at this point, fall back to showing raw
+    if (normalized.length !== 10) {
+      // create a safe tel href by removing non-digits and prefixing + if original had +
+      const tel = digitsOnly.startsWith('+') ? digitsOnly : digitsOnly;
+      return { display: raw, href: `tel:${tel}` };
+    }
+
+    // Build display: (+66) 0xx-xxx-xxxx but keep the leading 0 in display as in design
+    const display = `(+66) ${normalized.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3')}`;
+    // Build international href: tel:+66xxxxxxxxx (drop leading 0)
+    const international = `+66${normalized.slice(1)}`;
+    return { display, href: `tel:${international}` };
+  };
 
   return (
     <MotionGridItem>
@@ -35,7 +68,7 @@ export default function ContactInfo({ data }: ContactInfoProps) {
           {companyName && (
             <div>
               <p className="font-normal text-[16px] leading-[24px] lg:text-[22px] lg:leading-[33px]">
-                {companyName}
+                บริษัท: {companyName}
               </p>
             </div>
           )}
@@ -44,7 +77,7 @@ export default function ContactInfo({ data }: ContactInfoProps) {
           {address && (
             <div>
               <p className="text-[16px] leading-[24px] lg:text-[22px] lg:leading-[33px]">
-                {address}
+                ที่อยู่: {address}
               </p>
             </div>
           )}
@@ -57,15 +90,15 @@ export default function ContactInfo({ data }: ContactInfoProps) {
               </p>
               <div className="font-normal text-[16px] leading-[24px] lg:text-[22px] lg:leading-[33px]">
                 {phone.split('\n').map((line, index) => {
-                  // sanitize numbers for tel: links (strip spaces, parentheses, dashes)
-                  const numeric = line.replace(/[^+\d]/g, '');
+                  const formatted = formatPhoneLine(line);
+                  if (!formatted) return null;
                   return (
                     <p key={index} className="text-gray-700">
                       <LinkMotion
-                        href={`tel:${numeric}`}
+                        href={formatted.href}
                         className="text-gray-700"
                       >
-                        {line}
+                        {formatted.display}
                       </LinkMotion>
                     </p>
                   );
@@ -120,19 +153,23 @@ export default function ContactInfo({ data }: ContactInfoProps) {
           </LinkMotion>
         </div>
 
-        {/* Map */}
-        <div className="relative rounded-xl overflow-hidden shadow-md">
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3368.7949894321937!2d101.2175247459237!3d12.703865915008702!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTLCsDQyJzE0LjMiTiAxMDHCsDEzJzA0LjUiRQ!5e0!3m2!1sth!2sth!4v1761109240848!5m2!1sth!2sth"
-            width="100%"
-            height="890"
-            style={{ border: 0 }}
-            allowFullScreen
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            title="Thai Parts Infinity Location"
-          />
-        </div>
+        {/* Map: single source of truth is CMS `map_url` (string). All other attributes are hardcoded. */}
+        {mapUrl ? (
+          <div className="relative rounded-xl overflow-hidden shadow-md flex justify-center">
+            <iframe
+              src={mapUrl}
+              style={{
+                border: 0,
+                width: 'clamp(295px, 90vw, 890px)',
+                height: 'clamp(295px, 90vw, 890px)',
+              }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Thai Parts Infinity Location"
+            />
+          </div>
+        ) : null}
       </div>
     </MotionGridItem>
   );

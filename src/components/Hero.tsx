@@ -6,6 +6,8 @@ import Image from 'next/image';
 import CTAButton from '@/components/CTAButton';
 import type { CTAVariant } from '@/lib/button-styles';
 import type PageHeroSchema from '@/types/page';
+import { sanitizeHtml } from '@/lib/sanitize';
+import type { PossibleMediaInput } from '@/types/strapi';
 import { mediaUrl } from '@/lib/strapi';
 
 type CTA = {
@@ -33,11 +35,13 @@ export default function Hero(props: {
   // ----- Background (Strapi media → URL)
   // Strict Strapi-only: prefer hero_schema.hero_image, then props.background.
   // Do NOT fall back to a local placeholder image here to avoid masking missing CMS content.
-  const cmsImage = mediaUrl(props.hero_schema?.hero_image);
+  const cmsImage = mediaUrl(
+    props.hero_schema?.hero_image as unknown as PossibleMediaInput
+  );
   const backgroundPath = cmsImage || props.background;
 
   // If no background provided, do not render the Hero (strict Strapi-only)
-  if (!backgroundPath) return null;
+  // NOTE: we avoid returning early before hooks to respect react-hooks rules.
 
   // ----- แยก Title/Subtitle จาก quote โดยแบ่งด้วย <hr> -----
   const raw = (props.hero_schema?.quote ?? '').trim();
@@ -53,7 +57,8 @@ export default function Hero(props: {
 
   const [titleHTML, subtitleHTML] = useMemo(() => {
     const [t = '', s = ''] = normalized.split(/<hr\s*\/?>/i).map(v => v.trim());
-    return [t, s];
+    // Sanitize CMS-provided HTML immediately so server-render output matches client
+    return [sanitizeHtml(t), sanitizeHtml(s)];
   }, [normalized]);
 
   // กัน hydration mismatch ตอนใช้ dangerouslySetInnerHTML
@@ -84,6 +89,9 @@ export default function Hero(props: {
 
   // ซ่อน panel ถ้า disabled
   const panelEnabled = props.panel?.enabled !== false;
+
+  // If no background provided, do not render the Hero (strict Strapi-only)
+  if (!backgroundPath) return null;
 
   return (
     <section className="relative w-full h-[568px] md:h-[720px] lg:h-[900px] xl:h-[1024px]">

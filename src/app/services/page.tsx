@@ -1,11 +1,18 @@
 import { Metadata } from 'next';
 import Image from 'next/image';
+import Link from 'next/link';
 import { mediaUrl, STRAPI_URL } from '@/lib/strapi';
+import type { PossibleMediaInput } from '@/types/strapi';
+import { buildMetadataFromSeo } from '@/lib/seo';
+import { getStaticGlobal } from '@/lib/static-global';
 
-export const metadata: Metadata = {
-  title: 'Services | THAIPARTS INFINITY',
-  description: 'Industrial automation services and maintenance',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = getStaticGlobal().seo ?? null;
+  return buildMetadataFromSeo(seo as Record<string, unknown> | null, {
+    defaultCanonical: '/services',
+    fallbackTitle: 'Services | THAIPARTS INFINITY',
+  });
+}
 
 type Service = {
   id: number;
@@ -92,30 +99,52 @@ export default async function ServicesPage() {
 
                     const { attributes } = service;
                     // Resolve image via centralized helper (handles Strapi media objects)
-                    const imageUrl = mediaUrl((attributes as any)?.image) || '';
+                    const attrsRec = attributes as Record<string, unknown>;
+                    // Prefer new `cover_image` field (may be present after schema change),
+                    // fall back to legacy `image` for backward compatibility.
+                    const maybeImage = (attrsRec['cover_image'] ??
+                      attrsRec['image'] ??
+                      undefined) as PossibleMediaInput | undefined;
+                    const imageUrl = mediaUrl(maybeImage) || '';
 
+                    const slug = (attributes.slug as string) ?? '';
+                    // Match GridPreview card behavior (aspect ratio, hover scale, sizes, unoptimized conditional)
                     return (
-                      <div key={service.id} className="flex flex-col gap-2">
-                        <div className="w-full h-[13.75rem] relative rounded-lg overflow-hidden">
-                          {imageUrl ? (
-                            <Image
-                              src={imageUrl}
-                              alt={attributes.title}
-                              fill
-                              className="object-cover"
-                              unoptimized
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-neutral-200 to-neutral-300 flex items-center justify-center">
-                              {/* Neutral placeholder when no CMS image is provided */}
-                            </div>
-                          )}
+                      <Link
+                        key={service.id}
+                        href={`/services/${slug}`}
+                        className={`group flex flex-col gap-2 hover:transform hover:scale-[1.02] transition-all duration-200`}
+                      >
+                        <div
+                          className={`w-full aspect-[300/220] overflow-hidden rounded-lg relative`}
+                        >
+                          {(() => {
+                            const src = imageUrl;
+                            const isExternal = src
+                              ? src.startsWith('http') &&
+                                !src.startsWith(STRAPI_URL)
+                              : false;
+                            return src ? (
+                              <Image
+                                src={src}
+                                alt={attributes.title}
+                                fill
+                                sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
+                                className="object-cover group-hover:scale-105 transition-transform duration-300"
+                                unoptimized={isExternal}
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-gradient-to-br from-neutral-200 to-neutral-300 flex items-center justify-center">
+                                {/* Neutral placeholder when no CMS image is provided */}
+                              </div>
+                            );
+                          })()}
                         </div>
 
                         <h2 className="font-['Kanit'] font-medium text-base lg:text-[1.375rem] text-[var(--color-foreground)]">
                           {attributes.title}
                         </h2>
-                      </div>
+                      </Link>
                     );
                   })}
                 </div>

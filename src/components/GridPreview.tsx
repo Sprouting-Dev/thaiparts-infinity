@@ -6,7 +6,8 @@ import { logger } from '@/lib/logger';
 import type { CTAVariant } from '@/lib/button-styles';
 import { getCategoryBadgeStyle } from '@/lib/categoryBadge';
 import type { CategoryBadgeColor } from '@/lib/categoryBadge';
-import { mediaUrl, STRAPI_URL } from '@/lib/strapi';
+import { mediaUrl, STRAPI_URL, strapiFetch } from '@/lib/strapi';
+import type { PossibleMediaInput } from '@/types/strapi';
 
 type Section = {
   kind: 'products' | 'services' | 'articles';
@@ -34,18 +35,22 @@ async function fetchItems(kind: Section['kind'], limit = 5) {
   if (kind === 'products') {
     path = `/api/products?sort=publishedAt:desc&pagination[limit]=${limit}&populate[thumbnail]=1&populate[categoryBadge]=1`;
   } else {
-    path = `/api/${map[kind]}?sort=publishedAt:desc&pagination[limit]=${limit}&fields[0]=name&fields[1]=title&fields[2]=slug&fields[3]=subtitle&populate[thumbnail]=1`;
+    // For services/articles we need the media fields; avoid using `fields` which may strip media relations.
+    // Ensure we populate `cover_image` for services which may have moved media there.
+    path = `/api/${map[kind]}?sort=publishedAt:desc&pagination[limit]=${limit}&populate[thumbnail]=1&populate[image]=1${
+      kind === 'services' ? '&populate[cover_image]=1' : ''
+    }`;
   }
-  const base = process.env.NEXT_PUBLIC_STRAPI_URL ?? 'http://localhost:1337';
   try {
-    const res = await fetch(`${base}${path}`, { next: { revalidate: 300 } });
-    const json = await res.json();
-    if (kind === 'products' && Array.isArray(json?.data)) {
-      logger.debug('[GridPreview products] sample', json.data.slice(0, 2));
+    const json = await strapiFetch<{ data?: unknown[] }>(path, {}, 300);
+    if (!json) return [];
+    const jsonObj = json as { data?: unknown[] } | null;
+    if (kind === 'products' && Array.isArray(jsonObj?.data)) {
+      logger.debug('[GridPreview products] sample', jsonObj.data.slice(0, 2));
     }
-    return json?.data ?? [];
+    return Array.isArray(jsonObj?.data) ? (jsonObj.data as unknown[]) : [];
   } catch (error) {
-    console.error(`Failed to fetch ${kind}:`, error);
+    logger.error(`Failed to fetch ${kind}:`, error);
     return [];
   }
 }
@@ -75,8 +80,11 @@ export default async function GridPreview({ section }: { section: Section }) {
     // Use items from backend
     displayItems = section.items.slice(0, section.limit ?? 5);
   } else {
-    // Fallback to API fetch
-    displayItems = await fetchItems(section.kind, section.limit ?? 5);
+    // Fallback to API fetch (we'll narrow items below)
+    displayItems = (await fetchItems(
+      section.kind,
+      section.limit ?? 5
+    )) as typeof displayItems;
   }
 
   return (
@@ -122,9 +130,16 @@ export default async function GridPreview({ section }: { section: Section }) {
             ? item.title
             : (item.attributes?.name ?? item.attributes?.title ?? '');
           const slug = isDirectItem ? item.href : (item.attributes?.slug ?? '');
-          const image = isDirectItem
-            ? item.image
-            : (item.attributes?.thumbnail?.data?.attributes?.url ?? '');
+          // Prepare the media input for resolution. Prefer thumbnail then image.
+          const maybeMedia: PossibleMediaInput = isDirectItem
+            ? (item.image as PossibleMediaInput)
+            : (((item.attributes as Record<string, unknown>)[
+                'thumbnail'
+              ] as unknown) ??
+              ((item.attributes as Record<string, unknown>)[
+                'image'
+              ] as unknown) ??
+              undefined);
 
           const href = isDirectItem
             ? (item.href ?? '#')
@@ -143,9 +158,7 @@ export default async function GridPreview({ section }: { section: Section }) {
             categoryBadge?.color as CategoryBadgeColor
           );
 
-          // Determine base for prefixed Strapi media URLs
-          const base =
-            process.env.NEXT_PUBLIC_STRAPI_URL ?? 'http://localhost:1337';
+          // Inline STRAPI_URL lookup is available via imported STRAPI_URL when needed.
 
           const itemGap = section.kind === 'articles' ? 'gap-0' : 'gap-2';
 
@@ -166,45 +179,33 @@ export default async function GridPreview({ section }: { section: Section }) {
               <div
                 className={`w-full aspect-[300/220] overflow-hidden ${imageRounded} relative`}
               >
-                {image ? (
-                  (() => {
-                    // Use centralized mediaUrl to resolve both strings and media objects
-                    const src = mediaUrl(image);
-                    const isExternal = src
-                      ? src.startsWith('http') && !src.startsWith(STRAPI_URL)
-                      : false;
-                    return src ? (
-                      <Image
-                        src={src}
-                        alt={title || ''}
-                        fill
-                        sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                        unoptimized={isExternal}
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-neutral-200 to-neutral-300 flex items-center justify-center">
-                        <div className="text-neutral-400 text-4xl">
-                          {section.kind === 'products'
-                            ? '📦'
-                            : section.kind === 'services'
-                              ? '🔧'
-                              : '📄'}
-                        </div>
+                {(() => {
+                  // Resolve media URL from Strapi media object or plain string
+                  const src = mediaUrl(maybeMedia);
+                  const isExternal = src
+                    ? src.startsWith('http') && !src.startsWith(STRAPI_URL)
+                    : false;
+                  return src ? (
+                    <Image
+                      src={src}
+                      alt={title || ''}
+                      fill
+                      sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      unoptimized={isExternal}
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-neutral-200 to-neutral-300 flex items-center justify-center">
+                      <div className="text-neutral-400 text-4xl">
+                        {section.kind === 'products'
+                          ? '📦'
+                          : section.kind === 'services'
+                            ? '🔧'
+                            : '📄'}
                       </div>
-                    );
-                  })()
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-neutral-200 to-neutral-300 flex items-center justify-center">
-                    <div className="text-neutral-400 text-4xl">
-                      {section.kind === 'products'
-                        ? '📦'
-                        : section.kind === 'services'
-                          ? '🔧'
-                          : '📄'}
                     </div>
-                  </div>
-                )}
+                  );
+                })()}
               </div>
 
               {/* Content wrapper for articles */}

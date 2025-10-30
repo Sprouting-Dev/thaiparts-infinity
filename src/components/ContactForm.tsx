@@ -9,6 +9,7 @@ import {
 } from 'framer-motion';
 import MotionGridItem from '@/components/MotionGridItem';
 import CTAButton from './CTAButton';
+import { logger } from '@/lib/logger';
 
 interface ContactFormData {
   title: string;
@@ -141,7 +142,7 @@ export default function ContactForm({ data }: ContactFormProps) {
         message: '',
       });
     } catch (error) {
-      console.error('Form submission error:', error);
+      logger.error('Form submission error:', error);
       alert(
         error instanceof Error
           ? error.message

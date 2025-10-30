@@ -6,8 +6,9 @@ import Link from 'next/link';
 import CTAButton from './CTAButton';
 import type { CTAVariant } from '@/lib/button-styles';
 import { mediaUrl } from '@/lib/strapi';
-
-type SocialKind = 'facebook' | 'line' | 'email' | 'youtube' | 'tiktok' | 'x';
+import type { LayoutAttributes } from '@/types/cms';
+import type { PossibleMediaInput } from '@/types/strapi';
+import { sanitizeHtml } from '@/lib/sanitize';
 
 interface SharedContactComponent {
   company_name?: string;
@@ -20,25 +21,8 @@ interface SharedContactComponent {
   map_url?: string;
 }
 
-interface SharedSocialMediaComponent {
-  id?: number;
-  type?: SocialKind | string;
-  url?: string;
-}
-
-interface LayoutCMS {
-  address?: SharedContactComponent;
-  social_media?: SharedSocialMediaComponent[];
-  image?: any; // หลัก
-  prefooter_image?: any; // สำรอง
-  banner?: any; // สำรอง
-  quote?: string;
-  button?: string;
-  copyright?: string;
-}
-
 interface FooterProps {
-  layout?: LayoutCMS | null;
+  layout?: LayoutAttributes | null;
   embedded?: boolean;
 }
 
@@ -64,17 +48,38 @@ const socialIcon = (type?: string) => {
 };
 
 export default function Footer({ layout, embedded }: FooterProps) {
-  const contact: SharedContactComponent = layout?.address ?? {};
+  const contact: SharedContactComponent =
+    (layout?.address as Record<string, unknown>) ?? {};
   const companyAddress =
     contact.adddress ?? contact.address ?? contact.address_text ?? '';
   const phones = [contact.phone_number_1, contact.phone_number_2].filter(
     Boolean
   ) as string[];
 
-  const preImage =
-    layout?.image ??
-    (layout as any)?.prefooter_image ??
-    (layout as any)?.banner;
+  // Format a footer phone line to display as (+66) 092-424-2144 and return an international tel: href
+  const formatPhoneForFooter = (raw?: string | null) => {
+    if (!raw) return null;
+    const digitsOnly = String(raw).replace(/[^+\d]/g, '');
+    let normalized = digitsOnly;
+
+    if (normalized.startsWith('+66')) normalized = normalized.slice(3);
+    else if (normalized.startsWith('66')) normalized = normalized.slice(2);
+
+    if (normalized.length === 9) normalized = `0${normalized}`;
+
+    if (normalized.length !== 10) {
+      const tel = digitsOnly.startsWith('+') ? digitsOnly : digitsOnly;
+      return { display: raw, href: `tel:${tel}` };
+    }
+
+    const display = `(+66) ${normalized.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3')}`;
+    const international = `+66${normalized.slice(1)}`;
+    return { display, href: `tel:${international}` };
+  };
+
+  const preImage = (layout?.image ??
+    (layout?.prefooter_image as PossibleMediaInput) ??
+    (layout?.banner as PossibleMediaInput)) as PossibleMediaInput | undefined;
   const preBg = mediaUrl(preImage);
 
   // Dev overlay and missing-field checks removed
@@ -85,7 +90,7 @@ export default function Footer({ layout, embedded }: FooterProps) {
   const preButton = layout?.button || CMS_FALLBACK;
 
   // Normalize and split quote from Strapi into two rich-text lines using <hr> as separator
-  const rawQuote = (layout?.quote ?? '').trim();
+  const rawQuote = typeof layout?.quote === 'string' ? layout.quote.trim() : '';
   const normalizedQuote = useMemo(
     () =>
       rawQuote
@@ -95,10 +100,11 @@ export default function Footer({ layout, embedded }: FooterProps) {
     [rawQuote]
   );
   const [line1HTML, line2HTML] = useMemo(() => {
-    const [t = '', s = ''] = normalizedQuote
-      .split(/<hr\s*\/?\>/i)
-      .map(v => v.trim());
-    return [t, s];
+    const parts = normalizedQuote.split(/<hr\s*\/?\>/i);
+    const t = typeof parts[0] === 'string' ? parts[0].trim() : '';
+    const s = typeof parts[1] === 'string' ? parts[1].trim() : '';
+    // Sanitize immediately so server HTML matches client and to reduce XSS risk.
+    return [sanitizeHtml(t), sanitizeHtml(s)];
   }, [normalizedQuote]);
 
   // Guard for dangerouslySetInnerHTML to avoid hydration mismatch
@@ -147,34 +153,48 @@ export default function Footer({ layout, embedded }: FooterProps) {
           </nav>
 
           {/* Socials */}
-          {!!(layout?.social_media || []).length && (
-            <div className="w-full flex items-center justify-center md:justify-start gap-2 px-8">
-              {(layout?.social_media || []).map(s => {
-                const isEmail = (s.type || '').toLowerCase() === 'email';
-                const href =
-                  isEmail && contact.email
-                    ? `mailto:${contact.email}`
-                    : s.url || 'mailto:info@thaipartsinfinity.com';
-                return (
-                  <Link
-                    key={s.id ?? `${s.type}-${s.url}`}
-                    href={href}
-                    target={href.startsWith('http') ? '_blank' : undefined}
-                    rel="noopener noreferrer"
-                    className="hover:opacity-80 transition-opacity"
-                  >
-                    <Image
-                      src={socialIcon(s.type)}
-                      alt={String(s.type || 'social')}
-                      width={32}
-                      height={32}
-                      className="w-8 h-8"
-                    />
-                  </Link>
-                );
-              })}
-            </div>
-          )}
+          {Array.isArray(layout?.social_media) &&
+            layout.social_media.length > 0 && (
+              <div className="w-full flex items-center justify-center md:justify-start gap-2 px-8">
+                {layout.social_media.map(s => {
+                  const rec = s as Record<string, unknown> | undefined;
+                  const type =
+                    rec && typeof rec['type'] === 'string'
+                      ? (rec['type'] as string)
+                      : '';
+                  const isEmail = type.toLowerCase() === 'email';
+                  const href =
+                    isEmail && contact.email
+                      ? `mailto:${contact.email}`
+                      : rec && typeof rec['url'] === 'string' && rec['url']
+                        ? (rec['url'] as string)
+                        : 'mailto:info@thaipartsinfinity.com';
+                  const idPart =
+                    rec &&
+                    (typeof rec['id'] === 'number' ||
+                      typeof rec['id'] === 'string')
+                      ? String(rec['id'])
+                      : `${type}-${String(rec?.['url'] ?? '')}`;
+                  return (
+                    <Link
+                      key={idPart}
+                      href={href}
+                      target={href.startsWith('http') ? '_blank' : undefined}
+                      rel="noopener noreferrer"
+                      className="hover:opacity-80 transition-opacity"
+                    >
+                      <Image
+                        src={socialIcon(type)}
+                        alt={String(type || 'social')}
+                        width={32}
+                        height={32}
+                        className="w-8 h-8"
+                      />
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
         </div>
 
         {/* Right contact */}
@@ -205,11 +225,17 @@ export default function Footer({ layout, embedded }: FooterProps) {
               />
               <div className="font-['Kanit'] text-[14px] leading-[21px] text-[#1063A7]">
                 {phones.map(p => {
-                  const tel = p.replace(/\s+/g, '');
+                  const formatted = formatPhoneForFooter(p);
                   return (
                     <div key={p}>
-                      <Link href={`tel:${tel}`} className="text-[#1063A7]">
-                        {p}
+                      <Link
+                        href={
+                          formatted?.href ??
+                          `tel:${String(p).replace(/\s+/g, '')}`
+                        }
+                        className="text-[#1063A7]"
+                      >
+                        {formatted?.display ?? p}
                       </Link>
                     </div>
                   );
@@ -280,10 +306,13 @@ export default function Footer({ layout, embedded }: FooterProps) {
                 <div
                   className="text-[22px] leading-[33px] lg:text-[28px] lg:leading-[42px] text-[#FFFFFF] font-semibold"
                   suppressHydrationWarning
-                  {...(mounted && line1HTML
-                    ? { dangerouslySetInnerHTML: { __html: line1HTML } }
-                    : { children: line1HTML || preTitle })}
-                />
+                >
+                  {mounted && line1HTML ? (
+                    <div dangerouslySetInnerHTML={{ __html: line1HTML }} />
+                  ) : (
+                    <>{line1HTML || preTitle}</>
+                  )}
+                </div>
               )}
 
               {/* Second line (subtitle) - only render if present in the CMS quote after <hr> */}
@@ -298,7 +327,10 @@ export default function Footer({ layout, embedded }: FooterProps) {
               ) : null}
             </div>
             <div className="w-fit">
-              <CTAButton cta={ctaObj} textSize="large" />
+              <CTAButton
+                cta={{ ...ctaObj, label: String(ctaObj.label) }}
+                textSize="large"
+              />
             </div>
           </div>
         </div>

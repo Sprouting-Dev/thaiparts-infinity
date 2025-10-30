@@ -43,7 +43,7 @@ export interface StaticGlobalData {
 }
 
 export const staticGlobalData: StaticGlobalData = {
-  favicon: '/favicon.svg',
+  favicon: '/favicon.ico',
   seo: {
     metaTitle: 'THAIPARTS INFINITY - Industrial Automation & Spare Parts',
     metaDescription:
@@ -63,63 +63,31 @@ export const staticGlobalData: StaticGlobalData = {
     ],
     logo: '/thaiparts-infinity-logo.svg',
   },
-  navbar: {
-    ctas: [
-      {
-        label: 'ติดต่อด่วน 092-424-2144',
-        href: 'tel:0924242144',
-        variant: 'secondary',
-        newTab: false,
-        enabled: true,
-      },
-      {
-        label: 'ติดต่อเรา',
-        href: '/contact-us',
-        variant: 'primary',
-        newTab: false,
-        enabled: true,
-      },
-    ],
-  },
+  // Navbar CTAs are intentionally omitted so the site uses the CMS-provided
+  // navbar. This prevents hard-coded CTAs from masking Strapi edits.
   footer: {
     columns: [
       {
         title: 'บริษัท',
-        links: [
-          { label: 'เกี่ยวกับเรา', href: '/about' },
-          { label: 'ผลงาน', href: '/products' },
-          { label: 'บริการ', href: '/services' },
-          { label: 'บทความ', href: '/articles' },
-        ],
+        links: [],
       },
       {
         title: 'ติดต่อ',
-        links: [
-          { label: 'ติดต่อเรา', href: '/contact-us' },
-          { label: '02-123-4567', href: 'tel:021234567' },
-          {
-            label: 'info@thaiparts-infinity.com',
-            href: 'mailto:info@thaiparts-infinity.com',
-          },
-        ],
+        links: [],
       },
       {
         title: 'ที่อยู่',
-        links: [
-          { label: '123 ถนนอุตสาหกรรม', href: '#' },
-          { label: 'กรุงเทพมหานคร 10400', href: '#' },
-        ],
+        links: [],
       },
     ],
   },
   footerCta: {
     // Intentionally include newline markers so PreFooterCta can render
-    // the title as multiple lines on mobile while keeping it inline on desktop.
-    title: 'เครื่องจักรหยุดเดิน?\nอย่าให้ Downtime\nทำลายกำไรของคุณ',
-    subtitle:
-      'ติดต่อสายด่วนวิศวกรของเราทันที บริการ On-site Support ภายใน 24-48 ชม.',
+    // Placeholder fallback shown when Strapi doesn't provide prefooter CTA
+    title: 'ข้อมูลกำลังอยู่ระหว่างการอัปเดต',
+    subtitle: 'ข้อมูลกำลังอยู่ระหว่างการอัปเดต',
     cta: {
-      label: 'แจ้งปัญหาด่วน/ติดต่อเรา',
+      label: 'ข้อมูลกำลังอยู่ระหว่างการอัปเดต',
       href: '/contact-us',
       variant: 'content-primary',
     },

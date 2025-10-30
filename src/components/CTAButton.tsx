@@ -69,7 +69,11 @@ export default function CTAButton({
 
   // When loading, add muted/disabled Tailwind classes instead of using an overlay
   const loadingClass = loading ? 'opacity-60 cursor-not-allowed' : '';
-  const finalClassName = `${combinedClassName} ${loadingClass}`.trim();
+  // Add accessible focus-visible ring so keyboard users can see focus
+  const focusRing =
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--color-primary)]';
+  const finalClassName =
+    `${combinedClassName} ${focusRing} ${loadingClass}`.trim();
 
   const buttonStyle = {
     color: style.color,
@@ -179,34 +183,63 @@ export default function CTAButton({
           <span
             style={{ position: 'relative', zIndex: 1 }}
             className="flex items-center justify-center"
+            aria-live="polite"
           >
-            <svg
-              className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
-            {loadingLabel}
+            {/* Motion-based spinner when reduced motion is not preferred */}
+            {!reduceMotion ? (
+              <motion.svg
+                className="-ml-1 mr-3 h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                role="status"
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 0.9, ease: 'linear' }}
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  fill="none"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
+              </motion.svg>
+            ) : (
+              <svg
+                className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                role="status"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+            )}
+            <span className="sr-only">{loadingLabel || 'Loading'}</span>
+            <span className="ml-1">{loadingLabel}</span>
           </span>
         ) : (
           <span style={{ position: 'relative', zIndex: 1 }}>{cta.label}</span>
         )}
-        {/* Add a subtle overlay/span to ensure pointer events are blocked and the appearance is muted while loading. */}
-        {/** loading state handled via disabled + Tailwind classes (opacity/cursor) */}
+        {/* loading state handled via disabled + Tailwind classes (opacity/cursor) */}
       </motion.button>
     );
   }

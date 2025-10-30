@@ -3,11 +3,18 @@ import GridPreview from '@/components/GridPreview';
 import { MotionReveal } from '@/components/MotionReveal';
 import { fetchArticles } from '@/lib/cms';
 import { mediaUrl } from '@/lib/strapi';
+import type { ArticleAttributes } from '@/types/cms';
+import type { StrapiData, PossibleMediaInput } from '@/types/strapi';
+import { buildMetadataFromSeo } from '@/lib/seo';
+import { getStaticGlobal } from '@/lib/static-global';
 
-export const metadata: Metadata = {
-  title: 'Knowledge Center | THAIPARTS INFINITY',
-  description: 'Articles and insights about industrial automation',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = getStaticGlobal().seo ?? null;
+  return buildMetadataFromSeo(seo as Record<string, unknown> | null, {
+    defaultCanonical: '/articles',
+    fallbackTitle: 'Knowledge Center | THAIPARTS INFINITY',
+  });
+}
 
 export default async function ArticlesPage() {
   // Fetch articles from Strapi and map to GridPreview items
@@ -16,42 +23,65 @@ export default async function ArticlesPage() {
     pageSize: 12,
     sort: 'publishedAt:asc',
   });
+  const items = (articles || [])
+    .map(
+      (p): { id?: number; attributes?: ArticleAttributes } =>
+        p as StrapiData<ArticleAttributes>
+    )
+    .map(p => {
+      const attrs = p?.attributes ?? ({} as ArticleAttributes);
+      const slug = attrs.slug ?? '';
 
-  const items = (articles || []).map((p: any) => {
-    const attrs = p?.attributes ?? {};
-    const slug = attrs?.slug || '';
+      // Resolve image via mediaUrl helper. Try common fields used in Strapi shapes.
+      const attrsRecord = attrs as Record<string, unknown>;
+      const maybeImage: PossibleMediaInput = (attrs.image ??
+        (attrsRecord['thumbnail'] as PossibleMediaInput) ??
+        (attrsRecord['cover'] as PossibleMediaInput)) as PossibleMediaInput;
+      let image = mediaUrl(maybeImage);
+      // Do not fall back to local assets here — leave empty so GridPreview
+      // will render its neutral placeholder when no CMS image is provided.
+      if (!image) image = '';
 
-    // Resolve image via mediaUrl helper. Try common fields used in Strapi shapes.
-    let image = mediaUrl(attrs?.image ?? attrs?.thumbnail ?? attrs?.cover);
-    // Do not fall back to local assets here — leave empty so GridPreview
-    // will render its neutral placeholder when no CMS image is provided.
-    if (!image) image = '';
+      // Parse simple rich text blocks for a short excerpt safely
+      const richBlocks = Array.isArray(attrsRecord['body'])
+        ? (attrsRecord['body'] as unknown[])
+        : [];
+      let bodyText = '';
+      if (richBlocks.length) {
+        const parts: string[] = [];
+        for (const b of richBlocks) {
+          if (!b || typeof b !== 'object') continue;
+          const maybeType = (b as Record<string, unknown>)['type'];
+          if (maybeType !== 'paragraph' && maybeType !== 'text') continue;
+          const children = Array.isArray(
+            (b as Record<string, unknown>)['children']
+          )
+            ? ((b as Record<string, unknown>)['children'] as unknown[])
+            : [];
+          const childText = children
+            .map(c => {
+              if (!c || typeof c !== 'object') return '';
+              const text = (c as Record<string, unknown>)['text'];
+              return typeof text === 'string' ? text : '';
+            })
+            .join('');
+          if (childText) parts.push(childText);
+        }
+        bodyText = parts.join(' ').slice(0, 200);
+      }
 
-    const richBlocks = Array.isArray(attrs?.body) ? attrs.body : [];
-    let bodyText = '';
-    if (richBlocks.length) {
-      bodyText = richBlocks
-        .filter((b: any) => b && (b.type === 'paragraph' || b.type === 'text'))
-        .map((b: any) =>
-          Array.isArray(b.children)
-            ? b.children
-                .map((c: any) =>
-                  c && typeof c.text === 'string' ? c.text : ''
-                )
-                .join('')
-            : ''
-        )
-        .join(' ')
-        .slice(0, 200);
-    }
+      const subtitle =
+        typeof attrsRecord['subtitle'] === 'string'
+          ? (attrsRecord['subtitle'] as string)
+          : undefined;
 
-    return {
-      title: attrs?.title || '',
-      image,
-      description: attrs?.subtitle || bodyText || '',
-      href: `/articles/${slug}`,
-    };
-  });
+      return {
+        title: attrs.title ?? '',
+        image,
+        description: subtitle ?? bodyText ?? '',
+        href: `/articles/${slug}`,
+      };
+    });
 
   const section = {
     kind: 'articles' as const,

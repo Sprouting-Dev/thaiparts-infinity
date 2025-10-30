@@ -37,4 +37,7 @@ export interface ProductFilters {
   minPrice?: number;
   maxPrice?: number;
   inStock?: boolean;
+  // Pagination support for API requests
+  page?: number;
+  pageSize?: number;
 }

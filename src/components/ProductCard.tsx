@@ -31,16 +31,16 @@ export const ProductCard = ({
 
   return (
     <div
-      className={`w-full h-auto bg-secondary transition-shadow duration-300 cursor-pointer overflow-hidden ${className}`}
+      className={`w-full h-auto bg-secondary transition-shadow duration-300 cursor-pointer overflow-hidden hover:transform hover:scale-[1.02] ${className}`}
       onClick={handleClick}
     >
-      <div className="relative w-full aspect-[300/220] bg-gray-100">
+      <div className="relative w-full aspect-[300/220] bg-gray-100 overflow-hidden">
         {product.image ? (
           <Image
             src={product.image}
             alt={product.name}
             fill
-            className="object-cover rounded-lg"
+            className="object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
             sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
           />
         ) : (
@@ -55,15 +55,11 @@ export const ProductCard = ({
           <span
             className={`text-[14px] leading-[21px] font-semibold px-2 py-1 rounded-full ${badgeStyle?.bg || 'bg-gray-100'} ${badgeStyle?.text || 'text-gray'}`}
           >
-            {/* Use the badgeStyle.text class directly so the color mapping from
-                getCategoryBadgeStyle (which returns named classes) is applied
-                consistently. Avoid remapping via getTextClass which expects
-                token names and would fallback to brand blue for unknown inputs. */}
             {product.tag}
           </span>
         </div>
 
-        <h3 className="text-foreground text-base lg:text-[1.375rem] font-medium mb-2 line-clamp-2">
+        <h3 className="text-foreground text-base lg:text-[1.375rem] font-medium mb-2 ">
           {product.name}
         </h3>
       </div>

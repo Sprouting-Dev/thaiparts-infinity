@@ -43,6 +43,8 @@ export default function LogoCarousel({ icons }: LogoCarouselProps) {
   }, [emblaApi, autoScrollPlugin]);
 
   const viewportDomRef = useRef<HTMLDivElement | null>(null);
+  // Track focused slide for accessibility announcements
+  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
   const [renderedIcons, setRenderedIcons] = useState<string[]>(icons || []);
 
   // Add a visual fade/translate effect for slides based on their distance
@@ -112,6 +114,34 @@ export default function LogoCarousel({ icons }: LogoCarouselProps) {
     // change the identity relevant to this effect. The update function reads
     // the current DOM when it's executed.
   }, [emblaApi, renderedIcons]);
+
+  // Expose simple keyboard navigation on the viewport container so users
+  // can tab into the carousel and use arrow keys to move slides.
+  useEffect(() => {
+    const el = viewportDomRef.current;
+    if (!el || !emblaApi) return;
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        try {
+          emblaApi.scrollNext();
+        } catch {
+          /* ignore */
+        }
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        try {
+          emblaApi.scrollPrev();
+        } catch {
+          /* ignore */
+        }
+      }
+    };
+
+    el.addEventListener('keydown', onKey as EventListener);
+    return () => el.removeEventListener('keydown', onKey as EventListener);
+  }, [emblaApi]);
 
   // If the total width of slides is <= viewport width, duplicate the icons
   // so there is room to scroll. This avoids embla being a no-op when all
@@ -186,6 +216,12 @@ export default function LogoCarousel({ icons }: LogoCarouselProps) {
           className="embla overflow-hidden px-12 py-6"
           style={{ background: '#1063A70A' }}
         >
+          {/* Announce focused slide for screen readers */}
+          <div aria-live="polite" className="sr-only">
+            {typeof focusedIndex === 'number'
+              ? `Slide ${focusedIndex + 1} of ${renderedIcons.length}`
+              : ''}
+          </div>
           <div
             className="embla__viewport overflow-hidden"
             ref={el => {
@@ -208,19 +244,42 @@ export default function LogoCarousel({ icons }: LogoCarouselProps) {
             }}
           >
             <div className="embla__container">
-              {renderedIcons.map((src, i) => (
-                <div key={i} className="embla__slide flex-shrink-0">
-                  <MotionGridItem index={i}>
-                    <Image
-                      src={src}
-                      alt={`client-${i}`}
-                      width={64}
-                      height={64}
-                      className="object-contain"
-                    />
-                  </MotionGridItem>
-                </div>
-              ))}
+              {renderedIcons.map((src, i) => {
+                // Derive a friendly alt from filename if possible
+                let alt = `standard logo ${i + 1}`;
+                try {
+                  const parts = src.split('/');
+                  const file = parts[parts.length - 1] || '';
+                  const name = file.split('.')[0].replace(/[-_]/g, ' ');
+                  if (name) alt = `${name} logo`;
+                } catch {
+                  // fallback to index-based alt
+                }
+
+                return (
+                  <div
+                    key={i}
+                    className="embla__slide flex-shrink-0"
+                    // make slide focusable for keyboard users
+                    tabIndex={0}
+                    onFocus={() => setFocusedIndex(i)}
+                    onBlur={() => setFocusedIndex(null)}
+                    role="group"
+                    aria-roledescription="slide"
+                    aria-label={`${i + 1} of ${renderedIcons.length}`}
+                  >
+                    <MotionGridItem index={i}>
+                      <Image
+                        src={src}
+                        alt={alt}
+                        width={64}
+                        height={64}
+                        className="object-contain"
+                      />
+                    </MotionGridItem>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

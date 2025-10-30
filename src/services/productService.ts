@@ -1,5 +1,7 @@
 import { Product, ProductsResponse, ProductFilters } from '@/types/product';
+import { categoryMapping } from '@/lib/categoryMapping';
 import { mediaUrl, STRAPI_URL } from '@/lib/strapi';
+import { PossibleMediaInput } from '@/types/strapi';
 
 const API_TOKEN = process.env.NEXT_PUBLIC_STRAPI_API_TOKEN;
 
@@ -72,9 +74,11 @@ const mapStrapiProduct = (strapiProduct: StrapiProduct): Product => {
   // might mask missing CMS content.
   let imageUrl = '';
   try {
-    const resolved = mediaUrl((attributes as any)?.image);
+    const maybeImage: PossibleMediaInput =
+      attributes.image as unknown as PossibleMediaInput;
+    const resolved = mediaUrl(maybeImage);
     if (resolved) imageUrl = resolved;
-  } catch (e) {
+  } catch {
     // keep imageUrl as empty string on error
   }
 
@@ -85,12 +89,29 @@ const mapStrapiProduct = (strapiProduct: StrapiProduct): Product => {
     slug = generateStandardSlug(mainTitle);
   }
 
+  // Normalize tag: Strapi sometimes stores tags as string, sometimes as array or object
+  let normalizedTag = '';
+  try {
+    const attrsRecord = attributes as unknown as Record<string, unknown>;
+    const rawTag = attrsRecord['tag'];
+    if (typeof rawTag === 'string') normalizedTag = rawTag;
+    else if (Array.isArray(rawTag))
+      normalizedTag = ((rawTag as unknown[])[0] as string) || '';
+    else if (rawTag && typeof rawTag === 'object') {
+      const tagObj = rawTag as Record<string, unknown>;
+      normalizedTag =
+        (tagObj['name'] as string) || (tagObj['title'] as string) || '';
+    }
+  } catch {
+    normalizedTag = '';
+  }
+
   return {
     id: id,
     name: attributes.title || attributes.main_title || '',
     main_title: mainTitle,
     slug: slug,
-    tag: attributes.tag || '',
+    tag: normalizedTag || (attributes.tag as string) || '',
     image: imageUrl,
     description: attributes.description || '',
     category: attributes.category || '',
@@ -103,10 +124,30 @@ const mapStrapiProduct = (strapiProduct: StrapiProduct): Product => {
 export const productAPI = {
   async getProducts(filters?: ProductFilters): Promise<ProductsResponse> {
     try {
-      let url = `${STRAPI_URL}/api/products?populate=*`;
+      // Allow caller to request pagination parameters. Default to page=1 pageSize=100
+      // to be backward-compatible with previous behavior. The Products page will
+      // call this with smaller pageSize (e.g. 6) for per-section incremental fetch.
+      const page = filters?.page ?? 1;
+      const pageSize = filters?.pageSize ?? 100;
+
+      let url = `${STRAPI_URL}/api/products?populate=*&pagination[page]=${page}&pagination[pageSize]=${pageSize}`;
 
       if (filters?.category) {
-        url += `&filters[category][$eq]=${filters.category}`;
+        // Strapi products may use a free-form 'tag' field to classify items.
+        // Our frontend uses logical category keys (e.g. 'plc-scada') which map
+        // to a set of tags in categoryMapping. Translate category -> tags
+        // and use a $in filter on tag to return items for that category.
+        const catInfo = categoryMapping[filters.category];
+        if (catInfo && Array.isArray(catInfo.tags) && catInfo.tags.length > 0) {
+          // Strapi expects repeated array params for $in: filters[tag][$in][]=a&filters[tag][$in][]=b
+          const parts = catInfo.tags
+            .map(t => `filters[tag][$in][]=${encodeURIComponent(t)}`)
+            .join('&');
+          url += `&${parts}`;
+        } else {
+          // fallback: attempt to filter by category field directly
+          url += `&filters[category][$eq]=${encodeURIComponent(filters.category)}`;
+        }
       }
       if (filters?.tag) {
         url += `&filters[tag][$eq]=${filters.tag}`;
@@ -154,14 +195,50 @@ export const productAPI = {
 
       const strapiResponse = await response.json();
 
-      const products = strapiResponse.data?.map(mapStrapiProduct) || [];
+      let products = strapiResponse.data?.map(mapStrapiProduct) || [];
+
+      // Fallback: if caller requested a category and we got no results, try a
+      // containsi OR query across the tags to catch mismatched tag shapes.
+      if (filters?.category && products.length === 0) {
+        const catInfo = categoryMapping[filters.category];
+        if (catInfo && Array.isArray(catInfo.tags) && catInfo.tags.length > 0) {
+          // build OR filters for tag containsi
+          const orParts = catInfo.tags
+            .map(
+              (t, i) =>
+                `filters[$or][${i}][tag][$containsi]=${encodeURIComponent(t)}`
+            )
+            .join('&');
+
+          const fallbackUrl = `${STRAPI_URL}/api/products?populate=*&pagination[page]=${page}&pagination[pageSize]=${pageSize}&${orParts}`;
+          const fallbackResp = await fetch(fallbackUrl, {
+            headers: getStrapiHeaders(),
+          });
+          if (fallbackResp.ok) {
+            const fallbackJson = await fallbackResp.json();
+            products = fallbackJson.data?.map(mapStrapiProduct) || products;
+            // update pagination meta if available
+            if (fallbackJson.meta?.pagination) {
+              // override strapiResponse meta to the fallback one for downstream values
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (strapiResponse as any).meta = fallbackJson.meta;
+            }
+          }
+        }
+      }
+
+      const total = strapiResponse.meta?.pagination?.total ?? products.length;
+      const currentPage = strapiResponse.meta?.pagination?.page ?? page;
+      const limit = strapiResponse.meta?.pagination?.pageSize ?? pageSize;
+      const pageCount =
+        strapiResponse.meta?.pagination?.pageCount ?? Math.ceil(total / limit);
 
       return {
         products,
-        total: strapiResponse.meta?.pagination?.total || products.length,
-        page: strapiResponse.meta?.pagination?.page || 1,
-        limit: strapiResponse.meta?.pagination?.pageSize || products.length,
-        hasMore: false,
+        total,
+        page: currentPage,
+        limit,
+        hasMore: currentPage < pageCount,
       };
     } catch (error) {
       throw error;

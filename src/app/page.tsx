@@ -1,57 +1,27 @@
 // src/app/page.tsx
 import Hero from '@/components/Hero';
+import type { Metadata } from 'next';
 import Features from '@/components/Features';
 import GridPreview from '@/components/GridPreview';
 import CTAButton from '@/components/CTAButton';
 import { MotionReveal } from '@/components/MotionReveal';
-import { fetchHome as fetchHomeFromCms, fetchPageBySlug } from '@/lib/cms';
+import {
+  fetchHome as fetchHomeFromCms,
+  fetchPageBySlug,
+  fetchServices,
+  fetchArticles,
+} from '@/lib/cms';
 import { mediaUrl } from '@/lib/strapi';
+import { buildMetadataFromSeo } from '@/lib/seo';
+import type { PossibleMediaInput } from '@/types/strapi';
+import type { PageAttributes } from '@/types/cms';
 import { getColorByTagName } from '@/lib/categoryBadge';
+import { logger } from '@/lib/logger';
 
 /** ========== ENV / Debug ========== */
-const isDev = process.env.NODE_ENV !== 'production';
+// Dev-only guards removed for production readiness.
 
-function dbg(where: string, level: 'info' | 'warn' | 'error', msg: string) {
-  if (!isDev) return;
-  const tag = `[HOME][${where}]`;
-  (console as any)[level](`${tag} ${msg}`);
-}
-
-/** Dev-only overlay แจ้งฟิลด์ที่ยังขาด */
-function DebugOverlay({ missing }: { missing: string[] }) {
-  if (!isDev || missing.length === 0) return null;
-  return (
-    <div
-      style={{
-        position: 'fixed',
-        left: 12,
-        bottom: 12,
-        zIndex: 9999,
-        background: 'rgba(233,41,40,0.92)',
-        color: '#fff',
-        padding: '10px 12px',
-        borderRadius: 8,
-        maxWidth: 360,
-        boxShadow: '0 6px 24px rgba(0,0,0,0.25)',
-        fontFamily:
-          'ui-sans-serif, system-ui, -apple-system, "Kanit", "Segoe UI"',
-        fontSize: 12,
-        lineHeight: '18px',
-      }}
-    >
-      <div style={{ fontWeight: 700, marginBottom: 6 }}>
-        Missing from Strapi
-      </div>
-      <ul style={{ paddingLeft: 16, margin: 0 }}>
-        {missing.map((m, i) => (
-          <li key={i} style={{ marginBottom: 2 }}>
-            {m}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
+// Removed development-only DebugOverlay to clean production output.
 
 /** ========== Helpers ========== */
 
@@ -64,8 +34,9 @@ async function fetchHomeData() {
       fetchHomeFromCms(),
     ]);
     return { page, home };
-  } catch (e: any) {
-    dbg('fetchHomeData', 'error', e?.message || String(e));
+  } catch (err) {
+    const e = err as Error | undefined;
+    logger.error('[HOME][fetchHomeData]', e?.message || String(e));
     return { page: null, home: null };
   }
 }
@@ -73,20 +44,20 @@ async function fetchHomeData() {
 /** ========== Page ========== */
 export default async function HomePage() {
   const { page, home } = await fetchHomeData();
-  const missing: string[] = [];
+  // structuredData is injected into <head> via src/app/head.tsx
 
   /** ---------- Hero จาก Pages (ไม่มี fallback) ---------- */
-  const heroQuote = page?.quote ?? '';
+  const heroQuote = (page as PageAttributes | null)?.quote ?? '';
   if (!heroQuote) {
-    missing.push('Page(Hero): quote');
-    dbg('Hero', 'warn', 'missing quote');
+    logger.warn('[HOME][Hero] missing quote');
   }
 
   // Resolve hero background via centralized mediaUrl helper
-  const heroBg = mediaUrl((page as any)?.hero_image);
+  const heroBg = mediaUrl(
+    (page as PageAttributes | null)?.hero_image as PossibleMediaInput
+  );
   if (!heroBg) {
-    missing.push('Page(Hero): hero_image');
-    dbg('Hero', 'warn', 'missing hero_image');
+    logger.warn('[HOME][Hero] missing hero_image');
   }
 
   const heroProps = {
@@ -95,35 +66,104 @@ export default async function HomePage() {
     subtitle: '',
     ctas: [], // ถ้าต้องการ map button_1/button_2 เป็น CTA button ให้ต่อยอดตรงนี้ได้
     panel: { enabled: true as const, align: 'center' as const },
-    hero_schema: heroQuote
-      ? {
-          quote: String(heroQuote),
-          button_1: page?.button_1,
-          button_2: page?.button_2,
-          isShowButton:
-            typeof page?.isShowButton === 'boolean'
-              ? page?.isShowButton
-              : undefined,
-        }
-      : undefined,
+    hero_schema: (() => {
+      if (!heroQuote) return undefined;
+      const b1 =
+        typeof (page as Record<string, unknown> | undefined)?.['button_1'] ===
+        'string'
+          ? ((page as Record<string, unknown>)['button_1'] as string)
+          : undefined;
+      const b2 =
+        typeof (page as Record<string, unknown> | undefined)?.['button_2'] ===
+        'string'
+          ? ((page as Record<string, unknown>)['button_2'] as string)
+          : undefined;
+      const isShow =
+        typeof (page as Record<string, unknown> | undefined)?.[
+          'isShowButton'
+        ] === 'boolean'
+          ? ((page as Record<string, unknown>)['isShowButton'] as boolean)
+          : undefined;
+      return {
+        quote: String(heroQuote),
+        button_1: b1,
+        button_2: b2,
+        isShowButton: isShow,
+      } as const;
+    })(),
   };
 
   /** ---------- About (SharedTitleWithDescriptionComponent) ---------- */
-  const aboutTitle = home?.Home?.title ?? '';
-  const aboutDesc = home?.Home?.description ?? '';
-  if (!aboutTitle && !aboutDesc) missing.push('Home(About): title/description');
+  // Safely extract title/description from various possible shapes returned by Strapi
+  const homeRec = home as Record<string, unknown> | undefined;
+  const extractTitle = (): string => {
+    if (!homeRec) return '';
+    const keys = [
+      'Home',
+      'home',
+      'SharedTitleWithDescriptionComponent',
+      'sharedTitleWithDescriptionComponent',
+      'shared_title_with_description_component',
+    ];
+    for (const k of keys) {
+      const v = homeRec[k];
+      if (!v) continue;
+      if (typeof v === 'string') return v;
+      if (typeof v === 'object' && v !== null) {
+        const inner = v as Record<string, unknown>;
+        if (typeof inner['title'] === 'string') return inner['title'] as string;
+      }
+    }
+    return '';
+  };
+  const extractDescription = (): string => {
+    if (!homeRec) return '';
+    const keys = [
+      'Home',
+      'home',
+      'SharedTitleWithDescriptionComponent',
+      'sharedTitleWithDescriptionComponent',
+      'shared_title_with_description_component',
+    ];
+    for (const k of keys) {
+      const v = homeRec[k];
+      if (!v) continue;
+      if (typeof v === 'object' && v !== null) {
+        const inner = v as Record<string, unknown>;
+        if (typeof inner['description'] === 'string')
+          return inner['description'] as string;
+      }
+    }
+    return '';
+  };
+
+  const aboutTitle = extractTitle();
+  const aboutDesc = extractDescription();
+  if (!aboutTitle && !aboutDesc)
+    logger.warn('[HOME][Home] Home(About): title/description missing');
 
   /** ---------- Normalizers ---------- */
-  const normalizeRel = (rel: any) => {
-    if (!rel?.data) return [];
-    return Array.isArray(rel.data)
-      ? rel.data.map((e: any) => ({ id: e.id, ...e.attributes }))
-      : [];
+  const normalizeRel = (rel: unknown) => {
+    if (!rel || typeof rel !== 'object')
+      return [] as Array<{ id?: number } & Record<string, unknown>>;
+    const asObj = rel as { data?: unknown };
+    if (!asObj.data)
+      return [] as Array<{ id?: number } & Record<string, unknown>>;
+    if (!Array.isArray(asObj.data))
+      return [] as Array<{ id?: number } & Record<string, unknown>>;
+    return (asObj.data as unknown[]).map(e => {
+      const record = e as { id?: number; attributes?: unknown };
+      return {
+        id: record.id,
+        ...((record.attributes as Record<string, unknown>) ?? {}),
+      } as { id?: number } & Record<string, unknown>;
+    });
   };
 
   /** ---------- Products ---------- */
   const productsList = normalizeRel(home?.products);
-  if (productsList.length === 0) missing.push('Home(products): empty');
+  if (productsList.length === 0)
+    logger.warn('[HOME][Home] Home(products): empty');
 
   const products = {
     kind: 'products' as const,
@@ -133,23 +173,47 @@ export default async function HomePage() {
       href: '/products',
       variant: 'primary' as const,
     },
-    items: productsList.map((p: any) => ({
-      id: p.id,
-      title: p.title, // required
-      slug: p.slug, // required
-      tag: p.tag, // required
-      categoryBadge: { label: p.tag, color: getColorByTagName(p.tag) },
-      description: p.description,
-      mainTitle: p.main_title, // required by schema
-      image: mediaUrl(p.image),
-      seo: p.SEO,
-      href: `/products/${p.slug}`,
-    })),
+    items: productsList.map(p => {
+      const rec = p as { id?: number } & Record<string, unknown>;
+      const maybeImage: PossibleMediaInput = rec['image'] as PossibleMediaInput;
+      return {
+        id: rec.id,
+        title: (rec['title'] as string) ?? '',
+        slug: (rec['slug'] as string) ?? '',
+        tag: (rec['tag'] as string) ?? '',
+        categoryBadge: {
+          label: (rec['tag'] as string) ?? '',
+          color: getColorByTagName((rec['tag'] as string) ?? ''),
+        },
+        description: (rec['description'] as string) ?? '',
+        mainTitle: (rec['main_title'] as string) ?? '',
+        image: mediaUrl(maybeImage),
+        seo: rec['SEO'],
+        href: `/products/${(rec['slug'] as string) ?? ''}`,
+      };
+    }),
   };
 
   /** ---------- Services ---------- */
-  const servicesList = normalizeRel(home?.services);
-  if (servicesList.length === 0) missing.push('Home(services): empty');
+  let servicesList = normalizeRel(home?.services);
+  // If home payload didn't include services, fetch them directly as a robust fallback
+  if (servicesList.length === 0) {
+    try {
+      const svc = await fetchServices({ page: 1, pageSize: 3 });
+      // svc.items are in Strapi list shape: { id, attributes }. Flatten to { id, ...attributes }
+      servicesList = (svc.items ?? []).map((it: unknown) => {
+        const rec = it as { id?: number; attributes?: unknown };
+        return {
+          id: rec.id,
+          ...((rec.attributes as Record<string, unknown>) ?? {}),
+        } as { id?: number } & Record<string, unknown>;
+      });
+    } catch {
+      // keep servicesList empty and report missing
+    }
+  }
+  if (servicesList.length === 0)
+    logger.warn('[HOME][Home] Home(services): empty');
 
   const services = {
     kind: 'services' as const,
@@ -159,21 +223,43 @@ export default async function HomePage() {
       href: '/services',
       variant: 'primary' as const,
     },
-    items: servicesList.map((s: any) => ({
-      id: s.id,
-      title: s.title, // required
-      slug: s.slug, // required
-      subtitle: s.subtitle,
-      content: s.content,
-      image: mediaUrl(s.image),
-      seo: s.SEO,
-      href: `/services/${s.slug}`,
-    })),
+    items: servicesList.map(s => {
+      const rec = s as { id?: number } & Record<string, unknown>;
+      // Prefer `cover_image` (newer Strapi field) and fall back to legacy `image`
+      const maybeServiceImage =
+        (rec['cover_image'] as PossibleMediaInput) ??
+        (rec['image'] as PossibleMediaInput);
+      return {
+        id: rec.id,
+        title: (rec['title'] as string) ?? '',
+        slug: (rec['slug'] as string) ?? '',
+        subtitle: (rec['subtitle'] as string) ?? '',
+        content: rec['content'],
+        image: mediaUrl(maybeServiceImage),
+        seo: rec['SEO'],
+        href: `/services/${(rec['slug'] as string) ?? ''}`,
+      };
+    }),
   };
 
   /** ---------- Articles ---------- */
-  const articlesList = normalizeRel(home?.articles);
-  if (articlesList.length === 0) missing.push('Home(articles): empty');
+  let articlesList = normalizeRel(home?.articles);
+  if (articlesList.length === 0) {
+    try {
+      const art = await fetchArticles({ page: 1, pageSize: 3 });
+      articlesList = (art.items ?? []).map((it: unknown) => {
+        const rec = it as { id?: number; attributes?: unknown };
+        return {
+          id: rec.id,
+          ...((rec.attributes as Record<string, unknown>) ?? {}),
+        } as { id?: number } & Record<string, unknown>;
+      });
+    } catch {
+      // keep empty
+    }
+  }
+  if (articlesList.length === 0)
+    logger.warn('[HOME][Home] Home(articles): empty');
 
   const articles = {
     kind: 'articles' as const,
@@ -183,24 +269,37 @@ export default async function HomePage() {
       href: '/articles',
       variant: 'primary' as const,
     },
-    items: articlesList.map((a: any) => ({
-      id: a.id,
-      title: a.title, // required
-      slug: a.slug, // required
-      subtitle: a.subtitle,
-      readTime: a.read_time,
-      content: a.content,
-      image: mediaUrl(a.image),
-      seo: a.SEO,
-      href: `/articles/${a.slug}`,
-    })),
+    items: articlesList.map(a => {
+      const rec = a as { id?: number } & Record<string, unknown>;
+      return {
+        id: rec.id,
+        title: (rec['title'] as string) ?? '',
+        slug: (rec['slug'] as string) ?? '',
+        subtitle: (rec['subtitle'] as string) ?? '',
+        readTime: rec['read_time'],
+        content: rec['content'],
+        image: mediaUrl(rec['image'] as PossibleMediaInput),
+        seo: rec['SEO'],
+        href: `/articles/${(rec['slug'] as string) ?? ''}`,
+      };
+    }),
   };
 
   return (
     <div className="bg-[#F5F5F5]">
+      {/* JSON-LD is injected via src/app/head.tsx (in document head) */}
       <main className="w-full flex flex-col gap-16 justify-center items-center">
         {/* ✅ แสดง Hero เฉพาะเมื่อข้อมูลมาจริงจาก Strapi */}
-        {heroBg && heroQuote && <Hero {...(heroProps as any)} />}
+        {heroBg && heroQuote && (
+          <Hero
+            title={heroProps.title}
+            subtitle={heroProps.subtitle}
+            background={heroProps.background}
+            ctas={heroProps.ctas}
+            panel={heroProps.panel}
+            hero_schema={heroProps.hero_schema}
+          />
+        )}
 
         <MotionReveal>
           <div className="container-970 flex flex-col gap-16">
@@ -208,7 +307,7 @@ export default async function HomePage() {
             {(aboutTitle || aboutDesc) && (
               <section className="w-full flex flex-col items-start gap-4">
                 <div className="flex items-start lg:items-center gap-2">
-                  <div className="py-3">
+                  <div className="py-3 flex">
                     <span className="w-2 h-2 lg:w-4 lg:h-4 rounded-full inline-block bg-[#E92928]" />
                   </div>
                   {aboutTitle && (
@@ -287,8 +386,19 @@ export default async function HomePage() {
         </MotionReveal>
       </main>
 
-      {/* Dev-only overlay */}
-      <DebugOverlay missing={missing} />
+      {/* Dev overlay removed */}
     </div>
   );
+}
+
+// Per-page SEO: map Page.SEO to Next Metadata
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const page = await fetchPageBySlug('home');
+    const attrs = page as unknown as Record<string, unknown> | null;
+    const seo = (attrs && (attrs['SEO'] as Record<string, unknown>)) || null;
+    return buildMetadataFromSeo(seo, { defaultCanonical: '/' });
+  } catch {
+    return {} as Metadata;
+  }
 }
