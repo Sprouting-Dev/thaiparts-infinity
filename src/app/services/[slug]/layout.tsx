@@ -3,7 +3,11 @@ import { ReactNode } from 'react';
 import { getServiceBySlug } from '@/services/serviceService';
 import { buildMetadataFromSeo } from '@/lib/seo';
 
-export default async function ServiceSlugLayout({ children }: { children: ReactNode }) {
+export default async function ServiceSlugLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
   // Minimal wrapper for all pages under /services/[slug]
   return <div className="container-970 mx-auto px-4">{children}</div>;
 }
