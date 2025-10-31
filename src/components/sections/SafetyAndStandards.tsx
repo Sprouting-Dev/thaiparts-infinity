@@ -4,7 +4,7 @@ type RichTextChild = {
   italic?: boolean;
 };
 
-import SafeHtml from '@/components/SafeHtml';
+import SafeHtml from '@/components/ui/SafeHtml';
 
 type RichTextBlock = {
   type: string;

@@ -4,15 +4,15 @@ import { validateStructuredData } from '@/lib/seo';
 export default async function Head() {
   const page = await fetchPageBySlug('products');
   const attrs = page as unknown as Record<string, unknown> | null;
-  const seo =
-    (attrs &&
-      (attrs['SharedSeoComponent'] as Record<string, unknown> | undefined)) ??
-    (attrs && (attrs['SEO'] as Record<string, unknown> | undefined)) ??
-    (attrs && (attrs['seo'] as Record<string, unknown> | undefined)) ??
-    null;
-  const structuredJson =
-    seo && seo['structuredData'] ? seo['structuredData'] : undefined;
+  const seo = (attrs &&
+    (attrs['SEO'] ??
+      attrs['SharedSeoComponent'] ??
+      attrs['seo'] ??
+      attrs['sharedSeo'] ??
+      null)) as Record<string, unknown> | null;
+  const structuredJson = seo?.['structuredData'] as unknown;
   const safe = validateStructuredData(structuredJson);
+
   return (
     <>{safe ? <script type="application/ld+json">{safe}</script> : null}</>
   );

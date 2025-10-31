@@ -1,11 +1,11 @@
 'use client';
 import Link from 'next/link';
-import LinkMotion from './LinkMotion';
+import LinkMotion from '@/components/motion/LinkMotion';
 import Image from 'next/image';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import CTAButton from './CTAButton';
+import CTAButton from '@/components/ui/CTAButton';
 import React, { useEffect, useRef, useState } from 'react';
-import { getTextClass } from '@/components/ColoredText';
+import { getTextClass } from '@/lib/coloredText';
 import { createPortal } from 'react-dom';
 import type { CTAVariant } from '@/lib/button-styles';
 
@@ -63,19 +63,7 @@ export default function Header({ brand, navbar }: Props) {
 
   const getColorClass = (color: string) => getTextClass(color);
 
-  // Debug: log navbar data in development
-  if (process.env.NODE_ENV === 'development') {
-    // console.log('[Header] navbar data:', navbar);
-    // console.log('[Header] navbar.ctas:', navbar?.ctas);
-  }
-
-  // Get enabled CTAs from navbar (use Strapi data, minimal fallback)
   const enabledCTAs = navbar?.ctas?.filter(cta => cta.enabled !== false) || [];
-
-  // Show fallback message in development if no CTAs configured
-  if (process.env.NODE_ENV === 'development' && enabledCTAs.length === 0) {
-    // console.log('[Header] No CTAs configured in Strapi navbar. Please add CTAs in Global > Navbar > CTAs');
-  }
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const headerRef = useRef<HTMLElement | null>(null);

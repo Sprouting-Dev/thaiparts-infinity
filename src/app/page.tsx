@@ -1,19 +1,16 @@
-// src/app/page.tsx
-import Hero from '@/components/Hero';
-import SafeHtml from '@/components/SafeHtml';
-import type { Metadata } from 'next';
-import Features from '@/components/Features';
-import GridPreview from '@/components/GridPreview';
-import CTAButton from '@/components/CTAButton';
-import { MotionReveal } from '@/components/MotionReveal';
+import Hero from '@/components/features/Hero';
+import SafeHtml from '@/components/ui/SafeHtml';
+import Features from '@/components/features/Features';
+import GridPreview from '@/components/features/GridPreview';
+import CTAButton from '@/components/ui/CTAButton';
+import { MotionReveal } from '@/components/motion/MotionReveal';
 import {
-  fetchHome as fetchHomeFromCms,
+  fetchHome,
   fetchPageBySlug,
   fetchServices,
   fetchArticles,
 } from '@/lib/cms';
 import { mediaUrl } from '@/lib/strapi';
-import { buildMetadataFromSeo } from '@/lib/seo';
 import type { PossibleMediaInput } from '@/types/strapi';
 import type { PageAttributes } from '@/types/cms';
 import { getColorByTagName } from '@/lib/categoryBadge';
@@ -25,7 +22,7 @@ async function fetchHomeData() {
   try {
     const [page, home] = await Promise.all([
       fetchPageBySlug('home'),
-      fetchHomeFromCms(),
+      fetchHome(),
     ]);
     return { page, home };
   } catch (err) {
@@ -410,20 +407,6 @@ export default async function HomePage() {
           </div>
         </MotionReveal>
       </main>
-
-      {/* Dev overlay removed */}
     </div>
   );
-}
-
-// Per-page SEO: map Page.SEO to Next Metadata
-export async function generateMetadata(): Promise<Metadata> {
-  try {
-    const page = await fetchPageBySlug('home');
-    const attrs = page as unknown as Record<string, unknown> | null;
-    const seo = (attrs && (attrs['SEO'] as Record<string, unknown>)) || null;
-    return buildMetadataFromSeo(seo, { defaultCanonical: '/' });
-  } catch {
-    return {} as Metadata;
-  }
 }

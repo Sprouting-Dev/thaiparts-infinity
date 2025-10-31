@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Product } from '@/types/product';
-import { productAPI } from '@/services/productService';
+import { productAPI } from '@/lib/productService';
 import { ProductFilter, ProductCard } from '@/components';
-import CTAButton from '@/components/CTAButton';
+import CTAButton from '@/components/ui/CTAButton';
 import { categoryMapping, getProductsByCategory } from '@/lib/categoryMapping';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -88,9 +88,8 @@ export default function ProductsPage() {
             );
             finalProducts = matched;
             finalHasMore = false; // unknown in this fallback
-          } catch (fallbackErr) {
+          } catch {
             // keep finalProducts as empty
-            console.warn('Fallback fetch for products failed', fallbackErr);
           }
         }
 

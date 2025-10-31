@@ -1,5 +1,3 @@
-import React from 'react';
-
 // Central color mapper used across components to map CMS color tokens
 // to Tailwind classes. Keep this single source of truth to make
 // future color changes or token mappings easier.
@@ -20,36 +18,33 @@ export function getTextClass(color?: string) {
   if (
     lower === 'brandblue' ||
     lower === 'brand-blue' ||
-    lower === 'brand_blue' ||
-    lower === 'brandblue' ||
-    lower === 'primary'
+    lower === '#1063a7' ||
+    lower === '1063a7'
   )
-    return 'text-brand-blue';
+    return 'text-[var(--brand-blue)]';
+
   if (
     lower === 'accentred' ||
     lower === 'accent-red' ||
-    lower === 'accent_red' ||
-    lower === 'accentred' ||
-    lower === 'accent'
+    lower === '#e92928' ||
+    lower === 'e92928'
   )
-    return 'text-accent-red';
+    return 'text-[var(--accent-red)]';
 
-  // common keywords
-  if (lower.includes('blue')) return 'text-brand-blue';
-  if (lower.includes('red')) return 'text-accent-red';
-  if (lower === 'white' || lower === 'light' || lower === 'default')
+  if (lower === 'white' || lower === '#ffffff' || lower === 'ffffff')
     return 'text-white';
 
-  // fallback to brand blue when unknown (avoid generating arbitrary classes)
-  return 'text-brand-blue';
-}
+  // fallback: if string contains 'blue' -> brand blue
+  if (lower.includes('blue')) return 'text-[var(--brand-blue)]';
+  // if string contains 'red' -> accent red
+  if (lower.includes('red')) return 'text-[var(--accent-red)]';
 
-export default function ColoredText({
-  color,
-  children,
-}: {
-  color?: string;
-  children: React.ReactNode;
-}) {
-  return <span className={getTextClass(color)}>{children}</span>;
+  // If it's a 6-char hex without #, add the hash
+  if (/^[0-9a-f]{6}$/i.test(val)) return `text-[#${val}]`;
+
+  // Try to parse as hex color
+  if (val.startsWith('#')) return `text-[${val}]`;
+
+  // Default fallback
+  return 'text-[#1063A7]';
 }

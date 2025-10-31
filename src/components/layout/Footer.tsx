@@ -3,13 +3,13 @@
 import React, { useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import CTAButton from './CTAButton';
+import CTAButton from '@/components/ui/CTAButton';
 import type { CTAVariant } from '@/lib/button-styles';
 import { mediaUrl } from '@/lib/strapi';
 import type { LayoutAttributes } from '@/types/cms';
 import type { PossibleMediaInput } from '@/types/strapi';
 import { sanitizeHtml } from '@/lib/sanitize';
-import SafeHtml from '@/components/SafeHtml';
+import SafeHtml from '@/components/ui/SafeHtml';
 
 interface SharedContactComponent {
   company_name?: string;
@@ -26,8 +26,6 @@ interface FooterProps {
   layout?: LayoutAttributes | null;
   embedded?: boolean;
 }
-
-// Development overlay removed for production cleanliness
 
 const socialIcon = (type?: string) => {
   switch ((type || '').toLowerCase()) {
@@ -82,8 +80,6 @@ export default function Footer({ layout, embedded }: FooterProps) {
     (layout?.prefooter_image as PossibleMediaInput) ??
     (layout?.banner as PossibleMediaInput)) as PossibleMediaInput | undefined;
   const preBg = mediaUrl(preImage);
-
-  // Dev overlay and missing-field checks removed
 
   // Use a neutral fallback string for missing CMS content
   const CMS_FALLBACK = 'ข้อมูลกำลังอยู่ระหว่างการอัปเดต';

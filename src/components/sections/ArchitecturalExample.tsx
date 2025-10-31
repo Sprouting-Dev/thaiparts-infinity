@@ -1,5 +1,5 @@
 'use client';
-import SafeHtml from '@/components/SafeHtml';
+import SafeHtml from '@/components/ui/SafeHtml';
 
 interface ArchitecturalExampleSection {
   id?: number;

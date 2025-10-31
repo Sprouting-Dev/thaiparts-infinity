@@ -1,8 +1,8 @@
 'use client';
 import Image from 'next/image';
-import MotionGridItem from '@/components/MotionGridItem';
-import { MotionReveal } from '@/components/MotionReveal';
-import { getTextClass } from '@/components/ColoredText';
+import MotionGridItem from '@/components/motion/MotionGridItem';
+import { MotionReveal } from '@/components/motion/MotionReveal';
+import { getTextClass } from '@/lib/coloredText';
 
 interface FeatureItem {
   icon: string;

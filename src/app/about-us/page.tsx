@@ -1,11 +1,10 @@
-// src/app/about-us/page.tsx
-import Hero from '@/components/Hero';
+import Hero from '@/components/features/Hero';
 import type { Metadata } from 'next';
-import Features from '@/components/Features';
+import Features from '@/components/features/Features';
 import Image from 'next/image';
-import LogoCarousel from '@/components/LogoCarousel';
-import CTAButton from '@/components/CTAButton';
-import { MotionReveal } from '@/components/MotionReveal';
+import LogoCarousel from '@/components/features/LogoCarousel';
+import CTAButton from '@/components/ui/CTAButton';
+import { MotionReveal } from '@/components/motion/MotionReveal';
 import { fetchPageBySlug } from '@/lib/cms';
 import { logger } from '@/lib/logger';
 import { mediaUrl, STRAPI_URL } from '@/lib/strapi';
@@ -85,11 +84,7 @@ const pickTitleDesc = (v: unknown): { title: string; description: string } => {
   return { title: '', description: '' };
 };
 
-// Removed development-only DebugOverlay to clean production output.
-
-/** ========== Page ========== */
 export default async function AboutUsPage() {
-  // ดึง Hero จาก pages (slug=about-us) และเนื้อหาอื่นจาก about-us single type
   const [pageHero, aboutJson] = await Promise.all([
     fetchPageBySlug('about-us'),
     fetchAboutSingle(),
@@ -104,24 +99,10 @@ export default async function AboutUsPage() {
     const aj = aboutJson as { data?: { attributes?: unknown } };
     aboutAttrs = (aj.data?.attributes ?? null) as AboutAttributes | null;
   }
-
-  // Dev missing-field tracking removed; keep debug logging only
-  /** ---------- Hero จาก Pages (re-use) ---------- */
   const heroQuote = (pageHero as PageAttributes | null)?.quote ?? '';
-  if (!heroQuote) {
-    logger.warn('[ABOUT][Hero] missing quote from pages');
-  } else {
-    logger.info('[ABOUT][Hero] quote OK from pages');
-  }
-
   const heroBg = mediaUrl(
     (pageHero as PageAttributes | null)?.hero_image as PossibleMediaInput
   );
-  if (!heroBg) {
-    logger.warn('[ABOUT][Hero] missing hero_image from pages');
-  } else {
-    logger.info('[ABOUT][Hero] background OK from pages');
-  }
 
   const heroProps: {
     title: string;
@@ -444,9 +425,25 @@ export async function generateMetadata(): Promise<Metadata> {
   try {
     const page = await fetchPageBySlug('about-us');
     const attrs = page as unknown as Record<string, unknown> | null;
-    const seo = (attrs && (attrs['SEO'] as Record<string, unknown>)) || null;
-    return buildMetadataFromSeo(seo, { defaultCanonical: '/about-us' });
+    // Check all possible SEO key variations
+    const seo = (attrs &&
+      (attrs['SEO'] ??
+        attrs['SharedSeoComponent'] ??
+        attrs['seo'] ??
+        attrs['sharedSeo'] ??
+        null)) as Record<string, unknown> | null;
+    return buildMetadataFromSeo(seo, {
+      defaultCanonical: '/about-us',
+      fallbackTitle: 'About Us | THAIPARTS INFINITY',
+      fallbackDescription:
+        'รู้จักกับ THAIPARTS INFINITY - พาร์ทเนอร์ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร',
+    });
   } catch {
-    return {} as Metadata;
+    return buildMetadataFromSeo(null, {
+      defaultCanonical: '/about-us',
+      fallbackTitle: 'About Us | THAIPARTS INFINITY',
+      fallbackDescription:
+        'รู้จักกับ THAIPARTS INFINITY - พาร์ทเนอร์ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร',
+    });
   }
 }

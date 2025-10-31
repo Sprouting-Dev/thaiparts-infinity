@@ -2,34 +2,52 @@ import type { Metadata } from 'next';
 import { fetchArticleBySlug, fetchArticles } from '@/lib/cms';
 import { sanitizeHtml } from '@/lib/sanitize';
 import { notFound } from 'next/navigation';
-import SafeHtml from '@/components/SafeHtml';
+import SafeHtml from '@/components/ui/SafeHtml';
 import { buildMetadataFromSeo, extractMediaMeta } from '@/lib/seo';
 import Image from 'next/image';
 
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }> | { slug: string };
 }): Promise<Metadata> {
+  const { slug } = await (typeof params === 'object' && 'then' in params
+    ? params
+    : Promise.resolve(params));
   try {
-    const { slug } = await params;
     const res = await fetchArticleBySlug(slug);
     const attrs = (res as { attributes?: unknown } | null)
       ?.attributes as Record<string, unknown> | null;
-    if (!attrs) return {} as Metadata;
+    if (!attrs) {
+      return buildMetadataFromSeo(null, {
+        defaultCanonical: `/articles/${slug}`,
+        fallbackTitle: 'Article | THAIPARTS INFINITY',
+        fallbackDescription: 'บทความจาก THAIPARTS INFINITY',
+      });
+    }
 
-    const seo = (attrs['sharedSeo'] ?? attrs['seo'] ?? null) as Record<
-      string,
-      unknown
-    > | null;
+    const seo = (attrs['SEO'] ??
+      attrs['SharedSeoComponent'] ??
+      attrs['sharedSeo'] ??
+      attrs['seo'] ??
+      null) as Record<string, unknown> | null;
+
+    const subtitle =
+      typeof attrs['subtitle'] === 'string' ? attrs['subtitle'] : undefined;
+    const title =
+      typeof attrs['title'] === 'string' ? attrs['title'] : undefined;
 
     return buildMetadataFromSeo(seo, {
       defaultCanonical: `/articles/${slug}`,
-      fallbackTitle:
-        typeof attrs['title'] === 'string' ? attrs['title'] : undefined,
+      fallbackTitle: title,
+      fallbackDescription: subtitle || 'บทความจาก THAIPARTS INFINITY',
     });
   } catch {
-    return {} as Metadata;
+    return buildMetadataFromSeo(null, {
+      defaultCanonical: `/articles/${slug}`,
+      fallbackTitle: 'Article | THAIPARTS INFINITY',
+      fallbackDescription: 'บทความจาก THAIPARTS INFINITY',
+    });
   }
 }
 
@@ -333,14 +351,14 @@ export default async function ArticleDetailPage({
                     className="bg-white rounded-lg overflow-hidden shadow-md"
                   >
                     <a href={`/articles/${attrs['slug']}`} className="block">
-                      <div className="h-44 bg-[#D9D9D9] overflow-hidden">
+                      <div className="relative h-44 bg-[#D9D9D9] overflow-hidden">
                         {thumb ? (
                           <Image
                             src={thumb}
                             alt={t}
-                            width={400}
-                            height={176}
-                            className="w-full h-full object-cover"
+                            fill
+                            sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
+                            className="object-cover"
                           />
                         ) : null}
                       </div>

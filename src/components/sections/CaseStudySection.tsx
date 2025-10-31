@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import SafeHtml from '@/components/SafeHtml';
+import SafeHtml from '@/components/ui/SafeHtml';
 
 interface CaseStudySection {
   id?: number;

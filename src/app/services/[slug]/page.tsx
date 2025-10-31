@@ -1,15 +1,15 @@
 import { Metadata } from 'next';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { getServiceBySlug } from '@/services/serviceService';
+import { fetchServiceBySlug } from '@/lib/cms';
 import { buildMetadataFromSeo } from '@/lib/seo';
-import FAQAccordion from '@/components/FAQAccordion';
-import CaseStudySection from '@/components/CaseStudySection';
-import TechnologySection from '@/components/TechnologySection';
-import ArchitecturalExample from '@/components/ArchitecturalExample';
-import FeaturesGrid from '@/components/FeaturesGrid';
-import CustomerReceive from '@/components/CustomerReceive';
-import SafetyAndStandards from '@/components/SafetyAndStandards';
+import FAQAccordion from '@/components/sections/FAQAccordion';
+import CaseStudySection from '@/components/sections/CaseStudySection';
+import TechnologySection from '@/components/sections/TechnologySection';
+import ArchitecturalExample from '@/components/sections/ArchitecturalExample';
+import FeaturesGrid from '@/components/sections/FeaturesGrid';
+import CustomerReceive from '@/components/sections/CustomerReceive';
+import SafetyAndStandards from '@/components/sections/SafetyAndStandards';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -19,13 +19,16 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const serviceRes = await getServiceBySlug(slug);
+  const serviceRes = await fetchServiceBySlug(slug);
 
   if (!serviceRes) {
     return { title: 'Service Not Found' };
   }
 
-  const service = serviceRes.attributes;
+  const service = serviceRes.attributes as
+    | Record<string, unknown>
+    | null
+    | undefined;
   // Prefer a per-service SEO component if present
   const seoObj =
     (service &&
@@ -36,29 +39,48 @@ export async function generateMetadata({
           | undefined))) ||
     null;
 
+  const serviceTitle =
+    service && typeof service['title'] === 'string'
+      ? service['title']
+      : undefined;
+  const serviceName =
+    service && typeof service['name'] === 'string'
+      ? service['name']
+      : undefined;
+  const serviceSubtitle =
+    service && typeof service['subtitle'] === 'string'
+      ? service['subtitle']
+      : undefined;
+
+  const fallbackTitle = `${serviceTitle || serviceName || 'Service'} | THAIPARTS INFINITY`;
+  const fallbackDescription =
+    serviceSubtitle ||
+    `บริการ${serviceTitle || serviceName || 'Service'} จาก THAIPARTS INFINITY - ผู้เชี่ยวชาญระบบ Automation ครบวงจร`;
+
   if (seoObj) {
     return buildMetadataFromSeo(seoObj, {
-      fallbackTitle: `${service.title || service.name}`,
+      fallbackTitle: serviceTitle || serviceName,
+      fallbackDescription,
       defaultCanonical: `/services/${slug}`,
     });
   }
 
   // Fallback to previous pattern when no SEO component is present
   return {
-    title: `${service.title || service.name} | THAIPARTS INFINITY`,
-    description: service.subtitle || 'Industrial automation service',
+    title: fallbackTitle,
+    description: fallbackDescription,
   };
 }
 
 export default async function ServiceDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const serviceRes = await getServiceBySlug(slug);
+  const serviceRes = await fetchServiceBySlug(slug);
 
   if (!serviceRes) {
     notFound();
   }
 
-  const s = serviceRes.attributes;
+  const s = serviceRes.attributes as Record<string, unknown> | null | undefined;
 
   type RichTextChild = {
     text?: string;
@@ -168,79 +190,145 @@ export default async function ServiceDetailPage({ params }: PageProps) {
       <div className="flex flex-col">
         <h1 className="flex items-center gap-2 font-['Kanit'] font-medium text-base lg:text-[1.75rem] text-primary">
           <span className="w-2 lg:w-4 h-2 lg:h-4 rounded-full bg-[var(--accent-red)]"></span>
-          {s.title || s.name}
+          {(s && typeof s['title'] === 'string' ? s['title'] : null) ||
+            (s && typeof s['name'] === 'string' ? s['name'] : null) ||
+            'Service'}
         </h1>
 
-        {s.subtitle && (
+        {s && typeof s['subtitle'] === 'string' && (
           <p className="ml-4 lg:ml-6 font-['Kanit'] font-medium text-base lg:text-[1.75rem] text-primary leading-relaxed">
-            {s.subtitle}
+            {s['subtitle']}
           </p>
         )}
       </div>
 
-      {s.cover_image?.data &&
-        (() => {
-          const coverImageData = Array.isArray(s.cover_image.data)
-            ? s.cover_image.data[0]
-            : s.cover_image.data;
+      {s &&
+      s['cover_image'] &&
+      typeof s['cover_image'] === 'object' &&
+      s['cover_image'] !== null &&
+      'data' in s['cover_image']
+        ? (() => {
+            const coverImage = s['cover_image'] as { data?: unknown };
+            const coverImageDataRaw = coverImage.data;
+            const coverImageData = Array.isArray(coverImageDataRaw)
+              ? coverImageDataRaw[0]
+              : coverImageDataRaw;
 
-          if (coverImageData?.attributes?.url) {
-            const url = coverImageData.attributes.url;
-            const coverImageUrl = url.startsWith('http')
-              ? url
-              : `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${url}`;
+            if (
+              coverImageData &&
+              typeof coverImageData === 'object' &&
+              coverImageData !== null &&
+              'attributes' in coverImageData
+            ) {
+              const attrs = coverImageData.attributes as { url?: string };
+              const url = attrs.url;
+              if (!url) return null;
+              const coverImageUrl = url.startsWith('http')
+                ? url
+                : `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${url}`;
 
-            return (
-              <div className="mt-8 w-full rounded-2xl overflow-hidden shadow-lg">
-                <Image
-                  src={coverImageUrl}
-                  alt={s.title || s.name}
-                  width={970}
-                  height={546}
-                  className="w-full aspect-square lg:aspect-auto lg:h-[31.25rem] object-cover rounded-2xl"
-                  unoptimized
-                />
-              </div>
-            );
-          }
-          return null;
-        })()}
+              return (
+                <div className="mt-8 w-full rounded-2xl overflow-hidden shadow-lg">
+                  <Image
+                    src={coverImageUrl}
+                    alt={
+                      (s && typeof s['title'] === 'string'
+                        ? s['title']
+                        : null) ||
+                      (s && typeof s['name'] === 'string' ? s['name'] : null) ||
+                      'Service'
+                    }
+                    width={970}
+                    height={546}
+                    className="w-full aspect-square lg:aspect-auto lg:h-[31.25rem] object-cover rounded-2xl"
+                    unoptimized
+                  />
+                </div>
+              );
+            }
+            return null;
+          })()
+        : null}
 
-      {s.safety_and_standard && s.safety_and_standard.length > 0 && (
+      {s &&
+      Array.isArray(s['safety_and_standard']) &&
+      s['safety_and_standard'].length > 0 ? (
         <SafetyAndStandards
-          sections={s.safety_and_standard}
+          sections={
+            s['safety_and_standard'] as unknown as Parameters<
+              typeof SafetyAndStandards
+            >[0]['sections']
+          }
           parseListItems={parseListItems}
           renderRichText={renderRichText}
         />
-      )}
+      ) : null}
 
-      {s.customer_receive && s.customer_receive.length > 0 && (
+      {s &&
+      Array.isArray(s['customer_receive']) &&
+      s['customer_receive'].length > 0 ? (
         <CustomerReceive
-          sections={s.customer_receive}
+          sections={
+            s['customer_receive'] as unknown as Parameters<
+              typeof CustomerReceive
+            >[0]['sections']
+          }
           parseListItems={parseListItems}
         />
-      )}
+      ) : null}
 
-      {s.features && s.features.length > 0 && (
-        <FeaturesGrid sections={s.features} />
-      )}
+      {s && Array.isArray(s['features']) && s['features'].length > 0 ? (
+        <FeaturesGrid
+          sections={
+            s['features'] as unknown as Parameters<
+              typeof FeaturesGrid
+            >[0]['sections']
+          }
+        />
+      ) : null}
 
-      {s.architectural_example && s.architectural_example.length > 0 && (
-        <ArchitecturalExample sections={s.architectural_example} />
-      )}
+      {s &&
+      Array.isArray(s['architectural_example']) &&
+      s['architectural_example'].length > 0 ? (
+        <ArchitecturalExample
+          sections={
+            s['architectural_example'] as unknown as Parameters<
+              typeof ArchitecturalExample
+            >[0]['sections']
+          }
+        />
+      ) : null}
 
-      {s.technology && s.technology.length > 0 && (
+      {s && Array.isArray(s['technology']) && s['technology'].length > 0 ? (
         <TechnologySection
-          sections={s.technology}
+          sections={
+            s['technology'] as unknown as Parameters<
+              typeof TechnologySection
+            >[0]['sections']
+          }
           parseListItems={parseListItems}
         />
-      )}
+      ) : null}
 
-      {s.case_study && s.case_study.length > 0 && (
-        <CaseStudySection sections={s.case_study} />
-      )}
+      {s && Array.isArray(s['case_study']) && s['case_study'].length > 0 ? (
+        <CaseStudySection
+          sections={
+            s['case_study'] as unknown as Parameters<
+              typeof CaseStudySection
+            >[0]['sections']
+          }
+        />
+      ) : null}
 
-      {s.faqs && s.faqs.length > 0 && <FAQAccordion sections={s.faqs} />}
+      {s && Array.isArray(s['faqs']) && s['faqs'].length > 0 ? (
+        <FAQAccordion
+          sections={
+            s['faqs'] as unknown as Parameters<
+              typeof FAQAccordion
+            >[0]['sections']
+          }
+        />
+      ) : null}
     </main>
   );
 }

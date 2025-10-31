@@ -1,4 +1,3 @@
-// /src/lib/strapi.ts
 import { PossibleMediaInput, StrapiFileAttributes } from '@/types/strapi';
 import { logger } from '@/lib/logger';
 

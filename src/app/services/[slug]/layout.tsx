@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { ReactNode } from 'react';
-import { getServiceBySlug } from '@/services/serviceService';
+import { fetchServiceBySlug } from '@/lib/cms';
 import { buildMetadataFromSeo } from '@/lib/seo';
 
 export default async function ServiceSlugLayout({
@@ -17,9 +17,11 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string }> | { slug: string };
 }): Promise<Metadata> {
+  const { slug } = await (typeof params === 'object' && 'then' in params
+    ? params
+    : Promise.resolve(params));
   try {
-    const { slug } = await params;
-    const service = await getServiceBySlug(slug);
+    const service = await fetchServiceBySlug(slug);
     const attrs = (service && service.attributes) as unknown as Record<
       string,
       unknown
@@ -30,8 +32,24 @@ export async function generateMetadata({
       (attrs && (attrs['SEO'] as Record<string, unknown> | undefined)) ??
       (attrs && (attrs['seo'] as Record<string, unknown> | undefined)) ??
       null;
-    return buildMetadataFromSeo(seo, { defaultCanonical: `/services/${slug}` });
+    const serviceTitle =
+      attrs && typeof attrs['title'] === 'string' ? attrs['title'] : undefined;
+    const serviceSubtitle =
+      attrs && typeof attrs['subtitle'] === 'string'
+        ? attrs['subtitle']
+        : undefined;
+
+    return buildMetadataFromSeo(seo, {
+      defaultCanonical: `/services/${slug}`,
+      fallbackTitle: serviceTitle,
+      fallbackDescription:
+        serviceSubtitle || `บริการ${serviceTitle || ''} จาก THAIPARTS INFINITY`,
+    });
   } catch {
-    return {};
+    return buildMetadataFromSeo(null, {
+      defaultCanonical: `/services/${slug}`,
+      fallbackTitle: 'Service | THAIPARTS INFINITY',
+      fallbackDescription: 'บริการและโซลูชันวิศวกรรมจาก THAIPARTS INFINITY',
+    });
   }
 }

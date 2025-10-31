@@ -1,17 +1,11 @@
-// src/app/contact-us/page.tsx  (ปรับให้ Hero มาจาก Strapi: pages[slug=contact-us])
-import Hero from '@/components/Hero';
-import ContactInfo from '@/components/ContactInfo';
-import ContactForm from '@/components/ContactForm';
-import { MotionReveal } from '@/components/MotionReveal';
-import {
-  fetchPageBySlug as fetchPageBySlugFromCms,
-  fetchLayout,
-} from '@/lib/cms';
+import Hero from '@/components/features/Hero';
+import ContactInfo from '@/components/forms/ContactInfo';
+import ContactForm from '@/components/forms/ContactForm';
+import { MotionReveal } from '@/components/motion/MotionReveal';
+import { fetchPageBySlug, fetchLayout } from '@/lib/cms';
 import { mediaUrl } from '@/lib/strapi';
 import type { PossibleMediaInput } from '@/types/strapi';
 import type { PageAttributes, LayoutAttributes } from '@/types/cms';
-// PageHeroSchema imported previously for richer typing; not used currently
-// import type PageHeroSchema from '@/types/page';
 import type { CTAVariant } from '@/lib/button-styles';
 type CTA = {
   label: string;
@@ -20,15 +14,9 @@ type CTA = {
   newTab?: boolean;
 };
 
-/** NOTE: Use centralized fetcher from src/lib/cms.ts (returns merged attributes) */
-
-// Use mediaUrl helper to resolve Strapi media objects to absolute URLs
-
-/** NOTE: Use centralized fetcher from src/lib/cms.ts (returns merged attributes) */
-
 /** ========== Page ========== */
 export default async function ContactPage() {
-  const contactPage = (await fetchPageBySlugFromCms('contact-us')) as
+  const contactPage = (await fetchPageBySlug('contact-us')) as
     | (PageAttributes & { id?: number })
     | null;
 
@@ -64,8 +52,6 @@ export default async function ContactPage() {
         }
       : undefined,
   };
-
-  // Development logs removed for production readiness.
 
   /** ---------- เนื้อหา Contact (คงเดิม) ---------- */
   // Pull contact info from the shared Layout single in Strapi if available

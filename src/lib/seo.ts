@@ -93,6 +93,15 @@ function normalizeSeo(seo: Record<string, unknown>): Record<string, unknown> {
     // indicate an intentionally-empty field — we prefer `undefined` so
     // consumers (Next Metadata) don't render the literal "false".
     if (v === false) continue;
+    // Drop empty strings for text fields (metaTitle, metaDescription, etc.)
+    // Empty strings will cause Lighthouse to fail, so treat them as undefined
+    if (typeof v === 'string' && !v.trim()) {
+      // Keep empty strings only if they're not SEO-critical fields
+      if (k !== 'metaTitle' && k !== 'metaDescription') {
+        out[k] = v; // Allow empty for other fields
+      }
+      continue; // Drop empty metaTitle and metaDescription
+    }
     // Normalize metaSocial: if it's present but not an array, drop it
     if (k === 'metaSocial' && v != null && !Array.isArray(v)) continue;
     out[k] = v;
@@ -153,7 +162,11 @@ import type { Metadata } from 'next';
  */
 export function buildMetadataFromSeo(
   seo: Record<string, unknown> | null | undefined,
-  options?: { defaultCanonical?: string; fallbackTitle?: string }
+  options?: {
+    defaultCanonical?: string;
+    fallbackTitle?: string;
+    fallbackDescription?: string;
+  }
 ): Metadata {
   const siteUrlRaw =
     process.env.NEXT_PUBLIC_SITE_URL ||
@@ -162,7 +175,53 @@ export function buildMetadataFromSeo(
   const siteUrl =
     typeof siteUrlRaw === 'string' ? siteUrlRaw.replace(/\/+$/, '') : '';
 
-  if (!seo) return {};
+  // If seo is null/undefined, build minimal metadata with fallbacks
+  // This ensures description is always present for Lighthouse compliance
+  if (!seo) {
+    const siteUrlRaw =
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      process.env.NEXT_PUBLIC_STRAPI_URL ||
+      '';
+    const siteUrl =
+      typeof siteUrlRaw === 'string' ? siteUrlRaw.replace(/\/+$/, '') : '';
+    const canonicalPath = options?.defaultCanonical || '/';
+    const canonical = siteUrl
+      ? canonicalPath.startsWith('/')
+        ? `${siteUrl}${canonicalPath}`
+        : `${siteUrl}/${canonicalPath}`
+      : canonicalPath;
+
+    // Ensure description meets Lighthouse minimum (50+ chars)
+    let fallbackDesc =
+      options?.fallbackDescription ||
+      'THAIPARTS INFINITY - ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร สำหรับอุตสาหกรรมทุกประเภท';
+    if (fallbackDesc.length < 50) {
+      fallbackDesc =
+        'THAIPARTS INFINITY - ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร สำหรับอุตสาหกรรมทุกประเภท ครอบคลุมตั้งแต่การวิเคราะห์ การออกแบบ ติดตั้ง และซ่อมบำรุง';
+    }
+    // Ensure it's a valid string
+    const validFallbackDesc =
+      typeof fallbackDesc === 'string' && fallbackDesc.trim().length >= 50
+        ? fallbackDesc.trim()
+        : 'THAIPARTS INFINITY - ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร สำหรับอุตสาหกรรมทุกประเภท ครอบคลุมตั้งแต่การวิเคราะห์ การออกแบบ ติดตั้ง และซ่อมบำรุง';
+
+    return {
+      title: options?.fallbackTitle,
+      description: validFallbackDesc,
+      alternates: { canonical },
+      openGraph: {
+        title: options?.fallbackTitle,
+        description: validFallbackDesc,
+        siteName: 'THAIPARTS INFINITY',
+        type: 'website',
+        locale: 'th_TH',
+      },
+      twitter: {
+        title: options?.fallbackTitle,
+        description: validFallbackDesc,
+      },
+    } as Metadata;
+  }
 
   // Defensive normalize the incoming SEO object so downstream logic
   // doesn't accidentally map boolean `false` or malformed fields into
@@ -173,12 +232,14 @@ export function buildMetadataFromSeo(
     typeof safeSeo['metaTitle'] === 'string'
       ? safeSeo['metaTitle']
       : (options?.fallbackTitle ?? undefined);
-  const description =
-    typeof safeSeo['metaDescription'] === 'string'
-      ? safeSeo['metaDescription']
-      : undefined;
+  const rawDescription = safeSeo['metaDescription'];
+  let description: string | undefined;
+  if (typeof rawDescription === 'string' && rawDescription.trim()) {
+    description = rawDescription.trim();
+  } else {
+    description = options?.fallbackDescription;
+  }
 
-  // Prefer explicit metaImage, but fall back to other possible image fields
   const mediaMeta = extractMediaMeta(
     (safeSeo && safeSeo['metaImage']) ?? (safeSeo && safeSeo['image'])
   );
@@ -195,17 +256,22 @@ export function buildMetadataFromSeo(
 
   const metaSocial = parseMetaSocial(safeSeo);
 
-  const keywords =
+  const keywordsRaw =
     safeSeo && typeof safeSeo['keywords'] === 'string'
-      ? (safeSeo['keywords'] as string)
+      ? (safeSeo['keywords'] as string).trim()
+      : undefined;
+  const keywords = keywordsRaw
+    ? keywordsRaw.includes(',')
+      ? keywordsRaw
           .split(',')
           .map(s => s.trim())
           .filter(Boolean)
-      : undefined;
+      : [keywordsRaw]
+    : undefined;
 
-  const robots =
+  const robotsRaw =
     safeSeo && typeof safeSeo['metaRobots'] === 'string'
-      ? (safeSeo['metaRobots'] as string)
+      ? (safeSeo['metaRobots'] as string).trim()
       : undefined;
   const viewport =
     safeSeo && typeof safeSeo['metaViewport'] === 'string'
@@ -222,13 +288,62 @@ export function buildMetadataFromSeo(
       : `${siteUrl}/${canonicalPath}`
     : canonicalPath;
 
+  let finalDescription =
+    description && typeof description === 'string' && description.trim()
+      ? description.trim()
+      : options?.fallbackDescription &&
+          typeof options.fallbackDescription === 'string' &&
+          options.fallbackDescription.trim()
+        ? options.fallbackDescription.trim()
+        : 'THAIPARTS INFINITY - ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร';
+
+  if (
+    finalDescription.length < 50 &&
+    options?.fallbackDescription &&
+    options.fallbackDescription.length >= 50
+  ) {
+    finalDescription = options.fallbackDescription.trim();
+  }
+
+  if (finalDescription.length < 50) {
+    finalDescription =
+      'THAIPARTS INFINITY - ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร สำหรับอุตสาหกรรมทุกประเภท';
+  }
+
+  const finalTitle =
+    title && typeof title === 'string' && title.trim()
+      ? title.trim()
+      : options?.fallbackTitle &&
+          typeof options.fallbackTitle === 'string' &&
+          options.fallbackTitle.trim()
+        ? options.fallbackTitle.trim()
+        : undefined;
+
+  const validDescription =
+    typeof finalDescription === 'string' && finalDescription.trim().length >= 50
+      ? finalDescription.trim()
+      : 'THAIPARTS INFINITY - ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร สำหรับอุตสาหกรรมทุกประเภท ครอบคลุมตั้งแต่การวิเคราะห์ การออกแบบ ติดตั้ง และซ่อมบำรุง';
+
   const metadata: Metadata = {
-    title,
-    description,
+    title: finalTitle,
+    description: validDescription,
     keywords,
     openGraph: ogImages.length
-      ? { images: ogImages, title, description }
-      : undefined,
+      ? {
+          images: ogImages,
+          title: finalTitle,
+          description: validDescription,
+          siteName: 'THAIPARTS INFINITY',
+          type: 'website',
+          locale: 'th_TH',
+        }
+      : {
+          title: finalTitle,
+          description: validDescription,
+          siteName: 'THAIPARTS INFINITY',
+          type: 'website',
+          locale: 'th_TH',
+        },
     alternates: { canonical },
   };
 
@@ -239,27 +354,43 @@ export function buildMetadataFromSeo(
       ? [twitterSocial.image.url]
       : ogImages.map(i => i.url as string);
     metadata.twitter = {
-      title: twitterSocial.title ?? title,
-      description: twitterSocial.description ?? description,
+      title: twitterSocial.title ?? finalTitle,
+      description:
+        twitterSocial.description &&
+        typeof twitterSocial.description === 'string' &&
+        twitterSocial.description.trim()
+          ? twitterSocial.description.trim()
+          : validDescription,
       images: twitterImages,
     };
   }
 
-  // Facebook / Open Graph overrides
   const facebookSocial = metaSocial['facebook'];
   if (facebookSocial) {
     const og = (metadata.openGraph as Record<string, unknown>) ?? {};
-    og.title = facebookSocial.title ?? og.title ?? title;
+    og.title = facebookSocial.title ?? og.title ?? finalTitle;
     og.description =
-      facebookSocial.description ?? og.description ?? description;
+      facebookSocial.description &&
+      typeof facebookSocial.description === 'string' &&
+      facebookSocial.description.trim()
+        ? facebookSocial.description.trim()
+        : og.description || validDescription;
     if (facebookSocial.image?.url)
       og.images = [{ url: facebookSocial.image.url }];
     metadata.openGraph = og as Metadata['openGraph'];
   }
 
+  if (!metadata.twitter) {
+    metadata.twitter = {
+      title: finalTitle,
+      description: validDescription,
+      images: ogImages.map(i => i.url as string),
+    };
+  }
+
   if (viewport) metadata.viewport = viewport;
-  // Parse robots into a typed shape Next can consume (or leave undefined)
-  const parsedRobots = parseMetaRobots(robots);
+
+  const parsedRobots = parseMetaRobots(robotsRaw);
   if (parsedRobots)
     (metadata as unknown as Record<string, unknown>)['robots'] = parsedRobots;
 

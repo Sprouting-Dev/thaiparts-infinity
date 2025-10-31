@@ -1,4 +1,3 @@
-// /src/lib/cms.ts
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { strapiFetch } from '@/lib/strapi';
 import { sanitizeHtml } from '@/lib/sanitize';
@@ -60,9 +59,6 @@ export async function fetchHome(): Promise<HomeAttributes | null> {
   // are included. Some Strapi installations omit nested relations in
   // selective populate calls; using `populate=deep` here keeps the
   // frontend deterministic when rendering the homepage sections.
-  // If key collections come back empty, do a supplemental fetch with
-  // `populate=*` which returns all relations — this acts as a robust
-  // fallback for installations where `deep` isn't returning everything.
   const url = `/api/home?populate=deep&${PREVIEW}`;
   const json = await strapiFetch<{ data?: { attributes?: HomeAttributes } }>(
     url,
@@ -230,9 +226,10 @@ export async function fetchPageBySlug(
   // response shape). Some Strapi setups omit large media relations in list
   // endpoints, so we do a lightweight supplemental fetch by id when the
   // hero_image relation is missing.
+  // Explicitly populate SEO component and its nested media fields for best practice
   const url = `/api/pages?filters[slug][$eq]=${encodeURIComponent(
     slug
-  )}&populate=deep&${PREVIEW}`;
+  )}&populate=deep&populate[SEO][populate][metaImage]=*&populate[SEO][populate][metaSocial][populate][image]=*&${PREVIEW}`;
   const json = await strapiFetch<{
     data?: Array<{ id?: number; attributes?: PageAttributes }>;
   }>(url, {}, 300);
@@ -297,9 +294,11 @@ export async function fetchArticles(params: ListParams = {}) {
 }
 
 export async function fetchArticleBySlug(slug: string) {
+  // Explicitly populate SEO component and its nested media fields (metaImage, metaSocial.image)
+  // to ensure all SEO data is available even if populate=deep doesn't include nested component media
   const url = `/api/articles?filters[slug][$eq]=${encodeURIComponent(
     slug
-  )}&populate=deep&${PREVIEW}`;
+  )}&populate=deep&populate[SEO][populate][metaImage]=*&populate[SEO][populate][metaSocial][populate][image]=*&${PREVIEW}`;
   const json = await strapiFetch<{
     data?: Array<{ id?: number; attributes?: ArticleAttributes }>;
   }>(url, {}, 300);
@@ -328,7 +327,8 @@ export async function fetchArticleBySlug(slug: string) {
 
     if (needContent || needArticleImage) {
       try {
-        const targeted = `/api/articles/${item.id}?populate[image]=*&populate[content][populate]=image&${PREVIEW}`;
+        // Include SEO population in targeted fetch as well
+        const targeted = `/api/articles/${item.id}?populate[image]=*&populate[content][populate]=image&populate[SEO][populate][metaImage]=*&populate[SEO][populate][metaSocial][populate][image]=*&${PREVIEW}`;
         const targJson = await strapiFetch<{ data?: { attributes?: unknown } }>(
           targeted,
           {},
@@ -419,15 +419,52 @@ export async function fetchProducts(params: ListParams = {}) {
 }
 
 export async function fetchProductBySlug(slug: string) {
+  // Explicitly populate SEO component and its nested media fields for complete SEO data
+  // Also explicitly populate image and thumbnail fields
   const url = `/api/products?filters[slug][$eq]=${encodeURIComponent(
     slug
-  )}&populate=deep&${PREVIEW}`;
+  )}&populate=deep&populate[image]=*&populate[thumbnail]=*&populate[SEO][populate][metaImage]=*&populate[SEO][populate][metaSocial][populate][image]=*&${PREVIEW}`;
   const json = await strapiFetch<{
     data?: Array<{ id?: number; attributes?: ProductAttributes }>;
   }>(url, {}, 300);
   const item = json?.data?.[0];
   if (!item) return null;
-  const attrs = item.attributes ?? null;
+  let attrs: any = item.attributes ?? null;
+
+  // If image wasn't returned in the list endpoint, fetch the single item with image populated
+  try {
+    const needProductImage =
+      !attrs ||
+      !attrs['image'] ||
+      (typeof attrs['image'] === 'object' &&
+        attrs['image'] != null &&
+        (attrs['image'] as any)['data'] === undefined &&
+        typeof (attrs['image'] as any)['url'] !== 'string');
+
+    if (needProductImage) {
+      try {
+        const targeted = `/api/products/${item.id}?populate[image]=*&populate[thumbnail]=*&${PREVIEW}`;
+        const targJson = await strapiFetch<{ data?: { attributes?: unknown } }>(
+          targeted,
+          {},
+          300
+        );
+        const targAttrs = (targJson?.data?.attributes ?? null) as any;
+        if (targAttrs) {
+          const merged = { ...(attrs ?? {}) } as any;
+          if (targAttrs['image'] != null) merged['image'] = targAttrs['image'];
+          if (targAttrs['thumbnail'] != null)
+            merged['thumbnail'] = targAttrs['thumbnail'];
+          attrs = merged;
+        }
+      } catch {
+        // ignore targeted fetch failures
+      }
+    }
+  } catch {
+    // ignore
+  }
+
   try {
     if (attrs && typeof attrs === 'object') {
       const a: any = { ...attrs };
@@ -461,9 +498,11 @@ export async function fetchServices(params: ListParams = {}) {
 }
 
 export async function fetchServiceBySlug(slug: string) {
+  // Explicitly populate SEO component and its nested media fields for complete SEO data
+  // Also explicitly populate service-specific fields to match getServiceBySlug behavior
   const url = `/api/services?filters[slug][$eq]=${encodeURIComponent(
     slug
-  )}&populate=deep&${PREVIEW}`;
+  )}&populate=deep&populate[image]=*&populate[cover_image]=*&populate[case_study][populate][0]=cover_image&populate[faqs][populate][0]=acordian&populate[highlights]=*&populate[features][populate][0]=features_item&populate[features][populate][1]=features_item.icon&populate[process_steps]=*&populate[details]=*&populate[technology]=*&populate[architectural_example]=*&populate[customer_receive]=*&populate[safety_and_standard]=*&populate[SEO][populate][metaImage]=*&populate[SEO][populate][metaSocial][populate][image]=*&${PREVIEW}`;
   const json = await strapiFetch<{
     data?: Array<{ id?: number; attributes?: unknown }>;
   }>(url, {}, 300);

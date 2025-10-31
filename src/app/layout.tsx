@@ -1,69 +1,97 @@
-// /src/app/layout.tsx
 import type { Metadata } from 'next';
 import { Kanit } from 'next/font/google';
 import './globals.css';
 
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
 import { fetchLayout, fetchPageBySlug } from '@/lib/cms';
 import { buildMetadataFromSeo } from '@/lib/seo';
 import type { LayoutAttributes } from '@/types/cms';
 import { mediaUrl } from '@/lib/strapi';
 
-// ---------- Fonts ----------
 const kanit = Kanit({
   variable: '--font-kanit',
   weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
   subsets: ['latin', 'latin-ext', 'thai'],
 });
 
-// ---------- Metadata (base static; ย้ายไป Strapi ได้ภายหลัง) ----------
 export async function generateMetadata(): Promise<Metadata> {
-  // Start with env/static defaults
   const defaultTitle =
     process.env.NEXT_PUBLIC_DEFAULT_TITLE ||
     'THAIPARTS INFINITY - Industrial Automation & Spare Parts';
 
   const defaultDescription =
     process.env.NEXT_PUBLIC_DEFAULT_DESC ||
-    'ผู้ให้บริการอะไหล่และระบบ Automation ครบวงจร (One Stop Service) สำหรับอุตสาหกรรมหนัก';
+    'ผู้ให้บริการอะไหล่และระบบ Automation ครบวงจร (One Stop Service) สำหรับอุตสาหกรรมทุกประเภท - THAIPARTS INFINITY ครอบคลุมตั้งแต่การวิเคราะห์ความต้องการ การออกแบบ ติดตั้ง และซ่อมบำรุง';
 
   const metadataBase = new URL(
     process.env.NEXT_PUBLIC_METADATA_BASE || 'http://localhost:3000'
   );
 
-  // Try to fetch the 'home' page where SEO fields live alongside the hero
   try {
     const page = await fetchPageBySlug('home');
     const attrs = page as unknown as Record<string, unknown> | null;
 
-    // Prefer a nested SEO component (common Strapi pattern). If the page
-    // exposes `seo` or `sharedSeo`, prefer building the Metadata from that
-    // component so `metaDescription` and other SEO fields are honored.
     const seoObj = (attrs &&
-      (attrs['seo'] ?? attrs['sharedSeo'] ?? null)) as Record<
-      string,
-      unknown
-    > | null;
+      (attrs['SEO'] ??
+        attrs['seo'] ??
+        attrs['sharedSeo'] ??
+        attrs['SharedSeoComponent'] ??
+        null)) as Record<string, unknown> | null;
 
     if (seoObj) {
       const md = buildMetadataFromSeo(seoObj, {
         fallbackTitle: defaultTitle,
+        fallbackDescription: defaultDescription,
         defaultCanonical: '/',
       });
-      // Ensure metadataBase and a sane openGraph baseline are present
       md.metadataBase = metadataBase;
+
+      let safeDescription =
+        md.description &&
+        typeof md.description === 'string' &&
+        md.description.trim()
+          ? md.description.trim()
+          : defaultDescription;
+
+      if (safeDescription.length < 50) {
+        safeDescription =
+          defaultDescription.length >= 50
+            ? defaultDescription
+            : 'THAIPARTS INFINITY - ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร สำหรับอุตสาหกรรมทุกประเภท ครอบคลุมตั้งแต่การวิเคราะห์ การออกแบบ ติดตั้ง และซ่อมบำรุง';
+      }
+
       md.openGraph = {
         ...(md.openGraph ?? {}),
+        description:
+          md.openGraph?.description &&
+          typeof md.openGraph.description === 'string' &&
+          md.openGraph.description.trim()
+            ? md.openGraph.description.trim()
+            : safeDescription,
         siteName: 'THAIPARTS INFINITY',
         type: 'website',
         locale: 'th_TH',
       } as Metadata['openGraph'];
+
       md.alternates = md.alternates ?? { canonical: '/' };
+      md.description = safeDescription;
+
+      if (md.twitter) {
+        md.twitter = {
+          ...md.twitter,
+          description:
+            md.twitter.description &&
+            typeof md.twitter.description === 'string' &&
+            md.twitter.description.trim()
+              ? md.twitter.description.trim()
+              : safeDescription,
+        };
+      }
+
       return md;
     }
 
-    // Title extraction: check common patterns used by Strapi SEO plugin or page fields
     const titleFromPage =
       (attrs && typeof attrs['metaTitle'] === 'string' && attrs['metaTitle']) ||
       (attrs &&
@@ -82,7 +110,6 @@ export async function generateMetadata(): Promise<Metadata> {
         typeof attrs['description'] === 'string' &&
         attrs['description']);
 
-    // OG image: try multiple common keys, resolve with mediaUrl when found
     let ogUrl: string | undefined;
     const ogCandidates = [
       'ogImage',
@@ -111,8 +138,8 @@ export async function generateMetadata(): Promise<Metadata> {
         ? titleFromPage
         : defaultTitle;
     const finalDescription =
-      typeof descriptionFromPage === 'string' && descriptionFromPage
-        ? descriptionFromPage
+      typeof descriptionFromPage === 'string' && descriptionFromPage.trim()
+        ? descriptionFromPage.trim()
         : defaultDescription;
 
     const images = ogUrl
@@ -147,7 +174,6 @@ export async function generateMetadata(): Promise<Metadata> {
       alternates: { canonical: '/' },
     } as Metadata;
   } catch {
-    // On any fetch error, fall back to defaults for robust behavior
     const images = process.env.NEXT_PUBLIC_OG_IMAGE_URL
       ? [
           {
@@ -158,13 +184,17 @@ export async function generateMetadata(): Promise<Metadata> {
           },
         ]
       : [];
+    const safeDescription =
+      defaultDescription ||
+      'THAIPARTS INFINITY - ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร';
+
     return {
       title: defaultTitle,
-      description: defaultDescription,
+      description: safeDescription,
       metadataBase,
       openGraph: {
         title: defaultTitle,
-        description: defaultDescription,
+        description: safeDescription,
         images,
         siteName: 'THAIPARTS INFINITY',
         type: 'website',
@@ -173,7 +203,7 @@ export async function generateMetadata(): Promise<Metadata> {
       twitter: {
         card: images.length ? 'summary_large_image' : 'summary',
         title: defaultTitle,
-        description: defaultDescription,
+        description: safeDescription,
         images: images.map(i => i.url),
       },
       alternates: { canonical: '/' },
@@ -183,34 +213,11 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export const dynamic = 'force-dynamic';
 
-// ---------- Types ----------
-// Use the shared LayoutAttributes from types/cms for the layout shape
-// (keeps a single source of truth for the CMS shape)
-
-// ---------- Fetchers ----------
-// We use the centralized fetcher in `src/lib/cms.ts` which already returns
-// the normalized LayoutAttributes shape.
-
-// Development overlay removed for production cleanliness
-
-// ---------- Root Layout ----------
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const layout = (await fetchLayout()) as LayoutAttributes | null;
 
-  // ----- Fallback ชื่อฟิลด์ -----
-  // layout.address is available for Footer and other consumers if needed
-  // Layout computes minimal values; Footer consumes the layout directly.
-  // Avoid computing unused derived values here to keep lint clean.
-  // If callers need prefooter fields, they can read them from `layout`.
-
-  // Dev overlay and missing-field checks removed
-
-  // Build navbar: prefer Strapi navbar, but if Strapi provides an address phone
-  // use it to inject/replace the "ติดต่อด่วน" CTA so the number is consistent site-wide.
-  // Prefer Strapi-provided navbar; if missing, leave undefined so Header
-  // can fall back to its internal default or handle missing CTAs.
   const baseNavbar = layout?.navbar ?? undefined;
 
   const makeNavbarWithPhone = (raw?: string) => {
@@ -234,7 +241,6 @@ export default async function RootLayout({
       enabled: true,
     };
 
-    // Clone to avoid mutating static fallback
     type NavbarShape = {
       ctas?: Array<{
         label?: string;
@@ -247,7 +253,6 @@ export default async function RootLayout({
     const cloned = { ...(baseNavbar ?? {}) } as NavbarShape;
     const existing = Array.isArray(cloned.ctas) ? [...cloned.ctas] : [];
 
-    // If the first CTA looks like the old 'ติดต่อด่วน' entry, replace it
     if (
       existing.length > 0 &&
       typeof existing[0].label === 'string' &&
@@ -255,10 +260,8 @@ export default async function RootLayout({
     ) {
       existing[0] = phoneCta;
     } else {
-      // otherwise prepend to ensure visibility
       existing.unshift(phoneCta);
     }
-    // Ensure there is always a primary 'ติดต่อเรา' CTA pointing to /contact-us
     const hasContactUs = existing.some(
       c =>
         typeof c.label === 'string' &&
@@ -277,7 +280,6 @@ export default async function RootLayout({
     return cloned as typeof baseNavbar;
   };
 
-  // Safely extract phone_number_1 from layout.address which may use different shapes
   const getPhoneFromLayout = (
     l?: LayoutAttributes | null
   ): string | undefined => {
@@ -309,20 +311,13 @@ export default async function RootLayout({
         className={`${kanit.variable} antialiased flex flex-col min-h-screen overflow-x-hidden gap-16 lg:gap-24`}
         suppressHydrationWarning
       >
-        {/* Header: pass navbar data (with Strapi phone injected) so the "ติดต่อด่วน" CTA uses the CMS phone */}
         <Header navbar={navbarForHeader} />
-
-        {/* Page content */}
         <main className="w-full flex flex-col flex-1">{children}</main>
-
-        {/* Footer (includes pre-footer CTA) */}
         <div className="w-full flex flex-col p-4 lg:p-8">
           <div className="w-full flex flex-col">
             <Footer layout={layout ?? undefined} />
           </div>
         </div>
-
-        {/* dev overlay removed */}
       </body>
     </html>
   );

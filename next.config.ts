@@ -47,6 +47,12 @@ const nextConfig: NextConfig = {
     remotePatterns: remotePatterns as unknown as NonNullable<
       NextConfig['images']
     >['remotePatterns'],
+    // Force WebP/AVIF conversion for all images (except SVG which Next.js preserves as-is)
+    // AVIF will be used if browser supports it, otherwise falls back to WebP
+    // This ensures all images are converted to modern formats for better performance
+    formats: ['image/webp', 'image/avif'],
+    // Cache optimized images for 60 seconds to reduce server load
+    minimumCacheTTL: 60,
   },
 };
 
