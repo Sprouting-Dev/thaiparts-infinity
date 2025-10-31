@@ -162,7 +162,11 @@ import type { Metadata } from 'next';
  */
 export function buildMetadataFromSeo(
   seo: Record<string, unknown> | null | undefined,
-  options?: { defaultCanonical?: string; fallbackTitle?: string; fallbackDescription?: string }
+  options?: {
+    defaultCanonical?: string;
+    fallbackTitle?: string;
+    fallbackDescription?: string;
+  }
 ): Metadata {
   const siteUrlRaw =
     process.env.NEXT_PUBLIC_SITE_URL ||
@@ -188,14 +192,18 @@ export function buildMetadataFromSeo(
       : canonicalPath;
 
     // Ensure description meets Lighthouse minimum (50+ chars)
-    let fallbackDesc = options?.fallbackDescription || 'THAIPARTS INFINITY - ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร สำหรับอุตสาหกรรมทุกประเภท';
+    let fallbackDesc =
+      options?.fallbackDescription ||
+      'THAIPARTS INFINITY - ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร สำหรับอุตสาหกรรมทุกประเภท';
     if (fallbackDesc.length < 50) {
-      fallbackDesc = 'THAIPARTS INFINITY - ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร สำหรับอุตสาหกรรมทุกประเภท ครอบคลุมตั้งแต่การวิเคราะห์ การออกแบบ ติดตั้ง และซ่อมบำรุง';
+      fallbackDesc =
+        'THAIPARTS INFINITY - ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร สำหรับอุตสาหกรรมทุกประเภท ครอบคลุมตั้งแต่การวิเคราะห์ การออกแบบ ติดตั้ง และซ่อมบำรุง';
     }
     // Ensure it's a valid string
-    const validFallbackDesc = typeof fallbackDesc === 'string' && fallbackDesc.trim().length >= 50
-      ? fallbackDesc.trim()
-      : 'THAIPARTS INFINITY - ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร สำหรับอุตสาหกรรมทุกประเภท ครอบคลุมตั้งแต่การวิเคราะห์ การออกแบบ ติดตั้ง และซ่อมบำรุง';
+    const validFallbackDesc =
+      typeof fallbackDesc === 'string' && fallbackDesc.trim().length >= 50
+        ? fallbackDesc.trim()
+        : 'THAIPARTS INFINITY - ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร สำหรับอุตสาหกรรมทุกประเภท ครอบคลุมตั้งแต่การวิเคราะห์ การออกแบบ ติดตั้ง และซ่อมบำรุง';
 
     return {
       title: options?.fallbackTitle,
@@ -254,7 +262,10 @@ export function buildMetadataFromSeo(
       : undefined;
   const keywords = keywordsRaw
     ? keywordsRaw.includes(',')
-      ? keywordsRaw.split(',').map(s => s.trim()).filter(Boolean)
+      ? keywordsRaw
+          .split(',')
+          .map(s => s.trim())
+          .filter(Boolean)
       : [keywordsRaw]
     : undefined;
 
@@ -277,38 +288,50 @@ export function buildMetadataFromSeo(
       : `${siteUrl}/${canonicalPath}`
     : canonicalPath;
 
-  let finalDescription = (description && typeof description === 'string' && description.trim())
-    ? description.trim()
-    : (options?.fallbackDescription && typeof options.fallbackDescription === 'string' && options.fallbackDescription.trim())
-      ? options.fallbackDescription.trim()
-      : 'THAIPARTS INFINITY - ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร';
-  
-  if (finalDescription.length < 50 && options?.fallbackDescription && options.fallbackDescription.length >= 50) {
+  let finalDescription =
+    description && typeof description === 'string' && description.trim()
+      ? description.trim()
+      : options?.fallbackDescription &&
+          typeof options.fallbackDescription === 'string' &&
+          options.fallbackDescription.trim()
+        ? options.fallbackDescription.trim()
+        : 'THAIPARTS INFINITY - ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร';
+
+  if (
+    finalDescription.length < 50 &&
+    options?.fallbackDescription &&
+    options.fallbackDescription.length >= 50
+  ) {
     finalDescription = options.fallbackDescription.trim();
   }
-  
-  if (finalDescription.length < 50) {
-    finalDescription = 'THAIPARTS INFINITY - ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร สำหรับอุตสาหกรรมทุกประเภท';
-  }
-  
-  const finalTitle = (title && typeof title === 'string' && title.trim())
-    ? title.trim()
-    : (options?.fallbackTitle && typeof options.fallbackTitle === 'string' && options.fallbackTitle.trim())
-      ? options.fallbackTitle.trim()
-      : undefined;
 
-  const validDescription = typeof finalDescription === 'string' && finalDescription.trim().length >= 50
-    ? finalDescription.trim()
-    : 'THAIPARTS INFINITY - ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร สำหรับอุตสาหกรรมทุกประเภท ครอบคลุมตั้งแต่การวิเคราะห์ การออกแบบ ติดตั้ง และซ่อมบำรุง';
+  if (finalDescription.length < 50) {
+    finalDescription =
+      'THAIPARTS INFINITY - ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร สำหรับอุตสาหกรรมทุกประเภท';
+  }
+
+  const finalTitle =
+    title && typeof title === 'string' && title.trim()
+      ? title.trim()
+      : options?.fallbackTitle &&
+          typeof options.fallbackTitle === 'string' &&
+          options.fallbackTitle.trim()
+        ? options.fallbackTitle.trim()
+        : undefined;
+
+  const validDescription =
+    typeof finalDescription === 'string' && finalDescription.trim().length >= 50
+      ? finalDescription.trim()
+      : 'THAIPARTS INFINITY - ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร สำหรับอุตสาหกรรมทุกประเภท ครอบคลุมตั้งแต่การวิเคราะห์ การออกแบบ ติดตั้ง และซ่อมบำรุง';
 
   const metadata: Metadata = {
     title: finalTitle,
     description: validDescription,
     keywords,
     openGraph: ogImages.length
-      ? { 
-          images: ogImages, 
-          title: finalTitle, 
+      ? {
+          images: ogImages,
+          title: finalTitle,
           description: validDescription,
           siteName: 'THAIPARTS INFINITY',
           type: 'website',
@@ -332,9 +355,12 @@ export function buildMetadataFromSeo(
       : ogImages.map(i => i.url as string);
     metadata.twitter = {
       title: twitterSocial.title ?? finalTitle,
-      description: twitterSocial.description && typeof twitterSocial.description === 'string' && twitterSocial.description.trim()
-        ? twitterSocial.description.trim()
-        : validDescription,
+      description:
+        twitterSocial.description &&
+        typeof twitterSocial.description === 'string' &&
+        twitterSocial.description.trim()
+          ? twitterSocial.description.trim()
+          : validDescription,
       images: twitterImages,
     };
   }
@@ -343,14 +369,17 @@ export function buildMetadataFromSeo(
   if (facebookSocial) {
     const og = (metadata.openGraph as Record<string, unknown>) ?? {};
     og.title = facebookSocial.title ?? og.title ?? finalTitle;
-    og.description = facebookSocial.description && typeof facebookSocial.description === 'string' && facebookSocial.description.trim()
-      ? facebookSocial.description.trim()
-      : (og.description || validDescription);
+    og.description =
+      facebookSocial.description &&
+      typeof facebookSocial.description === 'string' &&
+      facebookSocial.description.trim()
+        ? facebookSocial.description.trim()
+        : og.description || validDescription;
     if (facebookSocial.image?.url)
       og.images = [{ url: facebookSocial.image.url }];
     metadata.openGraph = og as Metadata['openGraph'];
   }
-  
+
   if (!metadata.twitter) {
     metadata.twitter = {
       title: finalTitle,
@@ -360,7 +389,7 @@ export function buildMetadataFromSeo(
   }
 
   if (viewport) metadata.viewport = viewport;
-  
+
   const parsedRobots = parseMetaRobots(robotsRaw);
   if (parsedRobots)
     (metadata as unknown as Record<string, unknown>)['robots'] = parsedRobots;

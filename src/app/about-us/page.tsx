@@ -1,10 +1,10 @@
-import Hero from '@/components/Hero';
+import Hero from '@/components/features/Hero';
 import type { Metadata } from 'next';
-import Features from '@/components/Features';
+import Features from '@/components/features/Features';
 import Image from 'next/image';
-import LogoCarousel from '@/components/LogoCarousel';
-import CTAButton from '@/components/CTAButton';
-import { MotionReveal } from '@/components/MotionReveal';
+import LogoCarousel from '@/components/features/LogoCarousel';
+import CTAButton from '@/components/ui/CTAButton';
+import { MotionReveal } from '@/components/motion/MotionReveal';
 import { fetchPageBySlug } from '@/lib/cms';
 import { logger } from '@/lib/logger';
 import { mediaUrl, STRAPI_URL } from '@/lib/strapi';
@@ -427,20 +427,23 @@ export async function generateMetadata(): Promise<Metadata> {
     const attrs = page as unknown as Record<string, unknown> | null;
     // Check all possible SEO key variations
     const seo = (attrs &&
-      (attrs['SEO'] ?? attrs['SharedSeoComponent'] ?? attrs['seo'] ?? attrs['sharedSeo'] ?? null)) as Record<
-      string,
-      unknown
-    > | null;
+      (attrs['SEO'] ??
+        attrs['SharedSeoComponent'] ??
+        attrs['seo'] ??
+        attrs['sharedSeo'] ??
+        null)) as Record<string, unknown> | null;
     return buildMetadataFromSeo(seo, {
       defaultCanonical: '/about-us',
       fallbackTitle: 'About Us | THAIPARTS INFINITY',
-      fallbackDescription: 'รู้จักกับ THAIPARTS INFINITY - พาร์ทเนอร์ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร',
+      fallbackDescription:
+        'รู้จักกับ THAIPARTS INFINITY - พาร์ทเนอร์ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร',
     });
   } catch {
     return buildMetadataFromSeo(null, {
       defaultCanonical: '/about-us',
       fallbackTitle: 'About Us | THAIPARTS INFINITY',
-      fallbackDescription: 'รู้จักกับ THAIPARTS INFINITY - พาร์ทเนอร์ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร',
+      fallbackDescription:
+        'รู้จักกับ THAIPARTS INFINITY - พาร์ทเนอร์ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร',
     });
   }
 }

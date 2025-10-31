@@ -7,8 +7,8 @@ import {
   useReducedMotion,
   useAnimation,
 } from 'framer-motion';
-import MotionGridItem from '@/components/MotionGridItem';
-import CTAButton from './CTAButton';
+import MotionGridItem from '@/components/motion/MotionGridItem';
+import CTAButton from '@/components/ui/CTAButton';
 import { logger } from '@/lib/logger';
 
 interface ContactFormData {

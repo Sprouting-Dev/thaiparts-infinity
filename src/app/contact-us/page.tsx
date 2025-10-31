@@ -1,7 +1,7 @@
-import Hero from '@/components/Hero';
-import ContactInfo from '@/components/ContactInfo';
-import ContactForm from '@/components/ContactForm';
-import { MotionReveal } from '@/components/MotionReveal';
+import Hero from '@/components/features/Hero';
+import ContactInfo from '@/components/forms/ContactInfo';
+import ContactForm from '@/components/forms/ContactForm';
+import { MotionReveal } from '@/components/motion/MotionReveal';
 import { fetchPageBySlug, fetchLayout } from '@/lib/cms';
 import { mediaUrl } from '@/lib/strapi';
 import type { PossibleMediaInput } from '@/types/strapi';
@@ -13,7 +13,6 @@ type CTA = {
   variant?: CTAVariant;
   newTab?: boolean;
 };
-
 
 /** ========== Page ========== */
 export default async function ContactPage() {
@@ -53,7 +52,6 @@ export default async function ContactPage() {
         }
       : undefined,
   };
-
 
   /** ---------- เนื้อหา Contact (คงเดิม) ---------- */
   // Pull contact info from the shared Layout single in Strapi if available

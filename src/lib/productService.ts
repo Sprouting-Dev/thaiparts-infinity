@@ -256,4 +256,3 @@ export const productAPI = {
  * @deprecated Use productAPI.getProducts directly. This alias is not used.
  */
 export const fetchProducts = productAPI.getProducts;
-

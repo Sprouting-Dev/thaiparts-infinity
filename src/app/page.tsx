@@ -1,9 +1,9 @@
-import Hero from '@/components/Hero';
-import SafeHtml from '@/components/SafeHtml';
-import Features from '@/components/Features';
-import GridPreview from '@/components/GridPreview';
-import CTAButton from '@/components/CTAButton';
-import { MotionReveal } from '@/components/MotionReveal';
+import Hero from '@/components/features/Hero';
+import SafeHtml from '@/components/ui/SafeHtml';
+import Features from '@/components/features/Features';
+import GridPreview from '@/components/features/GridPreview';
+import CTAButton from '@/components/ui/CTAButton';
+import { MotionReveal } from '@/components/motion/MotionReveal';
 import {
   fetchHome,
   fetchPageBySlug,

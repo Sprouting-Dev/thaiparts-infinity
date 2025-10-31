@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import CTAButton from './CTAButton';
-import { getTextClass } from '@/components/ColoredText';
+import CTAButton from '../ui/CTAButton';
+import { getTextClass } from '@/lib/coloredText';
 import { logger } from '@/lib/logger';
 import type { CTAVariant } from '@/lib/button-styles';
 import { getCategoryBadgeStyle } from '@/lib/categoryBadge';

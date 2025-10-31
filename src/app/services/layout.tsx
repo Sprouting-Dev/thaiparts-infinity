@@ -25,13 +25,15 @@ export async function generateMetadata(): Promise<Metadata> {
     return buildMetadataFromSeo(seo, {
       defaultCanonical: '/services',
       fallbackTitle: 'Services | THAIPARTS INFINITY',
-      fallbackDescription: 'บริการและโซลูชันวิศวกรรมครบวงจรสำหรับอุตสาหกรรม จาก THAIPARTS INFINITY',
+      fallbackDescription:
+        'บริการและโซลูชันวิศวกรรมครบวงจรสำหรับอุตสาหกรรม จาก THAIPARTS INFINITY',
     });
   } catch {
     return buildMetadataFromSeo(null, {
       defaultCanonical: '/services',
       fallbackTitle: 'Services | THAIPARTS INFINITY',
-      fallbackDescription: 'บริการและโซลูชันวิศวกรรมครบวงจรสำหรับอุตสาหกรรม จาก THAIPARTS INFINITY',
+      fallbackDescription:
+        'บริการและโซลูชันวิศวกรรมครบวงจรสำหรับอุตสาหกรรม จาก THAIPARTS INFINITY',
     });
   }
 }

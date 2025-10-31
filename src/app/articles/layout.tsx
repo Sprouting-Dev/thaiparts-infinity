@@ -25,13 +25,15 @@ export async function generateMetadata(): Promise<Metadata> {
     return buildMetadataFromSeo(seo, {
       defaultCanonical: '/articles',
       fallbackTitle: 'Knowledge Center | THAIPARTS INFINITY',
-      fallbackDescription: 'ศูนย์รวมความเชี่ยวชาญและบทความเกี่ยวกับระบบ Automation, Electrical และ Instrument จาก THAIPARTS INFINITY',
+      fallbackDescription:
+        'ศูนย์รวมความเชี่ยวชาญและบทความเกี่ยวกับระบบ Automation, Electrical และ Instrument จาก THAIPARTS INFINITY',
     });
   } catch {
     return buildMetadataFromSeo(null, {
       defaultCanonical: '/articles',
       fallbackTitle: 'Knowledge Center | THAIPARTS INFINITY',
-      fallbackDescription: 'ศูนย์รวมความเชี่ยวชาญและบทความเกี่ยวกับระบบ Automation, Electrical และ Instrument จาก THAIPARTS INFINITY',
+      fallbackDescription:
+        'ศูนย์รวมความเชี่ยวชาญและบทความเกี่ยวกับระบบ Automation, Electrical และ Instrument จาก THAIPARTS INFINITY',
     });
   }
 }

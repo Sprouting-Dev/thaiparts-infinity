@@ -2,11 +2,11 @@
 
 import React, { useMemo } from 'react';
 import Image from 'next/image';
-import CTAButton from '@/components/CTAButton';
+import CTAButton from '@/components/ui/CTAButton';
 import type { CTAVariant } from '@/lib/button-styles';
 import type PageHeroSchema from '@/types/page';
 import { sanitizeHtml } from '@/lib/sanitize';
-import SafeHtml from '@/components/SafeHtml';
+import SafeHtml from '@/components/ui/SafeHtml';
 import type { PossibleMediaInput } from '@/types/strapi';
 import { mediaUrl } from '@/lib/strapi';
 
@@ -81,7 +81,6 @@ export default function Hero(props: {
       : align === 'right'
         ? 'text-right'
         : 'text-center';
-
 
   // ซ่อน panel ถ้า disabled
   const panelEnabled = props.panel?.enabled !== false;
@@ -190,7 +189,6 @@ export default function Hero(props: {
           </div>
         </div>
       )}
-
     </section>
   );
 }

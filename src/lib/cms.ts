@@ -430,7 +430,7 @@ export async function fetchProductBySlug(slug: string) {
   const item = json?.data?.[0];
   if (!item) return null;
   let attrs: any = item.attributes ?? null;
-  
+
   // If image wasn't returned in the list endpoint, fetch the single item with image populated
   try {
     const needProductImage =
@@ -453,7 +453,8 @@ export async function fetchProductBySlug(slug: string) {
         if (targAttrs) {
           const merged = { ...(attrs ?? {}) } as any;
           if (targAttrs['image'] != null) merged['image'] = targAttrs['image'];
-          if (targAttrs['thumbnail'] != null) merged['thumbnail'] = targAttrs['thumbnail'];
+          if (targAttrs['thumbnail'] != null)
+            merged['thumbnail'] = targAttrs['thumbnail'];
           attrs = merged;
         }
       } catch {

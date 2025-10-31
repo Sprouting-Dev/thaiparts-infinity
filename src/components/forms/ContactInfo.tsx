@@ -1,7 +1,7 @@
-import MotionGridItem from '@/components/MotionGridItem';
-import LinkMotion from './LinkMotion';
+import MotionGridItem from '@/components/motion/MotionGridItem';
+import LinkMotion from '@/components/motion/LinkMotion';
 import Image from 'next/image';
-import { getTextClass } from '@/components/ColoredText';
+import { getTextClass } from '@/lib/coloredText';
 
 interface ContactInfoData {
   title: string;

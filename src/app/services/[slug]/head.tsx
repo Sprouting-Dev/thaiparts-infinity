@@ -9,12 +9,16 @@ export default async function Head({
   const { slug } = await params;
   const svc = await fetchServiceBySlug(slug);
   const attrs = (svc && (svc.attributes as Record<string, unknown>)) || null;
-  const seo =
-    (attrs &&
-      (attrs['SEO'] ?? attrs['SharedSeoComponent'] ?? attrs['seo'] ?? attrs['sharedSeo'] ?? null)) as
-    Record<string, unknown> | null;
+  const seo = (attrs &&
+    (attrs['SEO'] ??
+      attrs['SharedSeoComponent'] ??
+      attrs['seo'] ??
+      attrs['sharedSeo'] ??
+      null)) as Record<string, unknown> | null;
   const structuredJson = seo?.['structuredData'] as unknown;
   const safe = validateStructuredData(structuredJson);
 
-  return <>{safe ? <script type="application/ld+json">{safe}</script> : null}</>;
+  return (
+    <>{safe ? <script type="application/ld+json">{safe}</script> : null}</>
+  );
 }

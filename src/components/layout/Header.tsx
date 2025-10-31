@@ -1,11 +1,11 @@
 'use client';
 import Link from 'next/link';
-import LinkMotion from './LinkMotion';
+import LinkMotion from '@/components/motion/LinkMotion';
 import Image from 'next/image';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import CTAButton from './CTAButton';
+import CTAButton from '@/components/ui/CTAButton';
 import React, { useEffect, useRef, useState } from 'react';
-import { getTextClass } from '@/components/ColoredText';
+import { getTextClass } from '@/lib/coloredText';
 import { createPortal } from 'react-dom';
 import type { CTAVariant } from '@/lib/button-styles';
 

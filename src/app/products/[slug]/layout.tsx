@@ -17,8 +17,10 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string }> | { slug: string };
 }): Promise<Metadata> {
-  const { slug } = await (typeof params === 'object' && 'then' in params ? params : Promise.resolve(params));
-  
+  const { slug } = await (typeof params === 'object' && 'then' in params
+    ? params
+    : Promise.resolve(params));
+
   try {
     const res = await fetchProductBySlug(slug);
     const attrs = (res as { attributes?: unknown } | null)
@@ -43,8 +45,10 @@ export async function generateMetadata({
       (typeof attrs['name'] === 'string' && attrs['name']) ||
       undefined;
     const fallbackDescription =
-      (typeof attrs['description'] === 'string' && attrs['description'].trim()) ||
-      (typeof attrs['tag'] === 'string' && `สินค้า ${attrs['tag']} จาก THAIPARTS INFINITY`) ||
+      (typeof attrs['description'] === 'string' &&
+        attrs['description'].trim()) ||
+      (typeof attrs['tag'] === 'string' &&
+        `สินค้า ${attrs['tag']} จาก THAIPARTS INFINITY`) ||
       'สินค้าคุณภาพจาก THAIPARTS INFINITY';
 
     return buildMetadataFromSeo(seo, {

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { fetchArticleBySlug, fetchArticles } from '@/lib/cms';
 import { sanitizeHtml } from '@/lib/sanitize';
 import { notFound } from 'next/navigation';
-import SafeHtml from '@/components/SafeHtml';
+import SafeHtml from '@/components/ui/SafeHtml';
 import { buildMetadataFromSeo, extractMediaMeta } from '@/lib/seo';
 import Image from 'next/image';
 
@@ -11,7 +11,9 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string }> | { slug: string };
 }): Promise<Metadata> {
-  const { slug } = await (typeof params === 'object' && 'then' in params ? params : Promise.resolve(params));
+  const { slug } = await (typeof params === 'object' && 'then' in params
+    ? params
+    : Promise.resolve(params));
   try {
     const res = await fetchArticleBySlug(slug);
     const attrs = (res as { attributes?: unknown } | null)
@@ -24,13 +26,16 @@ export async function generateMetadata({
       });
     }
 
-    const seo = (attrs['SEO'] ?? attrs['SharedSeoComponent'] ?? attrs['sharedSeo'] ?? attrs['seo'] ?? null) as Record<
-      string,
-      unknown
-    > | null;
+    const seo = (attrs['SEO'] ??
+      attrs['SharedSeoComponent'] ??
+      attrs['sharedSeo'] ??
+      attrs['seo'] ??
+      null) as Record<string, unknown> | null;
 
-    const subtitle = typeof attrs['subtitle'] === 'string' ? attrs['subtitle'] : undefined;
-    const title = typeof attrs['title'] === 'string' ? attrs['title'] : undefined;
+    const subtitle =
+      typeof attrs['subtitle'] === 'string' ? attrs['subtitle'] : undefined;
+    const title =
+      typeof attrs['title'] === 'string' ? attrs['title'] : undefined;
 
     return buildMetadataFromSeo(seo, {
       defaultCanonical: `/articles/${slug}`,

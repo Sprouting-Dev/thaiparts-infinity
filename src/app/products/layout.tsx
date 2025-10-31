@@ -27,13 +27,15 @@ export async function generateMetadata(): Promise<Metadata> {
     return buildMetadataFromSeo(seo, {
       defaultCanonical: '/products',
       fallbackTitle: 'Products | THAIPARTS INFINITY',
-      fallbackDescription: 'สินค้าและอะไหล่สำหรับระบบ Automation, Electrical และ Instrument ครบวงจร จาก THAIPARTS INFINITY',
+      fallbackDescription:
+        'สินค้าและอะไหล่สำหรับระบบ Automation, Electrical และ Instrument ครบวงจร จาก THAIPARTS INFINITY',
     });
   } catch {
     return buildMetadataFromSeo(null, {
       defaultCanonical: '/products',
       fallbackTitle: 'Products | THAIPARTS INFINITY',
-      fallbackDescription: 'สินค้าและอะไหล่สำหรับระบบ Automation, Electrical และ Instrument ครบวงจร จาก THAIPARTS INFINITY',
+      fallbackDescription:
+        'สินค้าและอะไหล่สำหรับระบบ Automation, Electrical และ Instrument ครบวงจร จาก THAIPARTS INFINITY',
     });
   }
 }

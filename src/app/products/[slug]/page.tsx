@@ -3,19 +3,17 @@ import { notFound } from 'next/navigation';
 import { fetchProductBySlug } from '@/lib/cms';
 import { mediaUrl } from '@/lib/strapi';
 import type { PossibleMediaInput } from '@/types/strapi';
-import SafeHtml from '@/components/SafeHtml';
-import CTAButton from '@/components/CTAButton';
+import SafeHtml from '@/components/ui/SafeHtml';
+import CTAButton from '@/components/ui/CTAButton';
 
 export default async function ProductDetailPage({
   params,
 }: {
   params: Promise<{ slug: string }> | { slug: string };
 }) {
-  const { slug } = await (
-    typeof params === 'object' && 'then' in params
-      ? params
-      : Promise.resolve(params)
-  );
+  const { slug } = await (typeof params === 'object' && 'then' in params
+    ? params
+    : Promise.resolve(params));
 
   const res = await fetchProductBySlug(slug);
   const attrs = (res as { attributes?: unknown } | null)?.attributes as Record<
@@ -31,7 +29,8 @@ export default async function ProductDetailPage({
   // Prefer centralized resolver which handles Strapi media objects and plain URLs
   let imageUrl = '';
   try {
-    const maybeImage: PossibleMediaInput = attrs.image as unknown as PossibleMediaInput;
+    const maybeImage: PossibleMediaInput =
+      attrs.image as unknown as PossibleMediaInput;
     if (maybeImage !== null && maybeImage !== undefined) {
       const resolved = mediaUrl(maybeImage);
       if (resolved && resolved.trim()) {
@@ -42,15 +41,18 @@ export default async function ProductDetailPage({
     // keep imageUrl as empty string on error
   }
 
-  const mainTitle = 
+  const mainTitle =
     (typeof attrs['main_title'] === 'string' && attrs['main_title']) ||
     (typeof attrs['title'] === 'string' && attrs['title']) ||
     '';
-  const name = mainTitle || (typeof attrs['name'] === 'string' ? attrs['name'] : '');
-  const description = typeof attrs['description'] === 'string' ? attrs['description'] : '';
-  
+  const name =
+    mainTitle || (typeof attrs['name'] === 'string' ? attrs['name'] : '');
+  const description =
+    typeof attrs['description'] === 'string' ? attrs['description'] : '';
+
   // Handle specifications - ensure it's a Record<string, string | number | boolean>
-  let specifications: Record<string, string | number | boolean> | undefined = undefined;
+  let specifications: Record<string, string | number | boolean> | undefined =
+    undefined;
   if (attrs['specifications']) {
     if (
       typeof attrs['specifications'] === 'object' &&

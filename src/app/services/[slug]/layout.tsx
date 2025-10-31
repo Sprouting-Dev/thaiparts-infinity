@@ -17,7 +17,9 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string }> | { slug: string };
 }): Promise<Metadata> {
-  const { slug } = await (typeof params === 'object' && 'then' in params ? params : Promise.resolve(params));
+  const { slug } = await (typeof params === 'object' && 'then' in params
+    ? params
+    : Promise.resolve(params));
   try {
     const service = await fetchServiceBySlug(slug);
     const attrs = (service && service.attributes) as unknown as Record<
@@ -30,13 +32,18 @@ export async function generateMetadata({
       (attrs && (attrs['SEO'] as Record<string, unknown> | undefined)) ??
       (attrs && (attrs['seo'] as Record<string, unknown> | undefined)) ??
       null;
-    const serviceTitle = attrs && typeof attrs['title'] === 'string' ? attrs['title'] : undefined;
-    const serviceSubtitle = attrs && typeof attrs['subtitle'] === 'string' ? attrs['subtitle'] : undefined;
+    const serviceTitle =
+      attrs && typeof attrs['title'] === 'string' ? attrs['title'] : undefined;
+    const serviceSubtitle =
+      attrs && typeof attrs['subtitle'] === 'string'
+        ? attrs['subtitle']
+        : undefined;
 
     return buildMetadataFromSeo(seo, {
       defaultCanonical: `/services/${slug}`,
       fallbackTitle: serviceTitle,
-      fallbackDescription: serviceSubtitle || `บริการ${serviceTitle || ''} จาก THAIPARTS INFINITY`,
+      fallbackDescription:
+        serviceSubtitle || `บริการ${serviceTitle || ''} จาก THAIPARTS INFINITY`,
     });
   } catch {
     return buildMetadataFromSeo(null, {

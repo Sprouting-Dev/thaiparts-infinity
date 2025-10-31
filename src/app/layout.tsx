@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { Kanit } from 'next/font/google';
 import './globals.css';
 
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
 import { fetchLayout, fetchPageBySlug } from '@/lib/cms';
 import { buildMetadataFromSeo } from '@/lib/seo';
 import type { LayoutAttributes } from '@/types/cms';
@@ -33,10 +33,11 @@ export async function generateMetadata(): Promise<Metadata> {
     const attrs = page as unknown as Record<string, unknown> | null;
 
     const seoObj = (attrs &&
-      (attrs['SEO'] ?? attrs['seo'] ?? attrs['sharedSeo'] ?? attrs['SharedSeoComponent'] ?? null)) as Record<
-      string,
-      unknown
-    > | null;
+      (attrs['SEO'] ??
+        attrs['seo'] ??
+        attrs['sharedSeo'] ??
+        attrs['SharedSeoComponent'] ??
+        null)) as Record<string, unknown> | null;
 
     if (seoObj) {
       const md = buildMetadataFromSeo(seoObj, {
@@ -45,39 +46,49 @@ export async function generateMetadata(): Promise<Metadata> {
         defaultCanonical: '/',
       });
       md.metadataBase = metadataBase;
-      
-      let safeDescription = (md.description && typeof md.description === 'string' && md.description.trim())
-        ? md.description.trim()
-        : defaultDescription;
-      
+
+      let safeDescription =
+        md.description &&
+        typeof md.description === 'string' &&
+        md.description.trim()
+          ? md.description.trim()
+          : defaultDescription;
+
       if (safeDescription.length < 50) {
-        safeDescription = defaultDescription.length >= 50 
-          ? defaultDescription 
-          : 'THAIPARTS INFINITY - ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร สำหรับอุตสาหกรรมทุกประเภท ครอบคลุมตั้งแต่การวิเคราะห์ การออกแบบ ติดตั้ง และซ่อมบำรุง';
+        safeDescription =
+          defaultDescription.length >= 50
+            ? defaultDescription
+            : 'THAIPARTS INFINITY - ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร สำหรับอุตสาหกรรมทุกประเภท ครอบคลุมตั้งแต่การวิเคราะห์ การออกแบบ ติดตั้ง และซ่อมบำรุง';
       }
-      
+
       md.openGraph = {
         ...(md.openGraph ?? {}),
-        description: (md.openGraph?.description && typeof md.openGraph.description === 'string' && md.openGraph.description.trim())
-          ? md.openGraph.description.trim()
-          : safeDescription,
+        description:
+          md.openGraph?.description &&
+          typeof md.openGraph.description === 'string' &&
+          md.openGraph.description.trim()
+            ? md.openGraph.description.trim()
+            : safeDescription,
         siteName: 'THAIPARTS INFINITY',
         type: 'website',
         locale: 'th_TH',
       } as Metadata['openGraph'];
-      
+
       md.alternates = md.alternates ?? { canonical: '/' };
       md.description = safeDescription;
-      
+
       if (md.twitter) {
         md.twitter = {
           ...md.twitter,
-          description: (md.twitter.description && typeof md.twitter.description === 'string' && md.twitter.description.trim())
-            ? md.twitter.description.trim()
-            : safeDescription,
+          description:
+            md.twitter.description &&
+            typeof md.twitter.description === 'string' &&
+            md.twitter.description.trim()
+              ? md.twitter.description.trim()
+              : safeDescription,
         };
       }
-      
+
       return md;
     }
 
@@ -127,7 +138,7 @@ export async function generateMetadata(): Promise<Metadata> {
         ? titleFromPage
         : defaultTitle;
     const finalDescription =
-      (typeof descriptionFromPage === 'string' && descriptionFromPage.trim())
+      typeof descriptionFromPage === 'string' && descriptionFromPage.trim()
         ? descriptionFromPage.trim()
         : defaultDescription;
 
@@ -173,7 +184,9 @@ export async function generateMetadata(): Promise<Metadata> {
           },
         ]
       : [];
-    const safeDescription = defaultDescription || 'THAIPARTS INFINITY - ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร';
+    const safeDescription =
+      defaultDescription ||
+      'THAIPARTS INFINITY - ผู้เชี่ยวชาญระบบ Automation, Electrical และ Instrument ครบวงจร';
 
     return {
       title: defaultTitle,

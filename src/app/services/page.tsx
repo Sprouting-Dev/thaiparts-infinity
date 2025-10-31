@@ -4,7 +4,10 @@ import Link from 'next/link';
 import { mediaUrl, STRAPI_URL } from '@/lib/strapi';
 import type { PossibleMediaInput } from '@/types/strapi';
 import { buildMetadataFromSeo } from '@/lib/seo';
-import { fetchPageBySlug, fetchServices as fetchServicesFromCms } from '@/lib/cms';
+import {
+  fetchPageBySlug,
+  fetchServices as fetchServicesFromCms,
+} from '@/lib/cms';
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
@@ -20,13 +23,15 @@ export async function generateMetadata(): Promise<Metadata> {
     return buildMetadataFromSeo(seo, {
       defaultCanonical: '/services',
       fallbackTitle: 'Services | THAIPARTS INFINITY',
-      fallbackDescription: 'บริการและโซลูชันวิศวกรรมครบวงจร ตั้งแต่การวิเคราะห์ความต้องการ การออกแบบสถาปัตยกรรม ติดตั้งฮาร์ดแวร์และซอฟต์แวร์ จาก THAIPARTS INFINITY',
+      fallbackDescription:
+        'บริการและโซลูชันวิศวกรรมครบวงจร ตั้งแต่การวิเคราะห์ความต้องการ การออกแบบสถาปัตยกรรม ติดตั้งฮาร์ดแวร์และซอฟต์แวร์ จาก THAIPARTS INFINITY',
     });
   } catch {
     return buildMetadataFromSeo(null, {
       defaultCanonical: '/services',
       fallbackTitle: 'Services | THAIPARTS INFINITY',
-      fallbackDescription: 'บริการและโซลูชันวิศวกรรมครบวงจร ตั้งแต่การวิเคราะห์ความต้องการ การออกแบบสถาปัตยกรรม ติดตั้งฮาร์ดแวร์และซอฟต์แวร์ จาก THAIPARTS INFINITY',
+      fallbackDescription:
+        'บริการและโซลูชันวิศวกรรมครบวงจร ตั้งแต่การวิเคราะห์ความต้องการ การออกแบบสถาปัตยกรรม ติดตั้งฮาร์ดแวร์และซอฟต์แวร์ จาก THAIPARTS INFINITY',
     });
   }
 }

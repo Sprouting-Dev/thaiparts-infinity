@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Product } from '@/types/product';
-import { productAPI } from '@/services/productService';
+import { productAPI } from '@/lib/productService';
 import { ProductFilter, ProductCard } from '@/components';
-import CTAButton from '@/components/CTAButton';
+import CTAButton from '@/components/ui/CTAButton';
 import { categoryMapping, getProductsByCategory } from '@/lib/categoryMapping';
 import { Skeleton } from '@/components/ui/skeleton';
 

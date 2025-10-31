@@ -3,13 +3,13 @@
 import React, { useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import CTAButton from './CTAButton';
+import CTAButton from '@/components/ui/CTAButton';
 import type { CTAVariant } from '@/lib/button-styles';
 import { mediaUrl } from '@/lib/strapi';
 import type { LayoutAttributes } from '@/types/cms';
 import type { PossibleMediaInput } from '@/types/strapi';
 import { sanitizeHtml } from '@/lib/sanitize';
-import SafeHtml from '@/components/SafeHtml';
+import SafeHtml from '@/components/ui/SafeHtml';
 
 interface SharedContactComponent {
   company_name?: string;
@@ -26,7 +26,6 @@ interface FooterProps {
   layout?: LayoutAttributes | null;
   embedded?: boolean;
 }
-
 
 const socialIcon = (type?: string) => {
   switch ((type || '').toLowerCase()) {

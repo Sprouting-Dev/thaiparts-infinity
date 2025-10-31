@@ -3,8 +3,8 @@ import { useMemo, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import useEmblaCarousel from 'embla-carousel-react';
 import AutoScroll from 'embla-carousel-auto-scroll';
-import { MotionReveal } from '@/components/MotionReveal';
-import MotionGridItem from '@/components/MotionGridItem';
+import { MotionReveal } from '@/components/motion/MotionReveal';
+import MotionGridItem from '@/components/motion/MotionGridItem';
 
 interface LogoCarouselProps {
   icons: string[];
