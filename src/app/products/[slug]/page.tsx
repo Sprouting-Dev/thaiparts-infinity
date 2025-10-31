@@ -7,6 +7,7 @@ import { Product } from '@/types/product';
 import { productAPI } from '@/services/productService';
 import { getButtonStyle, getButtonClassName } from '@/lib/button-styles';
 import SafeHtml from '@/components/SafeHtml';
+import DetailNotFound from '@/components/DetailNotFound';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ProductDetailPage() {
@@ -44,19 +45,12 @@ export default function ProductDetailPage() {
 
   if (error || !product) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-semibold text-gray-600 mb-4">
-            ไม่พบข้อมูลสินค้า
-          </h2>
-          <button
-            onClick={() => router.push('/products')}
-            className="cursor-pointer bg-primary text-white px-6 py-2 rounded-lg hover:bg-opacity-90"
-          >
-            กลับไปหน้าสินค้า
-          </button>
-        </div>
-      </div>
+      <DetailNotFound
+        title="ไม่พบข้อมูลสินค้า"
+        message="ขออภัย เราไม่พบสินค้าที่คุณกำลังค้นหา กรุณาตรวจสอบ URL หรือกลับไปยังหน้าสินค้า"
+        primaryHref="/products"
+        primaryLabel="กลับไปหน้าสินค้า"
+      />
     );
   }
 

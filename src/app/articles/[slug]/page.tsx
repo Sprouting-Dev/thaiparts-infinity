@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { fetchArticleBySlug, fetchArticles } from '@/lib/cms';
 import { sanitizeHtml } from '@/lib/sanitize';
+import { notFound } from 'next/navigation';
 import SafeHtml from '@/components/SafeHtml';
 import { buildMetadataFromSeo, extractMediaMeta } from '@/lib/seo';
 import Image from 'next/image';
@@ -44,11 +45,7 @@ export default async function ArticleDetailPage({
     unknown
   > | null;
   if (!attrs) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        ไม่พบบทความ
-      </div>
-    );
+    notFound();
   }
 
   const title = (attrs['title'] as string) || '';
