@@ -4,14 +4,29 @@ import Link from 'next/link';
 import { mediaUrl, STRAPI_URL } from '@/lib/strapi';
 import type { PossibleMediaInput } from '@/types/strapi';
 import { buildMetadataFromSeo } from '@/lib/seo';
-import { getStaticGlobal } from '@/lib/static-global';
+import { fetchPageBySlug } from '@/lib/cms';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const seo = getStaticGlobal().seo ?? null;
-  return buildMetadataFromSeo(seo as Record<string, unknown> | null, {
-    defaultCanonical: '/services',
-    fallbackTitle: 'Services | THAIPARTS INFINITY',
-  });
+  try {
+    const page = await fetchPageBySlug('services');
+    const attrs = page as unknown as Record<string, unknown> | null;
+    const seo =
+      (attrs &&
+        (attrs['SharedSeoComponent'] as Record<string, unknown> | undefined)) ??
+      (attrs && (attrs['SEO'] as Record<string, unknown> | undefined)) ??
+      (attrs && (attrs['seo'] as Record<string, unknown> | undefined)) ??
+      null;
+
+    return buildMetadataFromSeo(seo, {
+      defaultCanonical: '/services',
+      fallbackTitle: 'Services | THAIPARTS INFINITY',
+    });
+  } catch {
+    return buildMetadataFromSeo(null, {
+      defaultCanonical: '/services',
+      fallbackTitle: 'Services | THAIPARTS INFINITY',
+    });
+  }
 }
 
 type Service = {

@@ -5,7 +5,6 @@ import './globals.css';
 
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { getStaticGlobal } from '@/lib/static-global';
 import { fetchLayout, fetchPageBySlug } from '@/lib/cms';
 import { buildMetadataFromSeo } from '@/lib/seo';
 import type { LayoutAttributes } from '@/types/cms';
@@ -210,7 +209,9 @@ export default async function RootLayout({
 
   // Build navbar: prefer Strapi navbar, but if Strapi provides an address phone
   // use it to inject/replace the "ติดต่อด่วน" CTA so the number is consistent site-wide.
-  const baseNavbar = layout?.navbar ?? getStaticGlobal().navbar;
+  // Prefer Strapi-provided navbar; if missing, leave undefined so Header
+  // can fall back to its internal default or handle missing CTAs.
+  const baseNavbar = layout?.navbar ?? undefined;
 
   const makeNavbarWithPhone = (raw?: string) => {
     if (!raw) return baseNavbar;

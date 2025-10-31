@@ -23,10 +23,9 @@ export async function generateMetadata(): Promise<Metadata> {
       fallbackTitle: 'Knowledge Center | THAIPARTS INFINITY',
     });
   } catch {
-    // fallback to static global if fetch fails
-    const seo =
-      (await import('@/lib/static-global')).getStaticGlobal().seo ?? null;
-    return buildMetadataFromSeo(seo as Record<string, unknown> | null, {
+    // If fetching the page fails, fall back to a null SEO object so
+    // buildMetadataFromSeo can generate safe defaults.
+    return buildMetadataFromSeo(null, {
       defaultCanonical: '/articles',
       fallbackTitle: 'Knowledge Center | THAIPARTS INFINITY',
     });
