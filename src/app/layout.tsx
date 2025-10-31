@@ -7,6 +7,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { getStaticGlobal } from '@/lib/static-global';
 import { fetchLayout, fetchPageBySlug } from '@/lib/cms';
+import { buildMetadataFromSeo } from '@/lib/seo';
 import type { LayoutAttributes } from '@/types/cms';
 import { mediaUrl } from '@/lib/strapi';
 
@@ -36,6 +37,32 @@ export async function generateMetadata(): Promise<Metadata> {
   try {
     const page = await fetchPageBySlug('home');
     const attrs = page as unknown as Record<string, unknown> | null;
+
+    // Prefer a nested SEO component (common Strapi pattern). If the page
+    // exposes `seo` or `sharedSeo`, prefer building the Metadata from that
+    // component so `metaDescription` and other SEO fields are honored.
+    const seoObj = (attrs &&
+      (attrs['seo'] ?? attrs['sharedSeo'] ?? null)) as Record<
+      string,
+      unknown
+    > | null;
+
+    if (seoObj) {
+      const md = buildMetadataFromSeo(seoObj, {
+        fallbackTitle: defaultTitle,
+        defaultCanonical: '/',
+      });
+      // Ensure metadataBase and a sane openGraph baseline are present
+      md.metadataBase = metadataBase;
+      md.openGraph = {
+        ...(md.openGraph ?? {}),
+        siteName: 'THAIPARTS INFINITY',
+        type: 'website',
+        locale: 'th_TH',
+      } as Metadata['openGraph'];
+      md.alternates = md.alternates ?? { canonical: '/' };
+      return md;
+    }
 
     // Title extraction: check common patterns used by Strapi SEO plugin or page fields
     const titleFromPage =

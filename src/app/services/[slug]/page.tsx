@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { getServiceBySlug } from '@/services/serviceService';
+import { buildMetadataFromSeo } from '@/lib/seo';
 import FAQAccordion from '@/components/FAQAccordion';
 import CaseStudySection from '@/components/CaseStudySection';
 import TechnologySection from '@/components/TechnologySection';
@@ -25,6 +26,24 @@ export async function generateMetadata({
   }
 
   const service = serviceRes.attributes;
+  // Prefer a per-service SEO component if present
+  const seoObj =
+    (service &&
+      ((service['SEO'] as Record<string, unknown> | undefined) ||
+        (service['seo'] as Record<string, unknown> | undefined) ||
+        (service['SharedSeoComponent'] as
+          | Record<string, unknown>
+          | undefined))) ||
+    null;
+
+  if (seoObj) {
+    return buildMetadataFromSeo(seoObj, {
+      fallbackTitle: `${service.title || service.name}`,
+      defaultCanonical: `/services/${slug}`,
+    });
+  }
+
+  // Fallback to previous pattern when no SEO component is present
   return {
     title: `${service.title || service.name} | THAIPARTS INFINITY`,
     description: service.subtitle || 'Industrial automation service',
