@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
+import { SHORT_DUR, HOVER_SCALE, TAP_SCALE } from '@/lib/motion';
 import React, { useEffect, useState } from 'react';
 import {
   getButtonStyle,
@@ -104,7 +105,7 @@ export default function CTAButton({
   };
 
   const reduceMotion = useReducedMotion();
-  const hoverTransition = { duration: 0.18 };
+  const hoverTransition = { duration: SHORT_DUR };
 
   // Use href directly (no special contact logic needed)
   // If no href is provided, render a <button> instead of an anchor to
@@ -119,8 +120,8 @@ export default function CTAButton({
           href={finalHref}
           className={combinedClassName}
           style={buttonStyle}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+          whileHover={{ scale: HOVER_SCALE }}
+          whileTap={{ scale: TAP_SCALE }}
           transition={hoverTransition}
           onHoverStart={e => {
             const el = (e && (e.currentTarget as HTMLElement)) || null;

@@ -1,4 +1,5 @@
 'use client';
+import SafeHtml from '@/components/SafeHtml';
 
 interface ArchitecturalExampleSection {
   id?: number;
@@ -29,10 +30,9 @@ export default function ArchitecturalExample({
 
           {section.article && (
             <div className="bg-[#ECEFF2] p-6 rounded-3xl overflow-hidden ">
-              <div
-                className="architectural-example-content font-['Kanit'] "
-                dangerouslySetInnerHTML={{ __html: section.article }}
-              />
+              <div className="architectural-example-content font-['Kanit'] ">
+                <SafeHtml html={String(section.article)} />
+              </div>
             </div>
           )}
         </div>

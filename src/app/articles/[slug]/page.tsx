@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { fetchArticleBySlug, fetchArticles } from '@/lib/cms';
 import { sanitizeHtml } from '@/lib/sanitize';
+import SafeHtml from '@/components/SafeHtml';
 import { buildMetadataFromSeo, extractMediaMeta } from '@/lib/seo';
 import Image from 'next/image';
 
@@ -212,16 +213,14 @@ export default async function ArticleDetailPage({
                       </div>
                       <div className="flex flex-col gap-6">
                         {description ? (
-                          <h3
-                            className="text-[22px] leading-[33px] lg:text-[28px] lg:leading-[42px] font-medium text-[#1063A7]"
-                            dangerouslySetInnerHTML={{ __html: description }}
-                          />
+                          <h3 className="text-[22px] leading-[33px] lg:text-[28px] lg:leading-[42px] font-medium text-[#1063A7]">
+                            <SafeHtml html={String(description)} />
+                          </h3>
                         ) : null}
                         {contentHtml ? (
-                          <div
-                            className="text-[22px] leading-[33px] text-[#333] space-y-6"
-                            dangerouslySetInnerHTML={{ __html: contentHtml }}
-                          />
+                          <div className="text-[22px] leading-[33px] text-[#333] space-y-6">
+                            <SafeHtml html={String(contentHtml)} />
+                          </div>
                         ) : null}
                       </div>
                     </>
@@ -253,10 +252,9 @@ export default async function ArticleDetailPage({
                         ) : null}
                       </div>
                       {description ? (
-                        <h3
-                          className="text-[22px] leading-[33px] lg:text-[28px] lg:leading-[42px] font-medium text-[#1063A7]"
-                          dangerouslySetInnerHTML={{ __html: description }}
-                        />
+                        <h3 className="text-[22px] leading-[33px] lg:text-[28px] lg:leading-[42px] font-medium text-[#1063A7]">
+                          <SafeHtml html={String(description)} />
+                        </h3>
                       ) : null}
                     </>
                   );
@@ -268,10 +266,9 @@ export default async function ArticleDetailPage({
                       ? sanitizeHtml(String(u.block['content']))
                       : '';
                   return renderCard(
-                    <div
-                      className="text-[22px] leading-[33px] text-[#333] space-y-6"
-                      dangerouslySetInnerHTML={{ __html: contentHtml }}
-                    />
+                    <div className="text-[22px] leading-[33px] text-[#333] space-y-6">
+                      <SafeHtml html={String(contentHtml)} />
+                    </div>
                   );
                 }
 
@@ -282,10 +279,9 @@ export default async function ArticleDetailPage({
                       String(u.block['content'])
                     );
                     return renderCard(
-                      <div
-                        className="text-[22px] leading-8 text-[#333]"
-                        dangerouslySetInnerHTML={{ __html: contentHtml }}
-                      />
+                      <div className="text-[22px] leading-8 text-[#333]">
+                        <SafeHtml html={String(contentHtml)} />
+                      </div>
                     );
                   }
                   if (u.block['description']) {
@@ -293,10 +289,9 @@ export default async function ArticleDetailPage({
                       String(u.block['description'])
                     );
                     return renderCard(
-                      <div
-                        className="text-[18px] text-[#333]"
-                        dangerouslySetInnerHTML={{ __html: descHtml }}
-                      />
+                      <div className="text-[18px] text-[#333]">
+                        <SafeHtml html={String(descHtml)} />
+                      </div>
                     );
                   }
                 }
@@ -305,10 +300,9 @@ export default async function ArticleDetailPage({
               });
             })()
           ) : (
-            <div
-              className="prose max-w-none text-[22px] leading-8 text-[#333]"
-              dangerouslySetInnerHTML={{ __html: sanitizeHtml(String(body)) }}
-            />
+            <div className="prose max-w-none text-[22px] leading-8 text-[#333]">
+              <SafeHtml html={String(sanitizeHtml(String(body)))} />
+            </div>
           )}
 
           {/* Repeated example blocks to mimic the provided layout (these are

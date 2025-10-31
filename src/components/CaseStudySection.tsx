@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import SafeHtml from '@/components/SafeHtml';
 
 interface CaseStudySection {
   id?: number;
@@ -92,11 +93,7 @@ export default function CaseStudySection({ sections }: CaseStudySectionProps) {
 
                 {section.case_study_detail && (
                   <div className="case-study-content">
-                    <div
-                      dangerouslySetInnerHTML={{
-                        __html: section.case_study_detail,
-                      }}
-                    />
+                    <SafeHtml html={String(section.case_study_detail)} />
                   </div>
                 )}
               </div>

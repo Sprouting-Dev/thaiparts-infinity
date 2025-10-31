@@ -4,6 +4,8 @@ type RichTextChild = {
   italic?: boolean;
 };
 
+import SafeHtml from '@/components/SafeHtml';
+
 type RichTextBlock = {
   type: string;
   children?: RichTextChild[];
@@ -82,10 +84,9 @@ export default function SafetyAndStandards({
 
             {descriptionHtml && (
               <div className="py-4">
-                <div
-                  className="font-['Kanit'] text-[1.375rem] font-normal  text-foreground"
-                  dangerouslySetInnerHTML={{ __html: descriptionHtml }}
-                />
+                <div className="font-['Kanit'] text-[1.375rem] font-normal  text-foreground">
+                  <SafeHtml html={String(descriptionHtml)} />
+                </div>
               </div>
             )}
 

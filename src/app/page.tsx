@@ -1,5 +1,6 @@
 // src/app/page.tsx
 import Hero from '@/components/Hero';
+import SafeHtml from '@/components/SafeHtml';
 import type { Metadata } from 'next';
 import Features from '@/components/Features';
 import GridPreview from '@/components/GridPreview';
@@ -342,12 +343,9 @@ export default async function HomePage() {
                 </div>
                 {aboutDesc && (
                   <>
-                    <div
-                      className="font-['Kanit'] text-[16px] lg:text-[22px] text-[#333333] leading-[24px] lg:leading-[33px]"
-                      // aboutDesc is already sanitized by src/lib/cms -> sanitizeHtml
-                      // render as HTML so saved <p> tags are interpreted rather than shown literally
-                      dangerouslySetInnerHTML={{ __html: String(aboutDesc) }}
-                    />
+                    <div className="font-['Kanit'] text-[16px] lg:text-[22px] text-[#333333] leading-[24px] lg:leading-[33px]">
+                      <SafeHtml html={String(aboutDesc)} />
+                    </div>
 
                     {/* CTA under About description */}
                     <div>

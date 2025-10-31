@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { Product } from '@/types/product';
 import { productAPI } from '@/services/productService';
 import { getButtonStyle, getButtonClassName } from '@/lib/button-styles';
+import SafeHtml from '@/components/SafeHtml';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ProductDetailPage() {
@@ -91,8 +92,9 @@ export default function ProductDetailPage() {
           <div
             className="product-description text-foreground leading-relaxed text-base lg:text-[1.375rem] [&_*]:!font-['Kanit']"
             style={{ fontFamily: 'Kanit, sans-serif' }}
-            dangerouslySetInnerHTML={{ __html: product.description || '' }}
-          />
+          >
+            <SafeHtml html={String(product.description || '')} />
+          </div>
         </div>
 
         {product.specifications &&
