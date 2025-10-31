@@ -32,7 +32,7 @@ export default function FeaturesGrid({ sections }: FeaturesGridProps) {
         const features = section.features_item || [];
 
         return (
-          <div key={section.id || sectionIndex} className="flex flex-col gap-6">
+          <div key={section.id || sectionIndex} className="flex flex-col gap-4">
             {section.title && (
               <h2 className="mt-16 font-['Kanit'] font-medium text-[1.375rem] lg:text-[1.75rem] text-primary underline decoration-accent decoration-2 underline-offset-8">
                 {section.title}

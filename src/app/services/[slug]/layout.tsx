@@ -9,7 +9,7 @@ export default async function ServiceSlugLayout({
   children: ReactNode;
 }) {
   // Minimal wrapper for all pages under /services/[slug]
-  return <div className="container-970 mx-auto px-4">{children}</div>;
+  return <div>{children}</div>;
 }
 
 export async function generateMetadata({

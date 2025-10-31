@@ -2,6 +2,8 @@
 
 import Image from 'next/image';
 import SafeHtml from '@/components/ui/SafeHtml';
+import { mediaUrl } from '@/lib/strapi';
+import type { PossibleMediaInput } from '@/types/strapi';
 
 interface CaseStudySection {
   id?: number;
@@ -26,30 +28,8 @@ export default function CaseStudySection({ sections }: CaseStudySectionProps) {
   }
 
   const getImageUrl = (imageField: unknown): string | null => {
-    if (
-      !imageField ||
-      typeof imageField !== 'object' ||
-      !('data' in imageField)
-    )
-      return null;
-
-    const { data } = imageField as { data: unknown };
-    const imageData = Array.isArray(data) ? data[0] : data;
-
-    if (
-      !imageData ||
-      typeof imageData !== 'object' ||
-      !('attributes' in imageData)
-    )
-      return null;
-
-    const { attributes } = imageData as { attributes: { url?: string } };
-    if (!attributes?.url) return null;
-
-    const url = attributes.url;
-    return url.startsWith('http')
-      ? url
-      : `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${url}`;
+    if (!imageField) return null;
+    return mediaUrl(imageField as PossibleMediaInput);
   };
 
   return (
@@ -58,7 +38,7 @@ export default function CaseStudySection({ sections }: CaseStudySectionProps) {
         const coverImageUrl = getImageUrl(section.cover_image);
 
         return (
-          <div key={section.id || sectionIndex} className="flex flex-col gap-6">
+          <div key={section.id || sectionIndex} className="flex flex-col gap-4">
             {section.title && (
               <h2 className="mt-16 font-['Kanit'] font-medium text-[1.375rem] lg:text-[1.75rem] text-primary underline decoration-accent decoration-2 underline-offset-8">
                 {section.title}
@@ -78,7 +58,7 @@ export default function CaseStudySection({ sections }: CaseStudySectionProps) {
                 </div>
               )}
 
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-6">
                 {section.case_study_name && (
                   <h3 className="font-['Kanit'] text-[1.375rem] font-bold text-primary">
                     {section.case_study_name}
