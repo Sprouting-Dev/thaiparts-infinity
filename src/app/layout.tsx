@@ -278,7 +278,7 @@ export default async function RootLayout({
         <meta name="theme-color" content="var(--brand-blue)" />
       </head>
       <body
-        className={`${kanit.variable} antialiased flex flex-col min-h-screen overflow-x-hidden gap-24`}
+        className={`${kanit.variable} antialiased flex flex-col min-h-screen overflow-x-hidden gap-16 lg:gap-24`}
         suppressHydrationWarning
       >
         {/* Header: pass navbar data (with Strapi phone injected) so the "ติดต่อด่วน" CTA uses the CMS phone */}

@@ -122,7 +122,10 @@ const mapStrapiProduct = (strapiProduct: StrapiProduct): Product => {
 };
 
 export const productAPI = {
-  async getProducts(filters?: ProductFilters): Promise<ProductsResponse> {
+  async getProducts(
+    filters?: ProductFilters,
+    opts?: { signal?: AbortSignal }
+  ): Promise<ProductsResponse> {
     try {
       // Allow caller to request pagination parameters. Default to page=1 pageSize=100
       // to be backward-compatible with previous behavior. The Products page will
@@ -160,12 +163,14 @@ export const productAPI = {
 
       const response = await fetch(url, {
         headers: headers,
+        signal: opts?.signal,
       });
 
       if (!response.ok) {
         if (response.status === 401 && !API_TOKEN) {
           const retryResponse = await fetch(url, {
             headers: { 'Content-Type': 'application/json' },
+            signal: opts?.signal,
           });
 
           if (retryResponse.ok) {
@@ -213,6 +218,7 @@ export const productAPI = {
           const fallbackUrl = `${STRAPI_URL}/api/products?populate=*&pagination[page]=${page}&pagination[pageSize]=${pageSize}&${orParts}`;
           const fallbackResp = await fetch(fallbackUrl, {
             headers: getStrapiHeaders(),
+            signal: opts?.signal,
           });
           if (fallbackResp.ok) {
             const fallbackJson = await fallbackResp.json();

@@ -22,17 +22,19 @@ interface SafetyAndStandardsProps {
   renderRichText: (data: unknown) => string;
 }
 
-export default function SafetyAndStandards({ 
-  sections, 
-  renderRichText 
+export default function SafetyAndStandards({
+  sections,
+  renderRichText,
 }: SafetyAndStandardsProps) {
   if (!sections || sections.length === 0) {
     return null;
   }
 
-  const parseCards = (data: unknown): { title: string; description: string }[] => {
+  const parseCards = (
+    data: unknown
+  ): { title: string; description: string }[] => {
     if (!Array.isArray(data)) return [];
-    
+
     const cards: { title: string; description: string }[] = [];
     let currentTitle = '';
 
@@ -42,7 +44,7 @@ export default function SafetyAndStandards({
           ?.map((child: RichTextChild) => child.text || '')
           .join('')
           .trim();
-        
+
         if (title) {
           currentTitle = title;
         }
@@ -51,7 +53,7 @@ export default function SafetyAndStandards({
           ?.map((child: RichTextChild) => child.text || '')
           .join('')
           .trim();
-        
+
         if (description) {
           cards.push({ title: currentTitle, description });
           currentTitle = '';
@@ -65,9 +67,11 @@ export default function SafetyAndStandards({
   return (
     <div className="flex flex-col gap-8">
       {sections.map((section, index) => {
-        const descriptionHtml = section.description ? renderRichText(section.description) : null;
+        const descriptionHtml = section.description
+          ? renderRichText(section.description)
+          : null;
         const cardsList = section.cards ? parseCards(section.cards) : [];
-        
+
         return (
           <div key={section.id || index} className="flex flex-col gap-6">
             {section.title && (
@@ -78,7 +82,7 @@ export default function SafetyAndStandards({
 
             {descriptionHtml && (
               <div className="py-4">
-                <div 
+                <div
                   className="font-['Kanit'] text-[1.375rem] font-normal  text-foreground"
                   dangerouslySetInnerHTML={{ __html: descriptionHtml }}
                 />
@@ -88,7 +92,7 @@ export default function SafetyAndStandards({
             {cardsList.length > 0 && (
               <div className="grid grid-cols-1 gap-4">
                 {cardsList.map((card, idx: number) => (
-                  <div 
+                  <div
                     key={idx}
                     className="bg-[#ECEFF2] rounded-2xl p-6 md:p-8 flex flex-col gap-4 hover:shadow-lg transition-shadow duration-300 cursor-pointer "
                   >

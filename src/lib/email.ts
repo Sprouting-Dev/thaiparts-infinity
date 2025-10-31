@@ -25,7 +25,7 @@ export interface EmailData {
 export async function sendContactEmail(data: EmailData) {
   try {
     const client = getResendClient();
-    
+
     const adminEmail = await client.emails.send({
       from: process.env.RESEND_FROM_EMAIL!,
       to: [process.env.ADMIN_EMAIL!],

@@ -18,13 +18,6 @@ import type { PageAttributes } from '@/types/cms';
 import { getColorByTagName } from '@/lib/categoryBadge';
 import { logger } from '@/lib/logger';
 
-/** ========== ENV / Debug ========== */
-// Dev-only guards removed for production readiness.
-
-// Removed development-only DebugOverlay to clean production output.
-
-/** ========== Helpers ========== */
-
 /** ========== Fetch Strapi ========== */
 // Use centralized CMS fetchers
 async function fetchHomeData() {
@@ -312,15 +305,49 @@ export default async function HomePage() {
                   </div>
                   {aboutTitle && (
                     <h3 className="font-['Kanit'] font-medium text-[22px] lg:text-[28px] text-[#1063A7] leading-[33px] lg:leading-[42px]">
-                      {aboutTitle}
+                      {
+                        // Only highlight 'INFINITY' in red when it's part of
+                        // the phrase 'THAIPARTS INFINITY'. Otherwise leave the
+                        // title rendered normally (inherits h3 color).
+                        (() => {
+                          // strip tags for matching but keep original for rendering
+                          const plain = aboutTitle.replace(/<[^>]*>/g, '');
+                          const phraseRe = /\bTHAIPARTS\s+INFINITY\b/i; // case-insensitive
+                          const m = plain.match(phraseRe);
+                          if (!m || typeof m.index !== 'number')
+                            return aboutTitle;
+                          const matchIndex = m.index;
+                          const matchText = m[0]; // e.g. 'THAIPARTS INFINITY' (original case may differ)
+                          const idxInfinity = matchText
+                            .toUpperCase()
+                            .indexOf('INFINITY');
+                          const before = plain.slice(0, matchIndex);
+                          const prefix = matchText.slice(0, idxInfinity); // 'THAIPARTS ' (preserves spacing)
+                          const after = plain.slice(
+                            matchIndex + matchText.length
+                          );
+                          // Render using the plain pieces (safe) and Tailwind color utility
+                          return (
+                            <>
+                              {before}
+                              {prefix}
+                              <span className="text-[#E92928]">INFINITY</span>
+                              {after}
+                            </>
+                          );
+                        })()
+                      }
                     </h3>
                   )}
                 </div>
                 {aboutDesc && (
                   <>
-                    <p className="font-['Kanit'] text-[16px] lg:text-[22px] text-[#333333] leading-[24px] lg:leading-[33px]">
-                      {aboutDesc}
-                    </p>
+                    <div
+                      className="font-['Kanit'] text-[16px] lg:text-[22px] text-[#333333] leading-[24px] lg:leading-[33px]"
+                      // aboutDesc is already sanitized by src/lib/cms -> sanitizeHtml
+                      // render as HTML so saved <p> tags are interpreted rather than shown literally
+                      dangerouslySetInnerHTML={{ __html: String(aboutDesc) }}
+                    />
 
                     {/* CTA under About description */}
                     <div>

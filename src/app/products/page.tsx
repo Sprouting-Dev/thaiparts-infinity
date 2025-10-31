@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Product } from '@/types/product';
 import { productAPI } from '@/services/productService';
 import { ProductFilter, ProductCard } from '@/components';
@@ -28,17 +28,44 @@ export default function ProductsPage() {
   const [error, setError] = useState<string | null>(null);
 
   // Helper: fetch a page for a specific category
+  // Use a ref to store per-category AbortControllers to avoid using `any`.
+  const controllersRef = useRef<Record<string, AbortController | null>>({});
+  const debounceRef = useRef<{ timer: number | null } | null>(null);
+
+  // Cleanup debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current?.timer) clearTimeout(debounceRef.current.timer);
+    };
+  }, []);
+
   const fetchCategoryPage = useCallback(
     async (categoryKey: string, page = 1, retryCount = 0) => {
+      // Abort any previous in-flight request for this category to avoid
+      // race conditions where slow responses for prior pages overwrite
+      // the UI after the user changed filters or requested a different page.
+      const prev = controllersRef.current[categoryKey];
+      if (prev) {
+        try {
+          prev.abort();
+        } catch {
+          // ignore
+        }
+      }
+      const controller = new AbortController();
+      controllersRef.current[categoryKey] = controller;
       try {
         // set per-category loading state
         setLoadingByCategory(prev => ({ ...prev, [categoryKey]: true }));
         setIsLoading(true);
-        const response = await productAPI.getProducts({
-          category: categoryKey,
-          page,
-          pageSize: 6,
-        });
+        const response = await productAPI.getProducts(
+          {
+            category: categoryKey,
+            page,
+            pageSize: 6,
+          },
+          { signal: controller.signal }
+        );
 
         // If server returned no products for this category, fallback to a
         // larger unfiltered fetch and filter client-side. This handles cases
@@ -48,10 +75,13 @@ export default function ProductsPage() {
 
         if (response.products.length === 0) {
           try {
-            const fallback = await productAPI.getProducts({
-              page: 1,
-              pageSize: 100,
-            });
+            const fallback = await productAPI.getProducts(
+              {
+                page: 1,
+                pageSize: 100,
+              },
+              { signal: controller.signal }
+            );
             const matched = getProductsByCategory(
               fallback.products,
               categoryKey
@@ -80,7 +110,17 @@ export default function ProductsPage() {
         setError(null);
         setLoadingByCategory(prev => ({ ...prev, [categoryKey]: false }));
       } catch (err) {
-        if (retryCount < 2 && (err as Error).message.includes('401')) {
+        // If the request was aborted, silently ignore the error — this is
+        // expected when switching filters or issuing another fetch for the
+        // same category.
+        const isAbort =
+          typeof err === 'object' && err !== null && 'name' in err
+            ? (err as { name?: unknown }).name === 'AbortError'
+            : false;
+        if (isAbort) return;
+
+        const errMsg = err instanceof Error ? err.message : String(err);
+        if (retryCount < 2 && errMsg.includes('401')) {
           setTimeout(
             () => fetchCategoryPage(categoryKey, page, retryCount + 1),
             1000 * (retryCount + 1)
@@ -121,10 +161,16 @@ export default function ProductsPage() {
       setPageByCategory(prev => ({ ...prev, ...resetPages }));
       setHasMoreByCategory(prev => ({ ...prev, ...resetHasMore }));
 
-      for (const c of categoriesToFetch) {
-        // fetch first page
-        // fetchCategoryPage will set loading state
-        await fetchCategoryPage(c, 1);
+      if (categoriesToFetch.length > 1) {
+        // fetch first pages concurrently for better performance
+        await Promise.allSettled(
+          categoriesToFetch.map(c => fetchCategoryPage(c, 1))
+        );
+      } else {
+        // single category - fetch sequentially
+        for (const c of categoriesToFetch) {
+          await fetchCategoryPage(c, 1);
+        }
       }
       setIsLoading(false);
     })();
@@ -132,12 +178,17 @@ export default function ProductsPage() {
   }, [selectedFilter]);
 
   const handleFilterChange = (filterId: string) => {
+    // Debounce filter changes to avoid churn when users click quickly.
     setIsFilterLoading(true);
-    setSelectedFilter(filterId);
-
-    setTimeout(() => {
+    if (!debounceRef.current) debounceRef.current = { timer: null };
+    if (debounceRef.current.timer) {
+      clearTimeout(debounceRef.current.timer);
+    }
+    debounceRef.current.timer = window.setTimeout(() => {
+      setSelectedFilter(filterId);
       setIsFilterLoading(false);
-    }, 300);
+      debounceRef.current!.timer = null;
+    }, 250);
   };
 
   // Helper to access current products grouped by category (fallback empty array)
@@ -153,16 +204,15 @@ export default function ProductsPage() {
     return { [selectedFilter]: productsByCategory[selectedFilter] ?? [] };
   })();
 
-  const renderProductSection = (
-    categoryKey: string,
-    products: Product[] = []
-  ) => {
+  const renderProductSection = (categoryKey: string, products?: Product[]) => {
     const categoryInfo = categoryMapping[categoryKey];
     if (!categoryInfo) return null;
-    // Prefer items passed in as argument (from filteredProductsByCategory),
-    // but fall back to the state bucket when not provided.
+    // If caller passed an explicit array (even empty), use it. If caller
+    // passed undefined, fall back to the stored state bucket for that
+    // category. This avoids accidentally falling back when caller intends
+    // to show 'no results' for a filtered category.
     const fetchedProducts =
-      products && products.length > 0
+      products !== undefined
         ? products
         : (productsByCategory[categoryKey] ?? []);
     const isSectionLoading =
@@ -228,7 +278,7 @@ export default function ProductsPage() {
     <>
       <div className="px-4 container-970">
         <div className="mt-32 lg:mt-61.5 w-full flex justify-between items-center">
-          <h1 className="pl-5 text-primary font-medium lg:text-[1.375rem] flex items-baseline lg:items-center gap-4">
+          <h1 className="text-primary font-medium lg:text-[1.375rem] flex items-baseline lg:items-center gap-2">
             <span className="w-2 h-2 lg:w-4 lg:h-4 bg-[var(--accent-red)] rounded-full"></span>
             อะไหล่และระบบที่เราเชี่ยวชาญ
           </h1>
@@ -252,18 +302,27 @@ export default function ProductsPage() {
 
         {!isLoading && !isFilterLoading && !error && (
           <div>
-            {/* Render in specific order: PLC/SCADA/Automation, Spare Parts, Instrumentation */}
-            {renderProductSection(
-              'plc-scada',
-              filteredProductsByCategory['plc-scada'] ?? []
-            )}
-            {renderProductSection(
-              'spare-parts',
-              filteredProductsByCategory['spare-parts'] ?? []
-            )}
-            {renderProductSection(
-              'instrumentation',
-              filteredProductsByCategory['instrumentation'] ?? []
+            {/* Render either the single selected category or all categories in order */}
+            {selectedFilter === 'all' ? (
+              <>
+                {renderProductSection(
+                  'plc-scada',
+                  filteredProductsByCategory['plc-scada']
+                )}
+                {renderProductSection(
+                  'spare-parts',
+                  filteredProductsByCategory['spare-parts']
+                )}
+                {renderProductSection(
+                  'instrumentation',
+                  filteredProductsByCategory['instrumentation']
+                )}
+              </>
+            ) : (
+              renderProductSection(
+                selectedFilter,
+                filteredProductsByCategory[selectedFilter]
+              )
             )}
 
             {Object.values(filteredProductsByCategory).every(

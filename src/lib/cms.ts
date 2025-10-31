@@ -306,13 +306,88 @@ export async function fetchArticleBySlug(slug: string) {
   const item = json?.data?.[0];
   if (!item) return null;
   // attributes is unknown - sanitize known rich fields before returning
-  const attrs = item.attributes ?? null;
+  // Use a mutable `let` so we can merge supplemental single-item fetch
+  // results into the same variable when list endpoints omit dynamic zones.
+  let attrs: any = item.attributes ?? null;
+  // If the list-style deep populate didn't include the dynamic zone `content`,
+  // request only the `content` dynamic zone for the single item. This keeps the
+  // fallback minimal and avoids fetching unrelated fields.
+  try {
+    // If the list response omitted the dynamic zone or the article image,
+    // request only the article image and the content block images. This
+    // keeps the request small but ensures the <Image/> components have
+    // the media objects they need.
+    const needContent = !attrs || attrs['content'] == null;
+    const needArticleImage =
+      !attrs ||
+      !attrs['image'] ||
+      (typeof attrs['image'] === 'object' &&
+        attrs['image'] != null &&
+        (attrs['image'] as any)['data'] === undefined &&
+        typeof (attrs['image'] as any)['url'] !== 'string');
+
+    if (needContent || needArticleImage) {
+      try {
+        const targeted = `/api/articles/${item.id}?populate[image]=*&populate[content][populate]=image&${PREVIEW}`;
+        const targJson = await strapiFetch<{ data?: { attributes?: unknown } }>(
+          targeted,
+          {},
+          300
+        );
+        const targAttrs = (targJson?.data?.attributes ?? null) as any;
+        if (targAttrs) {
+          // Merge only keys we requested to avoid overwriting unrelated fields
+          const merged = { ...(attrs ?? {}) } as any;
+          if (targAttrs['image'] != null) merged['image'] = targAttrs['image'];
+          if (targAttrs['content'] != null)
+            merged['content'] = targAttrs['content'];
+          attrs = merged;
+        }
+      } catch {
+        // ignore targeted fetch failures
+      }
+    }
+  } catch {
+    // ignore
+  }
   try {
     if (attrs && typeof attrs === 'object') {
       const a: any = { ...attrs };
       if (typeof a.title === 'string') a.title = a.title;
       if (typeof a.subtitle === 'string') a.subtitle = a.subtitle;
-      if (typeof a.content === 'string') a.content = sanitizeHtml(a.content);
+      // If content is a string (simple rich text) sanitize it. If it's
+      // a dynamic zone array, normalize each block: unwrap `data` wrappers,
+      // sanitize nested rich fields and normalize image shapes.
+      if (typeof a.content === 'string') {
+        a.content = sanitizeHtml(a.content);
+      } else if (Array.isArray(a.content)) {
+        try {
+          a.content = a.content.map((blk: any) => {
+            const block = (blk && (blk['data'] ?? blk)) || blk;
+            if (!block || typeof block !== 'object') return block;
+            // sanitize common rich fields
+            try {
+              if (typeof block.content === 'string')
+                block.content = sanitizeHtml(block.content);
+            } catch {}
+            try {
+              if (typeof block.description === 'string')
+                block.description = sanitizeHtml(block.description);
+            } catch {}
+            // normalize image wrapper if present (leave as-is if absent)
+            try {
+              if (block.image) {
+                const raw = block.image;
+                // if wrapped as { data: {...} } unwrap to the inner object
+                block.image = (raw['data'] ?? raw) || raw;
+              }
+            } catch {}
+            return block;
+          });
+        } catch {
+          // fallback: leave content as-is
+        }
+      }
       if (typeof a.description === 'string')
         a.description = sanitizeHtml(a.description);
       return { id: item.id, attributes: a } as {

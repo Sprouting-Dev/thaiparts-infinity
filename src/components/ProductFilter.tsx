@@ -21,21 +21,25 @@ const defaultOptions: FilterOption[] = [
   { id: 'all', label: 'All' },
   { id: 'plc-scada', label: 'PLC/SCADA/Automation' },
   { id: 'spare-parts', label: 'Spare Part' },
-  { id: 'instrumentation', label: 'Instrumentation & Measurement' }
+  { id: 'instrumentation', label: 'Instrumentation & Measurement' },
 ];
 
-export const ProductFilter = ({ 
+export const ProductFilter = ({
   options = defaultOptions,
   selectedOption = 'all',
   onOptionSelect,
-  className = ""
+  className = '',
 }: ProductFilterProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  
+
   const buttonStyle = getButtonStyle('primary');
   const buttonClassName = getButtonClassName('primary');
 
-  const fixedDisplayText = "All";
+  // Display the label that corresponds to the currently selected option id.
+  const displayText =
+    options.find(opt => opt.id === selectedOption)?.label ??
+    options[0]?.label ??
+    'All';
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -65,8 +69,8 @@ export const ProductFilter = ({
         onClick={toggleDropdown}
       >
         <span className="w-2 h-2 bg-[var(--color-accent)] rounded-full"></span>
-        <span>{fixedDisplayText}</span>
-        <BsCaretDownFill 
+        <span>{displayText}</span>
+        <BsCaretDownFill
           className={`w-4 h-4 transition-transform duration-300 ${
             isDropdownOpen ? 'rotate-180' : 'rotate-0'
           }`}
@@ -75,16 +79,13 @@ export const ProductFilter = ({
 
       {isDropdownOpen && (
         <>
-          <div 
-            className="fixed inset-0" 
-            onClick={handleClickOutside}
-          />
-          
-          <div 
+          <div className="fixed inset-0" onClick={handleClickOutside} />
+
+          <div
             className="absolute top-full right-0 mt-2 w-70 lg:w-86 bg-white rounded-2xl shadow-xl overflow-hidden z-20"
             style={{
               background: 'linear-gradient(180deg, #CCE8FF 0%, #1063A7 100%)',
-              padding: '2px'
+              padding: '2px',
             }}
           >
             <div className="bg-white rounded-2xl">
@@ -92,25 +93,25 @@ export const ProductFilter = ({
                 <div key={option.id}>
                   <button
                     className="cursor-pointer w-full text-left px-4 py-3 flex items-center gap-3"
-                  onClick={() => handleOptionSelect(option.id)}
-                >
-                  {option.id === selectedOption ? (
-                    <span className="w-2 h-2 bg-[var(--color-accent)] rounded-full flex-shrink-0"></span>
-                  ) : (
-                    <span className="w-2 h-2 flex-shrink-0"></span> 
-                  )}
-            
-                  <span className="text-sm lg:text-[1rem] font-medium text-primary">
-                    {option.label}
-                  </span>
-             
-                  {option.count && (
-                    <span className="ml-auto text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-                      {option.count}
+                    onClick={() => handleOptionSelect(option.id)}
+                  >
+                    {option.id === selectedOption ? (
+                      <span className="w-2 h-2 bg-[var(--color-accent)] rounded-full flex-shrink-0"></span>
+                    ) : (
+                      <span className="w-2 h-2 flex-shrink-0"></span>
+                    )}
+
+                    <span className="text-sm lg:text-[1rem] font-medium text-primary">
+                      {option.label}
                     </span>
-                  )}
-                </button>
-             
+
+                    {option.count && (
+                      <span className="ml-auto text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                        {option.count}
+                      </span>
+                    )}
+                  </button>
+
                   {index < options.length - 1 && (
                     <div className="mx-6 border-b border-[rgba(16,99,167,0.25)]"></div>
                   )}
