@@ -6,14 +6,30 @@ import { mediaUrl } from '@/lib/strapi';
 import type { ArticleAttributes } from '@/types/cms';
 import type { StrapiData, PossibleMediaInput } from '@/types/strapi';
 import { buildMetadataFromSeo } from '@/lib/seo';
-import { getStaticGlobal } from '@/lib/static-global';
+import { fetchPageBySlug } from '@/lib/cms';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const seo = getStaticGlobal().seo ?? null;
-  return buildMetadataFromSeo(seo as Record<string, unknown> | null, {
-    defaultCanonical: '/articles',
-    fallbackTitle: 'Knowledge Center | THAIPARTS INFINITY',
-  });
+  try {
+    const page = await fetchPageBySlug('articles');
+    const attrs = page as unknown as Record<string, unknown> | null;
+    const seo =
+      (attrs &&
+        (attrs['SharedSeoComponent'] as Record<string, unknown> | undefined)) ??
+      (attrs && (attrs['SEO'] as Record<string, unknown> | undefined)) ??
+      (attrs && (attrs['seo'] as Record<string, unknown> | undefined)) ??
+      null;
+    return buildMetadataFromSeo(seo, {
+      defaultCanonical: '/articles',
+      fallbackTitle: 'Knowledge Center | THAIPARTS INFINITY',
+    });
+  } catch {
+    // If fetching the page fails, fall back to a null SEO object so
+    // buildMetadataFromSeo can generate safe defaults.
+    return buildMetadataFromSeo(null, {
+      defaultCanonical: '/articles',
+      fallbackTitle: 'Knowledge Center | THAIPARTS INFINITY',
+    });
+  }
 }
 
 export default async function ArticlesPage() {

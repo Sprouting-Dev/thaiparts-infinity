@@ -1,10 +1,11 @@
 'use client';
 import { motion, useReducedMotion } from 'framer-motion';
 import React from 'react';
+import { STAGGER_DEFAULT, REVEAL_ITEM } from '@/lib/motion';
 
 export function MotionReveal({
   children,
-  stagger = 0.06,
+  stagger = STAGGER_DEFAULT,
 }: {
   children: React.ReactNode;
   stagger?: number;
@@ -27,7 +28,4 @@ export function MotionReveal({
   );
 }
 
-export const revealItem = {
-  hidden: { opacity: 0, y: 8 },
-  show: { opacity: 1, y: 0 },
-};
+export const revealItem = REVEAL_ITEM;

@@ -1,12 +1,13 @@
 // src/components/Hero.tsx
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import Image from 'next/image';
 import CTAButton from '@/components/CTAButton';
 import type { CTAVariant } from '@/lib/button-styles';
 import type PageHeroSchema from '@/types/page';
 import { sanitizeHtml } from '@/lib/sanitize';
+import SafeHtml from '@/components/SafeHtml';
 import type { PossibleMediaInput } from '@/types/strapi';
 import { mediaUrl } from '@/lib/strapi';
 
@@ -61,9 +62,7 @@ export default function Hero(props: {
     return [sanitizeHtml(t), sanitizeHtml(s)];
   }, [normalized]);
 
-  // กัน hydration mismatch ตอนใช้ dangerouslySetInnerHTML
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  // SafeHtml handles hydration mismatch for rich text; no mounted state needed here
 
   const hasTitle = !!titleHTML || !!props.title;
   const hasSubtitle = !!subtitleHTML || !!props.subtitle;
@@ -121,11 +120,9 @@ export default function Hero(props: {
               {hasTitle && (
                 <h1
                   className={`font-[Kanit] font-medium text-[22px] leading-[33px] lg:text-[36px] lg:leading-[54px] drop-shadow-[0_2px_16px_rgba(0,0,0,0.5)] ${textAlignOnly}`}
-                  suppressHydrationWarning
-                  {...(mounted && titleHTML
-                    ? { dangerouslySetInnerHTML: { __html: titleHTML } }
-                    : { children: props.title ?? '' })}
-                />
+                >
+                  <SafeHtml html={titleHTML || props.title || ''} />
+                </h1>
               )}
 
               {/* Subtitle */}
@@ -133,11 +130,9 @@ export default function Hero(props: {
                 <div
                   className={`text-[16px] leading-[24px] lg:text-[22px] lg:leading-[33px] drop-shadow-[0_2px_16px_rgba(0,0,0,0.5)] ${textAlignOnly}`}
                   style={{ color: '#F5F5F5' }}
-                  suppressHydrationWarning
-                  {...(mounted && subtitleHTML
-                    ? { dangerouslySetInnerHTML: { __html: subtitleHTML } }
-                    : { children: props.subtitle ?? '' })}
-                />
+                >
+                  <SafeHtml html={subtitleHTML || props.subtitle || ''} />
+                </div>
               )}
             </div>
 

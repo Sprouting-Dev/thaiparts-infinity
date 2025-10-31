@@ -29,8 +29,8 @@ export default function ServiceCard({
             const src = isExternal
               ? thumbnailUrl
               : thumbnailUrl.startsWith('/')
-              ? thumbnailUrl
-              : `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${thumbnailUrl}`;
+                ? thumbnailUrl
+                : `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${thumbnailUrl}`;
             return (
               <Image
                 src={src}
@@ -68,5 +68,9 @@ export default function ServiceCard({
     );
   }
 
-  return <div key={id}><CardContent /></div>;
+  return (
+    <div key={id}>
+      <CardContent />
+    </div>
+  );
 }

@@ -34,7 +34,7 @@ export default function FAQAccordion({ sections }: FAQAccordionProps) {
       {sections.map((section, sectionIndex) => {
         const accordions = section.acordian || [];
         const sectionId = section.id || `section-${sectionIndex}`;
-        
+
         return (
           <div key={sectionId} className="flex flex-col gap-6">
             {section.title && (
@@ -45,10 +45,15 @@ export default function FAQAccordion({ sections }: FAQAccordionProps) {
 
             {accordions.length > 0 && (
               <div className=" grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[0, 1].map((col) => {
-                  const colItems = accordions.filter((_, idx) => idx % 2 === col);
+                {[0, 1].map(col => {
+                  const colItems = accordions.filter(
+                    (_, idx) => idx % 2 === col
+                  );
                   return (
-                    <div key={`col-${sectionId}-${col}`} className=" flex flex-col gap-4">
+                    <div
+                      key={`col-${sectionId}-${col}`}
+                      className=" flex flex-col gap-4"
+                    >
                       {colItems.map((item, i) => {
                         const originalIndex = col + i * 2;
                         const uniqueKey = `faq-${sectionId}-${item.id ?? `idx${originalIndex}`}`;

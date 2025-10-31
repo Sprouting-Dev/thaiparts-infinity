@@ -5,8 +5,8 @@ import './globals.css';
 
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { getStaticGlobal } from '@/lib/static-global';
 import { fetchLayout, fetchPageBySlug } from '@/lib/cms';
+import { buildMetadataFromSeo } from '@/lib/seo';
 import type { LayoutAttributes } from '@/types/cms';
 import { mediaUrl } from '@/lib/strapi';
 
@@ -36,6 +36,32 @@ export async function generateMetadata(): Promise<Metadata> {
   try {
     const page = await fetchPageBySlug('home');
     const attrs = page as unknown as Record<string, unknown> | null;
+
+    // Prefer a nested SEO component (common Strapi pattern). If the page
+    // exposes `seo` or `sharedSeo`, prefer building the Metadata from that
+    // component so `metaDescription` and other SEO fields are honored.
+    const seoObj = (attrs &&
+      (attrs['seo'] ?? attrs['sharedSeo'] ?? null)) as Record<
+      string,
+      unknown
+    > | null;
+
+    if (seoObj) {
+      const md = buildMetadataFromSeo(seoObj, {
+        fallbackTitle: defaultTitle,
+        defaultCanonical: '/',
+      });
+      // Ensure metadataBase and a sane openGraph baseline are present
+      md.metadataBase = metadataBase;
+      md.openGraph = {
+        ...(md.openGraph ?? {}),
+        siteName: 'THAIPARTS INFINITY',
+        type: 'website',
+        locale: 'th_TH',
+      } as Metadata['openGraph'];
+      md.alternates = md.alternates ?? { canonical: '/' };
+      return md;
+    }
 
     // Title extraction: check common patterns used by Strapi SEO plugin or page fields
     const titleFromPage =
@@ -183,7 +209,9 @@ export default async function RootLayout({
 
   // Build navbar: prefer Strapi navbar, but if Strapi provides an address phone
   // use it to inject/replace the "ติดต่อด่วน" CTA so the number is consistent site-wide.
-  const baseNavbar = layout?.navbar ?? getStaticGlobal().navbar;
+  // Prefer Strapi-provided navbar; if missing, leave undefined so Header
+  // can fall back to its internal default or handle missing CTAs.
+  const baseNavbar = layout?.navbar ?? undefined;
 
   const makeNavbarWithPhone = (raw?: string) => {
     if (!raw) return baseNavbar;
@@ -278,7 +306,7 @@ export default async function RootLayout({
         <meta name="theme-color" content="var(--brand-blue)" />
       </head>
       <body
-        className={`${kanit.variable} antialiased flex flex-col min-h-screen overflow-x-hidden gap-24`}
+        className={`${kanit.variable} antialiased flex flex-col min-h-screen overflow-x-hidden gap-16 lg:gap-24`}
         suppressHydrationWarning
       >
         {/* Header: pass navbar data (with Strapi phone injected) so the "ติดต่อด่วน" CTA uses the CMS phone */}

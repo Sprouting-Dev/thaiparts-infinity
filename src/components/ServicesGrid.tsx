@@ -8,7 +8,9 @@ type Service = {
     slug: string;
     subtitle?: string;
     cover_image?: {
-      data?: { attributes?: { url?: string } } | { attributes?: { url?: string } }[];
+      data?:
+        | { attributes?: { url?: string } }
+        | { attributes?: { url?: string } }[];
     };
   };
 };
@@ -45,35 +47,35 @@ export default function ServicesGrid({
   const sortedServices = [...services].sort((a, b) => {
     const indexA = serviceOrder.indexOf(a.attributes.slug);
     const indexB = serviceOrder.indexOf(b.attributes.slug);
-    
+
     if (indexA === -1 && indexB === -1) return 0;
     if (indexA === -1) return 1;
     if (indexB === -1) return -1;
-    
+
     return indexA - indexB;
   });
 
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-7 lg:gap-8">
-      {sortedServices.map((service) => {
+      {sortedServices.map(service => {
         if (!service || !service.attributes) return null;
-        
+
         const { attributes } = service;
-        
+
         const getCoverImageUrl = (): string => {
           if (!attributes.cover_image?.data) return '';
-          
+
           const imageData = Array.isArray(attributes.cover_image.data)
             ? attributes.cover_image.data[0]
             : attributes.cover_image.data;
-          
+
           if (!imageData?.attributes?.url) return '';
-          
+
           const url = imageData.attributes.url;
-          
+
           if (url.startsWith('/')) return url;
           if (url.startsWith('http')) return url;
-          
+
           return `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${url}`;
         };
 

@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { getServiceBySlug } from '@/services/serviceService';
+import { buildMetadataFromSeo } from '@/lib/seo';
 import FAQAccordion from '@/components/FAQAccordion';
 import CaseStudySection from '@/components/CaseStudySection';
 import TechnologySection from '@/components/TechnologySection';
@@ -25,6 +26,24 @@ export async function generateMetadata({
   }
 
   const service = serviceRes.attributes;
+  // Prefer a per-service SEO component if present
+  const seoObj =
+    (service &&
+      ((service['SEO'] as Record<string, unknown> | undefined) ||
+        (service['seo'] as Record<string, unknown> | undefined) ||
+        (service['SharedSeoComponent'] as
+          | Record<string, unknown>
+          | undefined))) ||
+    null;
+
+  if (seoObj) {
+    return buildMetadataFromSeo(seoObj, {
+      fallbackTitle: `${service.title || service.name}`,
+      defaultCanonical: `/services/${slug}`,
+    });
+  }
+
+  // Fallback to previous pattern when no SEO component is present
   return {
     title: `${service.title || service.name} | THAIPARTS INFINITY`,
     description: service.subtitle || 'Industrial automation service',
@@ -68,7 +87,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
       const items: string[] = [];
       data.forEach((block: RichTextBlock) => {
         if (block.type === 'list') {
-          block.children?.forEach((listItem) => {
+          block.children?.forEach(listItem => {
             if ('type' in listItem && listItem.type === 'list-item') {
               const text = listItem.children
                 ?.map((child: RichTextChild) => child.text || '')
@@ -79,7 +98,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
           });
         } else if (block.type === 'paragraph') {
           const text = block.children
-            ?.map((child) => ('text' in child ? child.text || '' : ''))
+            ?.map(child => ('text' in child ? child.text || '' : ''))
             .join(' ')
             .trim();
           if (text) items.push(text);
@@ -109,7 +128,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
       data.forEach((block: RichTextBlock) => {
         if (block.type === 'paragraph') {
           const text = block.children
-            ?.map((child) => {
+            ?.map(child => {
               if (!('text' in child)) return '';
               let t = child.text || '';
               if (child.bold) t = `<strong>${t}</strong>`;
@@ -121,13 +140,13 @@ export default async function ServiceDetailPage({ params }: PageProps) {
         } else if (block.type === 'heading') {
           const level = block.level || 2;
           const text = block.children
-            ?.map((child) => ('text' in child ? child.text || '' : ''))
+            ?.map(child => ('text' in child ? child.text || '' : ''))
             .join('');
           html += `<h${level}>${text}</h${level}>`;
         } else if (block.type === 'list') {
           const tag = block.format === 'ordered' ? 'ol' : 'ul';
           const items = block.children
-            ?.map((item) => {
+            ?.map(item => {
               if (!('type' in item)) return '';
               const text = item.children
                 ?.map((child: RichTextChild) => child.text || '')
@@ -145,10 +164,10 @@ export default async function ServiceDetailPage({ params }: PageProps) {
   };
 
   return (
-    <main className="w-full flex flex-col px-4 lg:px-[14.6875rem] pt-32 pb-20 lg:py-[15.375rem]">
+    <main className="w-full flex flex-col px-4 lg:px-[14.6875rem] pt-32 pb-20 lg:py-[15.375rem] container-970">
       <div className="flex flex-col">
         <h1 className="flex items-center gap-2 font-['Kanit'] font-medium text-base lg:text-[1.75rem] text-primary">
-          <span className="w-2 lg:w-4 h-2 lg:h-4 rounded-full bg-accent"></span>
+          <span className="w-2 lg:w-4 h-2 lg:h-4 rounded-full bg-[var(--accent-red)]"></span>
           {s.title || s.name}
         </h1>
 
@@ -159,32 +178,33 @@ export default async function ServiceDetailPage({ params }: PageProps) {
         )}
       </div>
 
-      {s.cover_image?.data && (() => {
-        const coverImageData = Array.isArray(s.cover_image.data)
-          ? s.cover_image.data[0]
-          : s.cover_image.data;
+      {s.cover_image?.data &&
+        (() => {
+          const coverImageData = Array.isArray(s.cover_image.data)
+            ? s.cover_image.data[0]
+            : s.cover_image.data;
 
-        if (coverImageData?.attributes?.url) {
-          const url = coverImageData.attributes.url;
-          const coverImageUrl = url.startsWith('http')
-            ? url
-            : `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${url}`;
+          if (coverImageData?.attributes?.url) {
+            const url = coverImageData.attributes.url;
+            const coverImageUrl = url.startsWith('http')
+              ? url
+              : `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${url}`;
 
-          return (
-            <div className="mt-8 w-full rounded-2xl overflow-hidden shadow-lg">
-              <Image
-                src={coverImageUrl}
-                alt={s.title || s.name}
-                width={970}
-                height={546}
-                className="w-full aspect-square lg:aspect-auto lg:h-[31.25rem] object-cover rounded-2xl"
-                unoptimized
-              />
-            </div>
-          );
-        }
-        return null;
-      })()}
+            return (
+              <div className="mt-8 w-full rounded-2xl overflow-hidden shadow-lg">
+                <Image
+                  src={coverImageUrl}
+                  alt={s.title || s.name}
+                  width={970}
+                  height={546}
+                  className="w-full aspect-square lg:aspect-auto lg:h-[31.25rem] object-cover rounded-2xl"
+                  unoptimized
+                />
+              </div>
+            );
+          }
+          return null;
+        })()}
 
       {s.safety_and_standard && s.safety_and_standard.length > 0 && (
         <SafetyAndStandards

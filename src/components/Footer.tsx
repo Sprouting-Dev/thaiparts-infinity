@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import CTAButton from './CTAButton';
@@ -9,6 +9,7 @@ import { mediaUrl } from '@/lib/strapi';
 import type { LayoutAttributes } from '@/types/cms';
 import type { PossibleMediaInput } from '@/types/strapi';
 import { sanitizeHtml } from '@/lib/sanitize';
+import SafeHtml from '@/components/SafeHtml';
 
 interface SharedContactComponent {
   company_name?: string;
@@ -107,9 +108,7 @@ export default function Footer({ layout, embedded }: FooterProps) {
     return [sanitizeHtml(t), sanitizeHtml(s)];
   }, [normalizedQuote]);
 
-  // Guard for dangerouslySetInnerHTML to avoid hydration mismatch
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  // SafeHtml handles hydration mismatches for rich text - no mounted flag needed
 
   const content = (
     <div className="w-full mx-auto bg-white shadow-[0px_2px_8px_rgba(0,0,0,0.12)] rounded-b-xl rounded-t-none flex flex-col items-start p-4 md:p-6 lg:p-8 gap-5">
@@ -303,27 +302,16 @@ export default function Footer({ layout, embedded }: FooterProps) {
             <div className="mx-auto flex flex-col gap-2 lg:gap-4 items-center text-center">
               {/* First line (rich text from Strapi) */}
               {(line1HTML || preTitle) && (
-                <div
-                  className="text-[22px] leading-[33px] lg:text-[28px] lg:leading-[42px] text-[#FFFFFF] font-semibold"
-                  suppressHydrationWarning
-                >
-                  {mounted && line1HTML ? (
-                    <div dangerouslySetInnerHTML={{ __html: line1HTML }} />
-                  ) : (
-                    <>{line1HTML || preTitle}</>
-                  )}
+                <div className="text-[22px] leading-[33px] lg:text-[28px] lg:leading-[42px] text-[#FFFFFF] font-semibold">
+                  <SafeHtml html={String(line1HTML || preTitle)} />
                 </div>
               )}
 
               {/* Second line (subtitle) - only render if present in the CMS quote after <hr> */}
               {line2HTML ? (
-                <div
-                  className="text-[16px] leading-[24px] lg:text-[22px] lg:leading-[33px] text-[#FFFFFF] font-normal"
-                  suppressHydrationWarning
-                  {...(mounted && line2HTML
-                    ? { dangerouslySetInnerHTML: { __html: line2HTML } }
-                    : { children: line2HTML })}
-                />
+                <div className="text-[16px] leading-[24px] lg:text-[22px] lg:leading-[33px] text-[#FFFFFF] font-normal">
+                  <SafeHtml html={String(line2HTML)} />
+                </div>
               ) : null}
             </div>
             <div className="w-fit">

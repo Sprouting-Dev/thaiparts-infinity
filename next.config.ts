@@ -33,13 +33,11 @@ try {
 }
 
 // Allow common remote hosts in addition to Strapi (e.g., Supabase storage)
-remotePatterns.push(
-  {
-    protocol: 'https',
-    hostname: '**.supabase.co',
-    pathname: '/storage/v1/object/public/**',
-  },
-);
+remotePatterns.push({
+  protocol: 'https',
+  hostname: '**.supabase.co',
+  pathname: '/storage/v1/object/public/**',
+});
 
 const nextConfig: NextConfig = {
   images: {

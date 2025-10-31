@@ -14,13 +14,6 @@ export default async function Head() {
     seo && seo['structuredData'] ? seo['structuredData'] : undefined;
   const safe = validateStructuredData(structuredJson);
   return (
-    <>
-      {safe ? (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: safe }}
-        />
-      ) : null}
-    </>
+    <>{safe ? <script type="application/ld+json">{safe}</script> : null}</>
   );
 }

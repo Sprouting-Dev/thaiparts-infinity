@@ -1,6 +1,7 @@
 'use client';
 import { motion, useReducedMotion } from 'framer-motion';
 import React from 'react';
+import { DEFAULT_EASE, MED_DUR, HOVER_SCALE } from '@/lib/motion';
 
 export default function MotionGridItem({
   children,
@@ -18,8 +19,8 @@ export default function MotionGridItem({
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ scale: 1.02 }}
-      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay }}
+      whileHover={{ scale: HOVER_SCALE }}
+      transition={{ duration: MED_DUR, ease: DEFAULT_EASE, delay }}
       className="w-full"
     >
       {children}

@@ -7,6 +7,27 @@
 export function sanitizeHtml(input: string): string {
   if (!input) return '';
   let out = String(input);
+  // If the input looks like plain text (no HTML tags), escape it and
+  // convert newlines to paragraphs/line-breaks so editors' ENTERs are preserved.
+  const hasHtmlTag = /<\s*\/?[a-zA-Z][^>]*>/.test(out);
+  if (!hasHtmlTag) {
+    const escapeHtml = (s: string) =>
+      s
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+
+    // normalize line endings
+    const normalized = out.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+    // Split by 2+ newlines -> paragraphs; single newline -> <br/>
+    const paragraphs = normalized.split(/\n{2,}/g).map(p => {
+      const withBreaks = p.replace(/\n/g, '<br/>');
+      return `<p>${escapeHtml(withBreaks)}</p>`;
+    });
+    return paragraphs.join('');
+  }
 
   // Remove dangerous elements and their contents
   out = out.replace(

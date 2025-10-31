@@ -9,7 +9,10 @@ interface TechnologySectionProps {
   parseListItems: (data: unknown) => string[];
 }
 
-export default function TechnologySection({ sections, parseListItems }: TechnologySectionProps) {
+export default function TechnologySection({
+  sections,
+  parseListItems,
+}: TechnologySectionProps) {
   if (!sections || sections.length === 0) {
     return null;
   }
@@ -18,7 +21,7 @@ export default function TechnologySection({ sections, parseListItems }: Technolo
     <div className="flex flex-col gap-8">
       {sections.map((section, sectionIndex) => {
         const items = section.detail ? parseListItems(section.detail) : [];
-        
+
         return (
           <div key={section.id || sectionIndex} className="flex flex-col gap-6">
             {section.title && (
@@ -30,7 +33,7 @@ export default function TechnologySection({ sections, parseListItems }: Technolo
             {items.length > 0 && (
               <ul className="space-y-2 pl-2 ml-6 list-disc list-outside">
                 {items.map((item: string, itemIdx: number) => (
-                  <li 
+                  <li
                     key={itemIdx}
                     className="font-['Kanit'] text-base lg:text-[1.375rem] font-normal text-foreground pl-2 marker:text-primary"
                   >
