@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { ReactNode } from 'react';
-import { getServiceBySlug } from '@/services/serviceService';
+import { fetchServiceBySlug } from '@/lib/cms';
 import { buildMetadataFromSeo } from '@/lib/seo';
 
 export default async function ServiceSlugLayout({
@@ -19,7 +19,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await (typeof params === 'object' && 'then' in params ? params : Promise.resolve(params));
   try {
-    const service = await getServiceBySlug(slug);
+    const service = await fetchServiceBySlug(slug);
     const attrs = (service && service.attributes) as unknown as Record<
       string,
       unknown

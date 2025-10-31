@@ -1,4 +1,4 @@
-import { getServiceBySlug } from '@/services/serviceService';
+import { fetchServiceBySlug } from '@/lib/cms';
 import { validateStructuredData } from '@/lib/seo';
 
 export default async function Head({
@@ -7,7 +7,7 @@ export default async function Head({
   params: Promise<{ slug: string }> | { slug: string };
 }) {
   const { slug } = await params;
-  const svc = await getServiceBySlug(slug);
+  const svc = await fetchServiceBySlug(slug);
   const attrs = (svc && (svc.attributes as Record<string, unknown>)) || null;
   const seo =
     (attrs &&

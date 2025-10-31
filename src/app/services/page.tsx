@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { mediaUrl, STRAPI_URL } from '@/lib/strapi';
 import type { PossibleMediaInput } from '@/types/strapi';
 import { buildMetadataFromSeo } from '@/lib/seo';
-import { fetchPageBySlug } from '@/lib/cms';
+import { fetchPageBySlug, fetchServices as fetchServicesFromCms } from '@/lib/cms';
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
@@ -32,50 +32,19 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 type Service = {
-  id: number;
-  attributes: {
-    title: string;
-    slug: string;
+  id?: number;
+  attributes?: {
+    title?: string;
+    slug?: string;
     subtitle?: string;
-    image?: {
-      data?: Array<{
-        attributes?: {
-          url?: string;
-          formats?: Record<string, unknown>;
-        };
-      }>;
-    };
+    image?: unknown;
+    cover_image?: unknown;
   };
 };
 
-async function fetchServices(): Promise<Service[]> {
-  const STRAPI_TOKEN = process.env.STRAPI_API_TOKEN;
-
-  try {
-    const headers: HeadersInit = {};
-    if (STRAPI_TOKEN) {
-      headers.Authorization = `Bearer ${STRAPI_TOKEN}`;
-    }
-
-    const res = await fetch(`${STRAPI_URL}/api/services?populate=*`, {
-      headers,
-      next: { revalidate: 300 },
-      cache: 'no-store',
-    });
-
-    if (!res.ok) {
-      return [];
-    }
-
-    const json = await res.json();
-    return json?.data ?? [];
-  } catch {
-    return [];
-  }
-}
-
 export default async function ServicesPage() {
-  const services = await fetchServices();
+  const servicesResponse = await fetchServicesFromCms({ pageSize: 100 });
+  const services = (servicesResponse.items ?? []) as Service[];
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-b from-white to-[var(--color-background)]">
@@ -124,7 +93,7 @@ export default async function ServicesPage() {
                       undefined) as PossibleMediaInput | undefined;
                     const imageUrl = mediaUrl(maybeImage) || '';
 
-                    const slug = (attributes.slug as string) ?? '';
+                    const slug = (attributes?.slug as string) ?? '';
                     // Match GridPreview card behavior (aspect ratio, hover scale, sizes, unoptimized conditional)
                     return (
                       <Link
@@ -144,7 +113,7 @@ export default async function ServicesPage() {
                             return src ? (
                               <Image
                                 src={src}
-                                alt={attributes.title}
+                                alt={attributes?.title ?? 'Service'}
                                 fill
                                 sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
                                 className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -159,7 +128,7 @@ export default async function ServicesPage() {
                         </div>
 
                         <h2 className="font-['Kanit'] font-medium text-base lg:text-[1.375rem] text-[var(--color-foreground)]">
-                          {attributes.title}
+                          {attributes?.title ?? ''}
                         </h2>
                       </Link>
                     );

@@ -346,14 +346,14 @@ export default async function ArticleDetailPage({
                     className="bg-white rounded-lg overflow-hidden shadow-md"
                   >
                     <a href={`/articles/${attrs['slug']}`} className="block">
-                      <div className="h-44 bg-[#D9D9D9] overflow-hidden">
+                      <div className="relative h-44 bg-[#D9D9D9] overflow-hidden">
                         {thumb ? (
                           <Image
                             src={thumb}
                             alt={t}
-                            width={400}
-                            height={176}
-                            className="w-full h-full object-cover"
+                            fill
+                            sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
+                            className="object-cover"
                           />
                         ) : null}
                       </div>

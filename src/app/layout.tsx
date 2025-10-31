@@ -1,4 +1,3 @@
-// /src/app/layout.tsx
 import type { Metadata } from 'next';
 import { Kanit } from 'next/font/google';
 import './globals.css';

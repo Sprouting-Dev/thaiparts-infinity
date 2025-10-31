@@ -1,19 +1,16 @@
-// src/app/page.tsx
 import Hero from '@/components/Hero';
 import SafeHtml from '@/components/SafeHtml';
-import type { Metadata } from 'next';
 import Features from '@/components/Features';
 import GridPreview from '@/components/GridPreview';
 import CTAButton from '@/components/CTAButton';
 import { MotionReveal } from '@/components/MotionReveal';
 import {
-  fetchHome as fetchHomeFromCms,
+  fetchHome,
   fetchPageBySlug,
   fetchServices,
   fetchArticles,
 } from '@/lib/cms';
 import { mediaUrl } from '@/lib/strapi';
-import { buildMetadataFromSeo } from '@/lib/seo';
 import type { PossibleMediaInput } from '@/types/strapi';
 import type { PageAttributes } from '@/types/cms';
 import { getColorByTagName } from '@/lib/categoryBadge';
@@ -25,7 +22,7 @@ async function fetchHomeData() {
   try {
     const [page, home] = await Promise.all([
       fetchPageBySlug('home'),
-      fetchHomeFromCms(),
+      fetchHome(),
     ]);
     return { page, home };
   } catch (err) {

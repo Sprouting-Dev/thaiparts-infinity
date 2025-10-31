@@ -7,9 +7,13 @@ const getStrapiHeaders = () => ({
   ...(API_TOKEN ? { Authorization: `Bearer ${API_TOKEN}` } : {}),
 });
 
+/**
+ * @deprecated Consider migrating to fetchServiceBySlug from @/lib/cms for consistency.
+ * This function is kept for backward compatibility but fetchServiceBySlug uses populate=deep
+ * which should include all necessary fields. If specific fields are missing, add them to fetchServiceBySlug.
+ */
 export async function getServiceBySlug(slug: string) {
   try {
-    // Include SEO component population with nested media fields (metaImage, metaSocial.image)
     const url = `${STRAPI_URL}/api/services?filters[slug][$eq]=${encodeURIComponent(slug)}&populate[image]=*&populate[cover_image]=*&populate[case_study][populate][0]=cover_image&populate[faqs][populate][0]=acordian&populate[highlights]=*&populate[features][populate][0]=features_item&populate[features][populate][1]=features_item.icon&populate[process_steps]=*&populate[details]=*&populate[technology]=*&populate[architectural_example]=*&populate[customer_receive]=*&populate[safety_and_standard]=*&populate[SEO][populate][metaImage]=*&populate[SEO][populate][metaSocial][populate][image]=*`;
 
     const res = await fetch(url, {
@@ -29,6 +33,10 @@ export async function getServiceBySlug(slug: string) {
   }
 }
 
+/**
+ * @deprecated Not used in codebase. Use fetchServices from @/lib/cms instead.
+ * Consider removing if not needed.
+ */
 export async function getAllServices() {
   try {
     const url = `${STRAPI_URL}/api/services?populate[cover_image]=*`;

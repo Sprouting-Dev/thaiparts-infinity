@@ -1,60 +1,79 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { Product } from '@/types/product';
-import { productAPI } from '@/services/productService';
-import { getButtonStyle, getButtonClassName } from '@/lib/button-styles';
+import { notFound } from 'next/navigation';
+import { fetchProductBySlug } from '@/lib/cms';
+import { mediaUrl } from '@/lib/strapi';
+import type { PossibleMediaInput } from '@/types/strapi';
 import SafeHtml from '@/components/SafeHtml';
-import DetailNotFound from '@/components/DetailNotFound';
-import DetailSkeleton from '@/components/skeletons/DetailSkeleton';
+import CTAButton from '@/components/CTAButton';
 
-export default function ProductDetailPage() {
-  const params = useParams();
-  const router = useRouter();
-  const slug = params.slug as string;
+export default async function ProductDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }> | { slug: string };
+}) {
+  const { slug } = await (
+    typeof params === 'object' && 'then' in params
+      ? params
+      : Promise.resolve(params)
+  );
 
-  const [product, setProduct] = useState<Product | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const res = await fetchProductBySlug(slug);
+  const attrs = (res as { attributes?: unknown } | null)?.attributes as Record<
+    string,
+    unknown
+  > | null;
 
-  useEffect(() => {
-    if (slug) {
-      fetchProductBySlug(slug);
-    }
-  }, [slug]);
-
-  const fetchProductBySlug = async (productSlug: string) => {
-    try {
-      setIsLoading(true);
-
-      const response = await productAPI.getProductBySlug(productSlug);
-      setProduct(response);
-      setError(null);
-    } catch {
-      setError('Failed to fetch product details');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  if (isLoading) {
-    return <DetailSkeleton />;
+  if (!attrs) {
+    notFound();
   }
 
-  if (error || !product) {
-    return (
-      <DetailNotFound
-        title="ไม่พบข้อมูลสินค้า"
-        message="ขออภัย เราไม่พบสินค้าที่คุณกำลังค้นหา กรุณาตรวจสอบ URL หรือกลับไปยังหน้าสินค้า"
-        primaryHref="/products"
-        primaryLabel="กลับไปหน้าสินค้า"
-      />
-    );
+  // Transform to match Product type structure
+  // Prefer centralized resolver which handles Strapi media objects and plain URLs
+  let imageUrl = '';
+  try {
+    const maybeImage: PossibleMediaInput = attrs.image as unknown as PossibleMediaInput;
+    if (maybeImage !== null && maybeImage !== undefined) {
+      const resolved = mediaUrl(maybeImage);
+      if (resolved && resolved.trim()) {
+        imageUrl = resolved;
+      }
+    }
+  } catch {
+    // keep imageUrl as empty string on error
   }
 
-  const buttonStyle = getButtonStyle('primary');
+  const mainTitle = 
+    (typeof attrs['main_title'] === 'string' && attrs['main_title']) ||
+    (typeof attrs['title'] === 'string' && attrs['title']) ||
+    '';
+  const name = mainTitle || (typeof attrs['name'] === 'string' ? attrs['name'] : '');
+  const description = typeof attrs['description'] === 'string' ? attrs['description'] : '';
+  
+  // Handle specifications - ensure it's a Record<string, string | number | boolean>
+  let specifications: Record<string, string | number | boolean> | undefined = undefined;
+  if (attrs['specifications']) {
+    if (
+      typeof attrs['specifications'] === 'object' &&
+      !Array.isArray(attrs['specifications'])
+    ) {
+      const specs = attrs['specifications'] as Record<string, unknown>;
+      const normalized: Record<string, string | number | boolean> = {};
+      for (const [key, value] of Object.entries(specs)) {
+        if (
+          typeof value === 'string' ||
+          typeof value === 'number' ||
+          typeof value === 'boolean'
+        ) {
+          normalized[key] = value;
+        } else {
+          normalized[key] = String(value);
+        }
+      }
+      if (Object.keys(normalized).length > 0) {
+        specifications = normalized;
+      }
+    }
+  }
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center px-4">
@@ -63,84 +82,71 @@ export default function ProductDetailPage() {
           <div className="flex items-baseline gap-3 lg:mb-6">
             <span className="w-2 h-2 lg:w-4 lg:h-4 bg-[#E92928] rounded-full flex-shrink-0"></span>
             <h1 className="text-[1.375rem] lg:text-[1.75rem] font-medium text-primary leading-tight">
-              {product.main_title || product.name}
+              {mainTitle || name}
             </h1>
           </div>
         </div>
 
-        <div className="mb-4 lg:mb-8">
-          {/* Make image container scale down from a max width of 938px -> full width on smaller screens */}
-          <div className="w-full max-w-[938px] mx-auto relative h-[500px] overflow-hidden rounded-2xl">
-            <Image
-              src={product.image}
-              alt={product.main_title || product.name}
-              fill
-              sizes="(min-width: 1024px) 938px, 100vw"
-              className="object-cover object-center w-full h-full"
-              priority
-            />
-          </div>
-        </div>
-
-        <div className="mb-8">
-          <div
-            className="product-description text-foreground leading-relaxed text-base lg:text-[1.375rem] [&_*]:!font-['Kanit']"
-            style={{ fontFamily: 'Kanit, sans-serif' }}
-          >
-            <SafeHtml html={String(product.description || '')} />
-          </div>
-        </div>
-
-        {product.specifications &&
-          Object.keys(product.specifications).length > 0 && (
-            <div className="mb-8">
-              <table
-                className="w-full"
-                style={{ fontFamily: 'Kanit, sans-serif' }}
-              >
-                <tbody>
-                  {Object.entries(product.specifications).map(
-                    ([key, value]) => (
-                      <tr key={key}>
-                        <td className="py-[0.375rem] pr-6 font-semibold text-foreground w-1/3 text-base lg:text-[1.375rem]">
-                          {key}
-                        </td>
-                        <td className="py-[0.375rem] pl-6 text-foreground text-base lg:text-[1.375rem]">
-                          {String(value)}
-                        </td>
-                      </tr>
-                    )
-                  )}
-                </tbody>
-              </table>
+        {imageUrl && (
+          <div className="mb-4 lg:mb-8">
+            <div className="w-full max-w-[938px] mx-auto relative h-[500px] overflow-hidden rounded-2xl">
+              <Image
+                src={imageUrl}
+                alt={mainTitle || name}
+                fill
+                sizes="(min-width: 1024px) 938px, 100vw"
+                className="object-cover object-center w-full h-full"
+                priority
+              />
             </div>
-          )}
+          </div>
+        )}
+
+        {description && (
+          <div className="mb-8">
+            <div
+              className="product-description text-foreground leading-relaxed text-base lg:text-[1.375rem] [&_*]:!font-['Kanit']"
+              style={{ fontFamily: 'Kanit, sans-serif' }}
+            >
+              <SafeHtml html={description} />
+            </div>
+          </div>
+        )}
+
+        {specifications && Object.keys(specifications).length > 0 && (
+          <div className="mb-8">
+            <table
+              className="w-full"
+              style={{ fontFamily: 'Kanit, sans-serif' }}
+            >
+              <tbody>
+                {Object.entries(specifications).map(([key, value]) => (
+                  <tr key={key}>
+                    <td className="py-[0.375rem] pr-6 font-semibold text-foreground w-1/3 text-base lg:text-[1.375rem]">
+                      {key}
+                    </td>
+                    <td className="py-[0.375rem] pl-6 text-foreground text-base lg:text-[1.375rem]">
+                      {String(value)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
 
         <div className="text-center flex justify-center">
-          <button
-            className={`${getButtonClassName('primary')} w-full lg:w-auto text-base lg:text-xl mt-16 cursor-pointer`}
-            style={{
-              backgroundColor: buttonStyle.bg,
-              color: buttonStyle.color,
-              boxShadow: buttonStyle.boxShadow,
-              textShadow: buttonStyle.textShadow,
+          <CTAButton
+            cta={{
+              label: 'ติดต่อเราเพื่อปรึกษาวิศวกรและขอใบเสนอราคา',
+              href: '/contact-us',
+              variant: 'primary',
             }}
-            onMouseEnter={e => {
-              e.currentTarget.style.backgroundColor = buttonStyle.hoverBg;
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.backgroundColor = buttonStyle.bg;
-            }}
-            onClick={() => router.push('/contact-us')}
-          >
-            <span className="relative z-[1]">
-              ติดต่อเราเพื่อปรึกษาวิศวกรและขอใบเสนอราคา
-            </span>
-          </button>
+            className="w-full lg:w-auto text-base lg:text-xl mt-16"
+            asMotion={true}
+          />
         </div>
       </div>
     </div>
   );
 }
-
-// Using shared DetailSkeleton in src/components/skeletons

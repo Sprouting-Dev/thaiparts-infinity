@@ -1,4 +1,3 @@
-// src/app/about-us/page.tsx
 import Hero from '@/components/Hero';
 import type { Metadata } from 'next';
 import Features from '@/components/Features';

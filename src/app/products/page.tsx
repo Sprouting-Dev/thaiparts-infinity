@@ -88,7 +88,7 @@ export default function ProductsPage() {
             );
             finalProducts = matched;
             finalHasMore = false; // unknown in this fallback
-          } catch (fallbackErr) {
+          } catch {
             // keep finalProducts as empty
           }
         }

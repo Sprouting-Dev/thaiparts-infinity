@@ -1,17 +1,11 @@
-// src/app/contact-us/page.tsx  (ปรับให้ Hero มาจาก Strapi: pages[slug=contact-us])
 import Hero from '@/components/Hero';
 import ContactInfo from '@/components/ContactInfo';
 import ContactForm from '@/components/ContactForm';
 import { MotionReveal } from '@/components/MotionReveal';
-import {
-  fetchPageBySlug as fetchPageBySlugFromCms,
-  fetchLayout,
-} from '@/lib/cms';
+import { fetchPageBySlug, fetchLayout } from '@/lib/cms';
 import { mediaUrl } from '@/lib/strapi';
 import type { PossibleMediaInput } from '@/types/strapi';
 import type { PageAttributes, LayoutAttributes } from '@/types/cms';
-// PageHeroSchema imported previously for richer typing; not used currently
-// import type PageHeroSchema from '@/types/page';
 import type { CTAVariant } from '@/lib/button-styles';
 type CTA = {
   label: string;
@@ -23,7 +17,7 @@ type CTA = {
 
 /** ========== Page ========== */
 export default async function ContactPage() {
-  const contactPage = (await fetchPageBySlugFromCms('contact-us')) as
+  const contactPage = (await fetchPageBySlug('contact-us')) as
     | (PageAttributes & { id?: number })
     | null;
 

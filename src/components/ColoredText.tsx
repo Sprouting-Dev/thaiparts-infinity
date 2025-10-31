@@ -44,6 +44,10 @@ export function getTextClass(color?: string) {
   return 'text-brand-blue';
 }
 
+/**
+ * @deprecated Component not used. Only getTextClass function is used.
+ * Consider keeping only getTextClass if the component is not needed.
+ */
 export default function ColoredText({
   color,
   children,

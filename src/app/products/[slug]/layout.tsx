@@ -18,6 +18,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }> | { slug: string };
 }): Promise<Metadata> {
   const { slug } = await (typeof params === 'object' && 'then' in params ? params : Promise.resolve(params));
+  
   try {
     const res = await fetchProductBySlug(slug);
     const attrs = (res as { attributes?: unknown } | null)
