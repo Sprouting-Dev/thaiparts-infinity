@@ -518,40 +518,9 @@ export async function fetchServiceBySlug(slug: string) {
       if (typeof a.description === 'string')
         a.description = sanitizeHtml(a.description);
 
-      // Normalize cover_image (multiple media) into an array of media meta
-      try {
-        const rawCover = a.cover_image ?? null;
-        if (rawCover) {
-          const arr: Array<any> = [];
-          if (Array.isArray(rawCover)) {
-            for (const r of rawCover) {
-              const mm = (r && (r['data'] ?? r)) || r;
-              // use existing helpers in other layers to extract media; here keep minimal shape
-              const url = mm?.attributes?.url ?? mm?.url ?? null;
-              if (url)
-                arr.push({
-                  url,
-                  alt:
-                    mm?.attributes?.alternativeText ??
-                    mm?.alternativeText ??
-                    '',
-                });
-            }
-          } else {
-            const mm = (rawCover['data'] ?? rawCover) || rawCover;
-            const url = mm?.attributes?.url ?? mm?.url ?? null;
-            if (url)
-              arr.push({
-                url,
-                alt:
-                  mm?.attributes?.alternativeText ?? mm?.alternativeText ?? '',
-              });
-          }
-          a.cover_image = arr;
-        }
-      } catch {
-        // non-fatal
-      }
+      // Keep cover_image in original Strapi format for component compatibility
+      // Components will handle both normalized and original formats
+      // Do not normalize cover_image here to avoid breaking image rendering
 
       // Sanitize components that may include rich HTML
       try {
@@ -581,23 +550,9 @@ export async function fetchServiceBySlug(slug: string) {
               ) {
                 copy.case_study_detail = sanitizeHtml(copy.case_study_detail);
               }
-              // normalize cover_image inside case study if present
-              if (copy.cover_image) {
-                const ci = [];
-                const raw = copy.cover_image;
-                if (Array.isArray(raw)) {
-                  for (const r of raw) {
-                    const mm = (r['data'] ?? r) || r;
-                    const url = mm?.attributes?.url ?? mm?.url ?? null;
-                    if (url)
-                      ci.push({
-                        url,
-                        alt: mm?.attributes?.alternativeText ?? '',
-                      });
-                  }
-                }
-                copy.cover_image = ci;
-              }
+              // Keep cover_image in original Strapi format for component compatibility
+              // CaseStudySection component handles both normalized and original formats
+              // Do not normalize cover_image here to avoid breaking image rendering
               return copy;
             } catch {
               return c;

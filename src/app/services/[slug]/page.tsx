@@ -3,6 +3,8 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { fetchServiceBySlug } from '@/lib/cms';
 import { buildMetadataFromSeo } from '@/lib/seo';
+import { mediaUrl } from '@/lib/strapi';
+import type { PossibleMediaInput } from '@/types/strapi';
 import FAQAccordion from '@/components/sections/FAQAccordion';
 import CaseStudySection from '@/components/sections/CaseStudySection';
 import TechnologySection from '@/components/sections/TechnologySection';
@@ -186,7 +188,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
   };
 
   return (
-    <main className="w-full flex flex-col px-4 lg:px-[14.6875rem] pt-32 pb-20 lg:py-[15.375rem] container-970">
+    <main className="w-full flex flex-col pt-32 lg:pt-[15.375rem] container-970">
       <div className="flex flex-col">
         <h1 className="flex items-center gap-2 font-['Kanit'] font-medium text-base lg:text-[1.75rem] text-primary">
           <span className="w-2 lg:w-4 h-2 lg:h-4 rounded-full bg-[var(--accent-red)]"></span>
@@ -202,53 +204,30 @@ export default async function ServiceDetailPage({ params }: PageProps) {
         )}
       </div>
 
-      {s &&
-      s['cover_image'] &&
-      typeof s['cover_image'] === 'object' &&
-      s['cover_image'] !== null &&
-      'data' in s['cover_image']
-        ? (() => {
-            const coverImage = s['cover_image'] as { data?: unknown };
-            const coverImageDataRaw = coverImage.data;
-            const coverImageData = Array.isArray(coverImageDataRaw)
-              ? coverImageDataRaw[0]
-              : coverImageDataRaw;
+      {(() => {
+        const coverImage = s?.['cover_image'] as PossibleMediaInput;
+        if (!coverImage) return null;
 
-            if (
-              coverImageData &&
-              typeof coverImageData === 'object' &&
-              coverImageData !== null &&
-              'attributes' in coverImageData
-            ) {
-              const attrs = coverImageData.attributes as { url?: string };
-              const url = attrs.url;
-              if (!url) return null;
-              const coverImageUrl = url.startsWith('http')
-                ? url
-                : `${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${url}`;
+        const imageUrl = mediaUrl(coverImage);
+        if (!imageUrl) return null;
 
-              return (
-                <div className="mt-8 w-full rounded-2xl overflow-hidden shadow-lg">
-                  <Image
-                    src={coverImageUrl}
-                    alt={
-                      (s && typeof s['title'] === 'string'
-                        ? s['title']
-                        : null) ||
-                      (s && typeof s['name'] === 'string' ? s['name'] : null) ||
-                      'Service'
-                    }
-                    width={970}
-                    height={546}
-                    className="w-full aspect-square lg:aspect-auto lg:h-[31.25rem] object-cover rounded-2xl"
-                    unoptimized
-                  />
-                </div>
-              );
-            }
-            return null;
-          })()
-        : null}
+        return (
+          <div className="mt-8 w-full rounded-2xl overflow-hidden shadow-lg">
+            <Image
+              src={imageUrl}
+              alt={
+                (s && typeof s['title'] === 'string' ? s['title'] : null) ||
+                (s && typeof s['name'] === 'string' ? s['name'] : null) ||
+                'Service'
+              }
+              width={970}
+              height={546}
+              className="w-full aspect-square lg:aspect-auto lg:h-[31.25rem] object-cover rounded-2xl"
+              unoptimized
+            />
+          </div>
+        );
+      })()}
 
       {s &&
       Array.isArray(s['safety_and_standard']) &&
