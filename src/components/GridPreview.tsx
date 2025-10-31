@@ -45,9 +45,6 @@ async function fetchItems(kind: Section['kind'], limit = 5) {
     const json = await strapiFetch<{ data?: unknown[] }>(path, {}, 300);
     if (!json) return [];
     const jsonObj = json as { data?: unknown[] } | null;
-    if (kind === 'products' && Array.isArray(jsonObj?.data)) {
-      logger.debug('[GridPreview products] sample', jsonObj.data.slice(0, 2));
-    }
     return Array.isArray(jsonObj?.data) ? (jsonObj.data as unknown[]) : [];
   } catch (error) {
     logger.error(`Failed to fetch ${kind}:`, error);

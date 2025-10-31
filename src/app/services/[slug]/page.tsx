@@ -36,17 +36,23 @@ export async function generateMetadata({
           | undefined))) ||
     null;
 
+  const fallbackTitle = `${service.title || service.name} | THAIPARTS INFINITY`;
+  const fallbackDescription =
+    service.subtitle ||
+    `บริการ${service.title || service.name} จาก THAIPARTS INFINITY - ผู้เชี่ยวชาญระบบ Automation ครบวงจร`;
+
   if (seoObj) {
     return buildMetadataFromSeo(seoObj, {
-      fallbackTitle: `${service.title || service.name}`,
+      fallbackTitle: service.title || service.name,
+      fallbackDescription,
       defaultCanonical: `/services/${slug}`,
     });
   }
 
   // Fallback to previous pattern when no SEO component is present
   return {
-    title: `${service.title || service.name} | THAIPARTS INFINITY`,
-    description: service.subtitle || 'Industrial automation service',
+    title: fallbackTitle,
+    description: fallbackDescription,
   };
 }
 

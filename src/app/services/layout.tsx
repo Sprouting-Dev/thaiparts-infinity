@@ -22,8 +22,16 @@ export async function generateMetadata(): Promise<Metadata> {
       (attrs && (attrs['SEO'] as Record<string, unknown> | undefined)) ??
       (attrs && (attrs['seo'] as Record<string, unknown> | undefined)) ??
       null;
-    return buildMetadataFromSeo(seo, { defaultCanonical: '/services' });
+    return buildMetadataFromSeo(seo, {
+      defaultCanonical: '/services',
+      fallbackTitle: 'Services | THAIPARTS INFINITY',
+      fallbackDescription: 'บริการและโซลูชันวิศวกรรมครบวงจรสำหรับอุตสาหกรรม จาก THAIPARTS INFINITY',
+    });
   } catch {
-    return {};
+    return buildMetadataFromSeo(null, {
+      defaultCanonical: '/services',
+      fallbackTitle: 'Services | THAIPARTS INFINITY',
+      fallbackDescription: 'บริการและโซลูชันวิศวกรรมครบวงจรสำหรับอุตสาหกรรม จาก THAIPARTS INFINITY',
+    });
   }
 }

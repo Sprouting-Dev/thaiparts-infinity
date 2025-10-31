@@ -15,14 +15,20 @@ export default async function ProductDetailLayout({
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }> | { slug: string };
 }): Promise<Metadata> {
+  const { slug } = await (typeof params === 'object' && 'then' in params ? params : Promise.resolve(params));
   try {
-    const { slug } = await params;
     const res = await fetchProductBySlug(slug);
     const attrs = (res as { attributes?: unknown } | null)
       ?.attributes as Record<string, unknown> | null;
-    if (!attrs) return {} as Metadata;
+    if (!attrs) {
+      return buildMetadataFromSeo(null, {
+        defaultCanonical: `/products/${slug}`,
+        fallbackTitle: 'Product | THAIPARTS INFINITY',
+        fallbackDescription: 'สินค้าคุณภาพจาก THAIPARTS INFINITY',
+      });
+    }
 
     const seo =
       (attrs['SEO'] as Record<string, unknown> | undefined) ??
@@ -31,14 +37,25 @@ export async function generateMetadata({
       null;
 
     // Delegate to centralized builder to ensure uniform behavior
+    const fallbackTitle =
+      (typeof attrs['main_title'] === 'string' && attrs['main_title']) ||
+      (typeof attrs['name'] === 'string' && attrs['name']) ||
+      undefined;
+    const fallbackDescription =
+      (typeof attrs['description'] === 'string' && attrs['description'].trim()) ||
+      (typeof attrs['tag'] === 'string' && `สินค้า ${attrs['tag']} จาก THAIPARTS INFINITY`) ||
+      'สินค้าคุณภาพจาก THAIPARTS INFINITY';
+
     return buildMetadataFromSeo(seo, {
       defaultCanonical: `/products/${slug}`,
-      fallbackTitle:
-        (typeof attrs['main_title'] === 'string' && attrs['main_title']) ||
-        (typeof attrs['name'] === 'string' && attrs['name']) ||
-        undefined,
+      fallbackTitle,
+      fallbackDescription,
     });
   } catch {
-    return {} as Metadata;
+    return buildMetadataFromSeo(null, {
+      defaultCanonical: `/products/${slug}`,
+      fallbackTitle: 'Product | THAIPARTS INFINITY',
+      fallbackDescription: 'สินค้าคุณภาพจาก THAIPARTS INFINITY',
+    });
   }
 }

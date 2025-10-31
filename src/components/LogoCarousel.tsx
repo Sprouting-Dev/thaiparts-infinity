@@ -90,29 +90,20 @@ export default function LogoCarousel({ icons }: LogoCarouselProps) {
     emblaApi.on('scroll', updateSlidesVisuals);
     emblaApi.on('resize', updateSlidesVisuals);
     emblaApi.on('select', updateSlidesVisuals);
-    // Developer diagnostic intentionally removed to avoid DevTools flooding.
-    // Use `logger.debug(...)` during development if you need a one-off trace.
 
-    // Also update on window resize for safety
     window.addEventListener('resize', updateSlidesVisuals);
 
     return () => {
-      // remove all listeners we may have added
       try {
         emblaApi.off('init', updateSlidesVisuals);
         emblaApi.off('scroll', updateSlidesVisuals);
         emblaApi.off('resize', updateSlidesVisuals);
         emblaApi.off('select', updateSlidesVisuals);
-        // No diagnostic listeners to remove.
       } catch {
         // ignore errors during cleanup
       }
       window.removeEventListener('resize', updateSlidesVisuals);
     };
-    // NOTE: We intentionally depend only on `emblaApi` and `renderedIcons`.
-    // We omit `viewportDomRef.current` because refs are mutable and do not
-    // change the identity relevant to this effect. The update function reads
-    // the current DOM when it's executed.
   }, [emblaApi, renderedIcons]);
 
   // Expose simple keyboard navigation on the viewport container so users

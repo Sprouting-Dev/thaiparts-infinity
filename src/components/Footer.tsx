@@ -27,7 +27,6 @@ interface FooterProps {
   embedded?: boolean;
 }
 
-// Development overlay removed for production cleanliness
 
 const socialIcon = (type?: string) => {
   switch ((type || '').toLowerCase()) {
@@ -82,8 +81,6 @@ export default function Footer({ layout, embedded }: FooterProps) {
     (layout?.prefooter_image as PossibleMediaInput) ??
     (layout?.banner as PossibleMediaInput)) as PossibleMediaInput | undefined;
   const preBg = mediaUrl(preImage);
-
-  // Dev overlay and missing-field checks removed
 
   // Use a neutral fallback string for missing CMS content
   const CMS_FALLBACK = 'ข้อมูลกำลังอยู่ระหว่างการอัปเดต';

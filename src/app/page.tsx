@@ -410,20 +410,6 @@ export default async function HomePage() {
           </div>
         </MotionReveal>
       </main>
-
-      {/* Dev overlay removed */}
     </div>
   );
-}
-
-// Per-page SEO: map Page.SEO to Next Metadata
-export async function generateMetadata(): Promise<Metadata> {
-  try {
-    const page = await fetchPageBySlug('home');
-    const attrs = page as unknown as Record<string, unknown> | null;
-    const seo = (attrs && (attrs['SEO'] as Record<string, unknown>)) || null;
-    return buildMetadataFromSeo(seo, { defaultCanonical: '/' });
-  } catch {
-    return {} as Metadata;
-  }
 }

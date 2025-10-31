@@ -9,7 +9,8 @@ const getStrapiHeaders = () => ({
 
 export async function getServiceBySlug(slug: string) {
   try {
-    const url = `${STRAPI_URL}/api/services?filters[slug][$eq]=${encodeURIComponent(slug)}&populate[image]=*&populate[cover_image]=*&populate[case_study][populate][0]=cover_image&populate[faqs][populate][0]=acordian&populate[highlights]=*&populate[features][populate][0]=features_item&populate[features][populate][1]=features_item.icon&populate[process_steps]=*&populate[details]=*&populate[technology]=*&populate[architectural_example]=*&populate[customer_receive]=*&populate[safety_and_standard]=*`;
+    // Include SEO component population with nested media fields (metaImage, metaSocial.image)
+    const url = `${STRAPI_URL}/api/services?filters[slug][$eq]=${encodeURIComponent(slug)}&populate[image]=*&populate[cover_image]=*&populate[case_study][populate][0]=cover_image&populate[faqs][populate][0]=acordian&populate[highlights]=*&populate[features][populate][0]=features_item&populate[features][populate][1]=features_item.icon&populate[process_steps]=*&populate[details]=*&populate[technology]=*&populate[architectural_example]=*&populate[customer_receive]=*&populate[safety_and_standard]=*&populate[SEO][populate][metaImage]=*&populate[SEO][populate][metaSocial][populate][image]=*`;
 
     const res = await fetch(url, {
       headers: getStrapiHeaders(),

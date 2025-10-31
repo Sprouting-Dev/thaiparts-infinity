@@ -21,6 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
     return buildMetadataFromSeo(seo, {
       defaultCanonical: '/articles',
       fallbackTitle: 'Knowledge Center | THAIPARTS INFINITY',
+      fallbackDescription: 'ศูนย์รวมความเชี่ยวชาญและบทความเกี่ยวกับระบบ Automation, Electrical และ Instrument จาก THAIPARTS INFINITY',
     });
   } catch {
     // If fetching the page fails, fall back to a null SEO object so
@@ -28,6 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
     return buildMetadataFromSeo(null, {
       defaultCanonical: '/articles',
       fallbackTitle: 'Knowledge Center | THAIPARTS INFINITY',
+      fallbackDescription: 'ศูนย์รวมความเชี่ยวชาญและบทความเกี่ยวกับระบบ Automation, Electrical และ Instrument จาก THAIPARTS INFINITY',
     });
   }
 }

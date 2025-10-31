@@ -24,8 +24,16 @@ export async function generateMetadata(): Promise<Metadata> {
       (attrs && (attrs['seo'] as Record<string, unknown> | undefined)) ??
       null;
     // Delegate to centralized builder which handles canonical/openGraph/twitter
-    return buildMetadataFromSeo(seo, { defaultCanonical: '/products' });
+    return buildMetadataFromSeo(seo, {
+      defaultCanonical: '/products',
+      fallbackTitle: 'Products | THAIPARTS INFINITY',
+      fallbackDescription: 'สินค้าและอะไหล่สำหรับระบบ Automation, Electrical และ Instrument ครบวงจร จาก THAIPARTS INFINITY',
+    });
   } catch {
-    return {};
+    return buildMetadataFromSeo(null, {
+      defaultCanonical: '/products',
+      fallbackTitle: 'Products | THAIPARTS INFINITY',
+      fallbackDescription: 'สินค้าและอะไหล่สำหรับระบบ Automation, Electrical และ Instrument ครบวงจร จาก THAIPARTS INFINITY',
+    });
   }
 }

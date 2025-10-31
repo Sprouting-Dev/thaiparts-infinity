@@ -20,11 +20,6 @@ type CTA = {
   newTab?: boolean;
 };
 
-/** NOTE: Use centralized fetcher from src/lib/cms.ts (returns merged attributes) */
-
-// Use mediaUrl helper to resolve Strapi media objects to absolute URLs
-
-/** NOTE: Use centralized fetcher from src/lib/cms.ts (returns merged attributes) */
 
 /** ========== Page ========== */
 export default async function ContactPage() {
@@ -65,7 +60,6 @@ export default async function ContactPage() {
       : undefined,
   };
 
-  // Development logs removed for production readiness.
 
   /** ---------- เนื้อหา Contact (คงเดิม) ---------- */
   // Pull contact info from the shared Layout single in Strapi if available

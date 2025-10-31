@@ -83,8 +83,6 @@ export default function Hero(props: {
         ? 'text-right'
         : 'text-center';
 
-  // Dev overlay เฉพาะโหมด development
-  // Development overlay removed for production cleanliness
 
   // ซ่อน panel ถ้า disabled
   const panelEnabled = props.panel?.enabled !== false;
@@ -194,7 +192,6 @@ export default function Hero(props: {
         </div>
       )}
 
-      {/* dev overlay removed */}
     </section>
   );
 }

@@ -63,19 +63,7 @@ export default function Header({ brand, navbar }: Props) {
 
   const getColorClass = (color: string) => getTextClass(color);
 
-  // Debug: log navbar data in development
-  if (process.env.NODE_ENV === 'development') {
-    // console.log('[Header] navbar data:', navbar);
-    // console.log('[Header] navbar.ctas:', navbar?.ctas);
-  }
-
-  // Get enabled CTAs from navbar (use Strapi data, minimal fallback)
   const enabledCTAs = navbar?.ctas?.filter(cta => cta.enabled !== false) || [];
-
-  // Show fallback message in development if no CTAs configured
-  if (process.env.NODE_ENV === 'development' && enabledCTAs.length === 0) {
-    // console.log('[Header] No CTAs configured in Strapi navbar. Please add CTAs in Global > Navbar > CTAs');
-  }
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const headerRef = useRef<HTMLElement | null>(null);

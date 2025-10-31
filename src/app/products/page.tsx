@@ -90,7 +90,6 @@ export default function ProductsPage() {
             finalHasMore = false; // unknown in this fallback
           } catch (fallbackErr) {
             // keep finalProducts as empty
-            console.warn('Fallback fetch for products failed', fallbackErr);
           }
         }
 

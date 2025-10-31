@@ -67,12 +67,6 @@ export function toOptimizedImage(
 
   const optimizedUrl = `/_next/image?${params.toString()}`;
 
-  // Debug log in development
-  if (process.env.NODE_ENV === 'development') {
-    logger.debug(`[Image Optimize] Original: ${absoluteUrl}`);
-    logger.debug(`[Image Optimize] Optimized: ${optimizedUrl}`);
-  }
-
   return optimizedUrl;
 }
 
