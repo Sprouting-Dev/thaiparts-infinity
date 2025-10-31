@@ -111,7 +111,7 @@ export default async function ArticlesPage() {
 
   return (
     <div className="bg-[#F5F5F5] min-h-screen">
-      <main className="w-full flex flex-col items-center pt-24">
+      <main className="w-full flex flex-col items-center pt-[246px]">
         <div className="container-970 flex flex-col gap-8 py-8">
           <MotionReveal>
             <GridPreview section={section} />
