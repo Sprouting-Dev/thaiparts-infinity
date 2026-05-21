@@ -1,0 +1,52 @@
+# ============================================================
+# Supabase Keepalive — every 5 days
+# ============================================================
+# Required GitHub Secrets:
+#   - CRON_SECRET    : same value as production CRON_SECRET env var
+#   - KEEPALIVE_URL  : https://thaipartsinfinity.com/api/ops/keepalive
+#
+# Schedule: 03:00 UTC every 5 days (= 10:00 Bangkok time)
+# Manual trigger: GitHub Actions tab → Run workflow
+# ============================================================
+name: Supabase Keepalive
+
+on:
+  schedule:
+    - cron: "0 3 */5 * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ping keepalive endpoint
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          KEEPALIVE_URL: ${{ secrets.KEEPALIVE_URL }}
+        run: |
+          if [ -z "$CRON_SECRET" ] || [ -z "$KEEPALIVE_URL" ]; then
+            echo "::error::Missing required secrets CRON_SECRET / KEEPALIVE_URL"
+            exit 1
+          fi
+
+          echo "Pinging: $KEEPALIVE_URL"
+
+          RESPONSE=$(curl -fsS \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            -w "\nHTTP_CODE:%{http_code}" \
+            --max-time 30 \
+            "$KEEPALIVE_URL")
+
+          HTTP_CODE=$(echo "$RESPONSE" | grep -oE "HTTP_CODE:[0-9]+" | cut -d: -f2)
+          BODY=$(echo "$RESPONSE" | sed '/HTTP_CODE:/d')
+
+          echo "Response: $BODY"
+          echo "HTTP code: $HTTP_CODE"
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::error::Keepalive endpoint returned HTTP $HTTP_CODE"
+            exit 1
+          fi
+
+          echo "✅ Supabase keepalive succeeded"
