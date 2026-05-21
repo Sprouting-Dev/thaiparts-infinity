@@ -29,7 +29,7 @@ export async function sendContactEmail(data: EmailData) {
     const adminEmail = await client.emails.send({
       from: process.env.RESEND_FROM_EMAIL!,
       to: [process.env.ADMIN_EMAIL!],
-      subject: `ข้อความใหม่จาก Contact Form - ${data.name}`,
+      subject: `[ผู้ติดต่อรายใหม่] ${data.name}${data.subject ? ` — ${data.subject}` : ""}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #2563eb;">New Contact Form Submission</h2>
