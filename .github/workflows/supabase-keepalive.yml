@@ -1,18 +1,28 @@
 # ============================================================
-# Supabase Keepalive — every 5 days
+# Supabase Keepalive — daily
 # ============================================================
 # Required GitHub Secrets:
 #   - CRON_SECRET    : same value as production CRON_SECRET env var
 #   - KEEPALIVE_URL  : https://thaipartsinfinity.com/api/ops/keepalive
 #
-# Schedule: 03:00 UTC every 5 days (= 10:00 Bangkok time)
+# Schedule: 03:00 UTC daily (= 10:00 Bangkok time)
+#
+# Why daily (not "every 5 days"):
+#   - Supabase Free tier auto-pauses after ~7 days of inactivity.
+#   - The old "0 3 */5 * *" expression does NOT mean "every 5 days"; it fires on
+#     days 1,6,11,16,21,26,31 and resets each month, so a single missed run could
+#     leave a >7-day gap and let the project pause.
+#   - Daily runs give ~7 chances before the inactivity window closes, so a few
+#     failed runs (GitHub Actions outage, transient error) can no longer pause it.
+#   - This GitHub Actions cron is backed up by a Vercel Cron (see vercel.json).
+#
 # Manual trigger: GitHub Actions tab → Run workflow
 # ============================================================
 name: Supabase Keepalive
 
 on:
   schedule:
-    - cron: "0 3 */5 * *"
+    - cron: "0 3 * * *"
   workflow_dispatch:
 
 jobs:
@@ -32,10 +42,13 @@ jobs:
 
           echo "Pinging: $KEEPALIVE_URL"
 
-          RESPONSE=$(curl -fsS \
+          RESPONSE=$(curl -sS \
             -H "Authorization: Bearer $CRON_SECRET" \
             -w "\nHTTP_CODE:%{http_code}" \
             --max-time 30 \
+            --retry 3 \
+            --retry-delay 10 \
+            --retry-all-errors \
             "$KEEPALIVE_URL")
 
           HTTP_CODE=$(echo "$RESPONSE" | grep -oE "HTTP_CODE:[0-9]+" | cut -d: -f2)
