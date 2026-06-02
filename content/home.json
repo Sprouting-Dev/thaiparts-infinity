@@ -1,0 +1,1318 @@
+{
+  "data": {
+    "id": 1,
+    "attributes": {
+      "Home": {
+        "id": 1,
+        "title": "THAIPARTS INFINITY พาร์ทเนอร์ผู้เชี่ยวชาญ ที่คุณวางใจได้",
+        "description": "เราคือผู้ให้บริการ อะไหล่และระบบ Automation ครบวงจร (One Stop Service) สำหรับ อุตสาหกรรมทุกประเภท ด้วยพันธกิจหลัก ในการช่วยโรงงานของคุณ ลดความเสี่ยง  (Reduce Risk) และ ลดการหยุดทำงาน  (Minimize Downtime) อย่างแท้จริง"
+      },
+      "articles": {
+        "data": [
+          {
+            "id": 1,
+            "attributes": {
+              "slug": "scada-plc-system",
+              "image": {
+                "data": {
+                  "id": 108,
+                  "attributes": {
+                    "ext": ".png",
+                    "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/scada-plc-system.png-b5a0213178b7fca69155e538fc77892b.png",
+                    "hash": "b5a0213178b7fca69155e538fc77892b",
+                    "mime": "image/png",
+                    "name": "scada-plc-system.png",
+                    "size": 481.7,
+                    "width": 1024,
+                    "height": 1024,
+                    "caption": null,
+                    "formats": {
+                      "large": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/large_scada-plc-system.png-5b13283f1f10f189c4924877ad2a66fb.png",
+                        "hash": "5b13283f1f10f189c4924877ad2a66fb",
+                        "mime": "image/png",
+                        "name": "large_scada-plc-system.png",
+                        "path": null,
+                        "size": 1731.52,
+                        "width": 1000,
+                        "height": 1000,
+                        "sizeInBytes": 1731520
+                      },
+                      "small": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/small_scada-plc-system.png-fd5788565e74579787a6f1a75200bc06.png",
+                        "hash": "fd5788565e74579787a6f1a75200bc06",
+                        "mime": "image/png",
+                        "name": "small_scada-plc-system.png",
+                        "path": null,
+                        "size": 475.77,
+                        "width": 500,
+                        "height": 500,
+                        "sizeInBytes": 475768
+                      },
+                      "medium": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/medium_scada-plc-system.png-ecd52418a594282a175b8bd7239269e2.png",
+                        "hash": "ecd52418a594282a175b8bd7239269e2",
+                        "mime": "image/png",
+                        "name": "medium_scada-plc-system.png",
+                        "path": null,
+                        "size": 1037,
+                        "width": 750,
+                        "height": 750,
+                        "sizeInBytes": 1037002
+                      },
+                      "xsmall": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/xsmall_scada-plc-system.png-17f4048e3dc04ceb70ce8816c30d10e5.png",
+                        "hash": "17f4048e3dc04ceb70ce8816c30d10e5",
+                        "mime": "image/png",
+                        "name": "xsmall_scada-plc-system.png",
+                        "path": null,
+                        "size": 10.61,
+                        "width": 64,
+                        "height": 64,
+                        "sizeInBytes": 10611
+                      },
+                      "thumbnail": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/thumbnail_scada-plc-system.png-ad7b04da9961df03973e23729e28867d.png",
+                        "hash": "ad7b04da9961df03973e23729e28867d",
+                        "mime": "image/png",
+                        "name": "thumbnail_scada-plc-system.png",
+                        "path": null,
+                        "size": 53.69,
+                        "width": 156,
+                        "height": 156,
+                        "sizeInBytes": 53685
+                      }
+                    },
+                    "provider": "strapi-provider-upload-supabase",
+                    "alternativeText": null
+                  }
+                }
+              },
+              "title": "5 สัญญาณเตือน! ถึงเวลาต้องอัปเกรด PLC/SCADA ในโรงงานคุณ",
+              "subtitle": "บทวิเคราะห์เชิงเทคนิคที่ช่วยให้ผู้บริหารและวิศวกรประเมินความเสี่ยงจากระบบควบคุมที่ล้าสมัย ก่อนเกิด Downtime ครั้งใหญ่",
+              "read_time": 8
+            }
+          },
+          {
+            "id": 2,
+            "attributes": {
+              "slug": "downtime-reduction",
+              "image": {
+                "data": {
+                  "id": 50,
+                  "attributes": {
+                    "ext": ".webp",
+                    "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/article-02.webp-2cbc2d29f129f1728ad3c3f95c7a239f.webp",
+                    "hash": "2cbc2d29f129f1728ad3c3f95c7a239f",
+                    "mime": "image/webp",
+                    "name": "article-02.webp",
+                    "size": 68.05,
+                    "width": 1208,
+                    "height": 1208,
+                    "caption": null,
+                    "formats": {
+                      "large": {
+                        "ext": ".webp",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/large_article-02.webp-dcf1bbb53372f5304534f76f0243b649.webp",
+                        "hash": "dcf1bbb53372f5304534f76f0243b649",
+                        "mime": "image/webp",
+                        "name": "large_article-02.webp",
+                        "path": null,
+                        "size": 46.88,
+                        "width": 1000,
+                        "height": 1000,
+                        "sizeInBytes": 46878
+                      },
+                      "small": {
+                        "ext": ".webp",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/small_article-02.webp-3ef6f1f51e2bfc5a3a9fe2cc97486c82.webp",
+                        "hash": "3ef6f1f51e2bfc5a3a9fe2cc97486c82",
+                        "mime": "image/webp",
+                        "name": "small_article-02.webp",
+                        "path": null,
+                        "size": 20,
+                        "width": 500,
+                        "height": 500,
+                        "sizeInBytes": 19996
+                      },
+                      "medium": {
+                        "ext": ".webp",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/medium_article-02.webp-1efadc0d9640f58eafafc44bc530ee07.webp",
+                        "hash": "1efadc0d9640f58eafafc44bc530ee07",
+                        "mime": "image/webp",
+                        "name": "medium_article-02.webp",
+                        "path": null,
+                        "size": 33.33,
+                        "width": 750,
+                        "height": 750,
+                        "sizeInBytes": 33326
+                      },
+                      "xsmall": {
+                        "ext": ".webp",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/xsmall_article-02.webp-09c5158567772e18f8662f58286a2800.webp",
+                        "hash": "09c5158567772e18f8662f58286a2800",
+                        "mime": "image/webp",
+                        "name": "xsmall_article-02.webp",
+                        "path": null,
+                        "size": 1.33,
+                        "width": 64,
+                        "height": 64,
+                        "sizeInBytes": 1332
+                      },
+                      "thumbnail": {
+                        "ext": ".webp",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/thumbnail_article-02.webp-a9db716ed384f3db8c399ccf21b9205c.webp",
+                        "hash": "a9db716ed384f3db8c399ccf21b9205c",
+                        "mime": "image/webp",
+                        "name": "thumbnail_article-02.webp",
+                        "path": null,
+                        "size": 4.75,
+                        "width": 156,
+                        "height": 156,
+                        "sizeInBytes": 4746
+                      }
+                    },
+                    "provider": "strapi-provider-upload-supabase",
+                    "alternativeText": null
+                  }
+                }
+              },
+              "title": "Case Study: โรงงานอาหาร A ลด Downtime จาก 80 เหลือ 10 ชม./ปี ได้อย่างไร",
+              "subtitle": "เจาะลึกโซลูชัน Hydraulic & Pneumatic Systems ที่เราออกแบบและติดตั้ง พร้อมตัวเลขผลลัพธ์ที่วัดผลได้จริง",
+              "read_time": 8
+            }
+          },
+          {
+            "id": 3,
+            "attributes": {
+              "slug": "vfd-electrical-system",
+              "image": {
+                "data": {
+                  "id": 52,
+                  "attributes": {
+                    "ext": ".webp",
+                    "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/article-03.webp-9a8982245a7ab50b3d0c29a5662aa0e9.webp",
+                    "hash": "9a8982245a7ab50b3d0c29a5662aa0e9",
+                    "mime": "image/webp",
+                    "name": "article-03.webp",
+                    "size": 69.17,
+                    "width": 1024,
+                    "height": 1024,
+                    "caption": null,
+                    "formats": {
+                      "large": {
+                        "ext": ".webp",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/large_article-03.webp-255c8bef103b64b2b220bfaa4fcfb4c5.webp",
+                        "hash": "255c8bef103b64b2b220bfaa4fcfb4c5",
+                        "mime": "image/webp",
+                        "name": "large_article-03.webp",
+                        "path": null,
+                        "size": 56.86,
+                        "width": 1000,
+                        "height": 1000,
+                        "sizeInBytes": 56856
+                      },
+                      "small": {
+                        "ext": ".webp",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/small_article-03.webp-df023d52912011e6b9aa9670a61b353a.webp",
+                        "hash": "df023d52912011e6b9aa9670a61b353a",
+                        "mime": "image/webp",
+                        "name": "small_article-03.webp",
+                        "path": null,
+                        "size": 24.72,
+                        "width": 500,
+                        "height": 500,
+                        "sizeInBytes": 24716
+                      },
+                      "medium": {
+                        "ext": ".webp",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/medium_article-03.webp-f7f1a911154e2d03486a5f09c8056ff2.webp",
+                        "hash": "f7f1a911154e2d03486a5f09c8056ff2",
+                        "mime": "image/webp",
+                        "name": "medium_article-03.webp",
+                        "path": null,
+                        "size": 41.08,
+                        "width": 750,
+                        "height": 750,
+                        "sizeInBytes": 41082
+                      },
+                      "xsmall": {
+                        "ext": ".webp",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/xsmall_article-03.webp-b69494175addcedc11bad3bb72dd280b.webp",
+                        "hash": "b69494175addcedc11bad3bb72dd280b",
+                        "mime": "image/webp",
+                        "name": "xsmall_article-03.webp",
+                        "path": null,
+                        "size": 1.31,
+                        "width": 64,
+                        "height": 64,
+                        "sizeInBytes": 1308
+                      },
+                      "thumbnail": {
+                        "ext": ".webp",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/thumbnail_article-03.webp-148b7054601caab6ae3fcee4a22df568.webp",
+                        "hash": "148b7054601caab6ae3fcee4a22df568",
+                        "mime": "image/webp",
+                        "name": "thumbnail_article-03.webp",
+                        "path": null,
+                        "size": 4.78,
+                        "width": 156,
+                        "height": 156,
+                        "sizeInBytes": 4784
+                      }
+                    },
+                    "provider": "strapi-provider-upload-supabase",
+                    "alternativeText": null
+                  }
+                }
+              },
+              "title": "เช็กด่วน! มอเตอร์ VFD: ทำไมการจัดส่งด่วนจึงช่วยประหยัดเงินได้มากกว่า",
+              "subtitle": "บทความที่เชื่อมโยง ความสำคัญของ Fast Delivery  เข้ากับผลกระทบทางเศรษฐกิจ เมื่อเครื่องจักรหยุดเดิน",
+              "read_time": 8
+            }
+          }
+        ]
+      },
+      "products": {
+        "data": [
+          {
+            "id": 1,
+            "attributes": {
+              "tag": "Mechanical & Power Transmission Systems",
+              "slug": "bearing-roller",
+              "image": {
+                "data": {
+                  "id": 14,
+                  "attributes": {
+                    "ext": ".png",
+                    "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/Bearing&Roller.png-fac27c6ca6004e3675f74e183aab17de.png",
+                    "hash": "fac27c6ca6004e3675f74e183aab17de",
+                    "mime": "image/png",
+                    "name": "Bearing&Roller.png",
+                    "size": 304.31,
+                    "width": 1024,
+                    "height": 1024,
+                    "caption": null,
+                    "formats": {
+                      "large": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/large_Bearing&Roller.png-34aa1a4b9a930e4a78c97d3e916273a9.png",
+                        "hash": "34aa1a4b9a930e4a78c97d3e916273a9",
+                        "mime": "image/png",
+                        "name": "large_Bearing&Roller.png",
+                        "path": null,
+                        "size": 1067.64,
+                        "width": 1000,
+                        "height": 1000,
+                        "sizeInBytes": 1067637
+                      },
+                      "small": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/small_Bearing&Roller.png-b4843107a31e02865697766a36a5cddb.png",
+                        "hash": "b4843107a31e02865697766a36a5cddb",
+                        "mime": "image/png",
+                        "name": "small_Bearing&Roller.png",
+                        "path": null,
+                        "size": 307.7,
+                        "width": 500,
+                        "height": 500,
+                        "sizeInBytes": 307704
+                      },
+                      "medium": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/medium_Bearing&Roller.png-9fce02fcfbf7737be0ad2ef64adf1f43.png",
+                        "hash": "9fce02fcfbf7737be0ad2ef64adf1f43",
+                        "mime": "image/png",
+                        "name": "medium_Bearing&Roller.png",
+                        "path": null,
+                        "size": 655.84,
+                        "width": 750,
+                        "height": 750,
+                        "sizeInBytes": 655837
+                      },
+                      "xsmall": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/xsmall_Bearing&Roller.png-4f5782c5cac4e55b340c34786bffbef0.png",
+                        "hash": "4f5782c5cac4e55b340c34786bffbef0",
+                        "mime": "image/png",
+                        "name": "xsmall_Bearing&Roller.png",
+                        "path": null,
+                        "size": 9.28,
+                        "width": 64,
+                        "height": 64,
+                        "sizeInBytes": 9281
+                      },
+                      "thumbnail": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/thumbnail_Bearing&Roller.png-82c532c7a64d0f3366b1a7dc35b107a0.png",
+                        "hash": "82c532c7a64d0f3366b1a7dc35b107a0",
+                        "mime": "image/png",
+                        "name": "thumbnail_Bearing&Roller.png",
+                        "path": null,
+                        "size": 40.66,
+                        "width": 156,
+                        "height": 156,
+                        "sizeInBytes": 40661
+                      }
+                    },
+                    "provider": "strapi-provider-upload-supabase",
+                    "alternativeText": null
+                  }
+                }
+              },
+              "title": "Bearing & Roller",
+              "category": null,
+              "main_title": "ตลับลูกปืนเม็ดกลม (Deep Groove Ball Bearing) - [ระบุรุ่นมาตรฐาน/แบรนด์]",
+              "description": "<p>ตลับลูกปืนที่ผ่านการรับรองมาตรฐานสากล (ISO) ซึ่งเหมาะสำหรับการรับโหลดหนัก (Heavy Load) และการทำงานต่อเนื่อง (Continuous Operation) ในสภาวะอุณหภูมิสูง ทีมวิศวกรของเราสามารถ ให้คำแนะนำในการเลือกประเภทตลับลูกปืนที่ถูกต้อง (เช่น Spherical Roller vs. Tapered Roller) &nbsp;เพื่อยืดอายุการใช้งานของเครื่องจักรคุณ<br><br>&nbsp;</p><figure class=\"table\" style=\"width:68.99%;\"><table class=\"ck-table-resized\"><colgroup><col style=\"width:33.23%;\"><col style=\"width:66.77%;\"></colgroup><tbody><tr><td>ประเภท</td><td>Spherical Roller Bearing / Deep Groove Ball Bearing</td></tr><tr><td>วัสดุ</td><td>High-Carbon Chrome Steel (Chrome Steel GCr15)</td></tr><tr><td>มาตรฐาน</td><td>ISO 9001, DIN 625</td></tr><tr><td>พิกัดโหลดแบบไดนามิก</td><td>C (Dynamic Load Rating) = [ระบุค่าเป็น kN]</td></tr><tr><td>ความคลาดเคลื่อน</td><td>Tolerance Class P5 / P6 (เพื่อความแม่นยำในการหมุน)</td></tr><tr><td>ขนาด (มม.)</td><td>Bore (d) x Outer Dia (D) x Width (B)</td></tr><tr><td>แบรนด์ที่จัดหา</td><td>SKF, FAG, NSK, TIMKEN</td></tr></tbody></table></figure>"
+            }
+          },
+          {
+            "id": 7,
+            "attributes": {
+              "tag": "Fluid & Pneumatic Systems",
+              "slug": "hydraulic-cylinder",
+              "image": {
+                "data": {
+                  "id": 80,
+                  "attributes": {
+                    "ext": ".png",
+                    "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/Hydraulic Cylinder & Pump.png-f5ad6a7cb2d7bd8f25521c6ec6abb9de.png",
+                    "hash": "f5ad6a7cb2d7bd8f25521c6ec6abb9de",
+                    "mime": "image/png",
+                    "name": "Hydraulic Cylinder & Pump.png",
+                    "size": 422.23,
+                    "width": 1024,
+                    "height": 1024,
+                    "caption": null,
+                    "formats": {
+                      "large": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/large_Hydraulic Cylinder & Pump.png-8fbc69560570ba9e5c26d7f67c93a235.png",
+                        "hash": "8fbc69560570ba9e5c26d7f67c93a235",
+                        "mime": "image/png",
+                        "name": "large_Hydraulic Cylinder & Pump.png",
+                        "path": null,
+                        "size": 1715.32,
+                        "width": 1000,
+                        "height": 1000,
+                        "sizeInBytes": 1715315
+                      },
+                      "small": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/small_Hydraulic Cylinder & Pump.png-7e61640cb23d47f8dd3acb1c2e375208.png",
+                        "hash": "7e61640cb23d47f8dd3acb1c2e375208",
+                        "mime": "image/png",
+                        "name": "small_Hydraulic Cylinder & Pump.png",
+                        "path": null,
+                        "size": 499.64,
+                        "width": 500,
+                        "height": 500,
+                        "sizeInBytes": 499643
+                      },
+                      "medium": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/medium_Hydraulic Cylinder & Pump.png-d8c46d4c6b44514a7a61eb274fe4b8e8.png",
+                        "hash": "d8c46d4c6b44514a7a61eb274fe4b8e8",
+                        "mime": "image/png",
+                        "name": "medium_Hydraulic Cylinder & Pump.png",
+                        "path": null,
+                        "size": 1059.65,
+                        "width": 750,
+                        "height": 750,
+                        "sizeInBytes": 1059649
+                      },
+                      "xsmall": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/xsmall_Hydraulic Cylinder & Pump.png-208625ee9f4831b6ddf170df5019569d.png",
+                        "hash": "208625ee9f4831b6ddf170df5019569d",
+                        "mime": "image/png",
+                        "name": "xsmall_Hydraulic Cylinder & Pump.png",
+                        "path": null,
+                        "size": 11.89,
+                        "width": 64,
+                        "height": 64,
+                        "sizeInBytes": 11893
+                      },
+                      "thumbnail": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/thumbnail_Hydraulic Cylinder & Pump.png-a8fc70fce35bc0e2103054096782037c.png",
+                        "hash": "a8fc70fce35bc0e2103054096782037c",
+                        "mime": "image/png",
+                        "name": "thumbnail_Hydraulic Cylinder & Pump.png",
+                        "path": null,
+                        "size": 60.86,
+                        "width": 156,
+                        "height": 156,
+                        "sizeInBytes": 60863
+                      }
+                    },
+                    "provider": "strapi-provider-upload-supabase",
+                    "alternativeText": null
+                  }
+                }
+              },
+              "title": "Hydraulic Cylinder & Pump ",
+              "category": null,
+              "main_title": "กระบอกและปั๊มไฮดรอลิก",
+              "description": null
+            }
+          },
+          {
+            "id": 10,
+            "attributes": {
+              "tag": "Electrical & Control Hardware",
+              "slug": "electric-motor",
+              "image": {
+                "data": {
+                  "id": 75,
+                  "attributes": {
+                    "ext": ".png",
+                    "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/Electric Motor.png-8ecbb301939024ea01d22b40c9fc5ca8.png",
+                    "hash": "8ecbb301939024ea01d22b40c9fc5ca8",
+                    "mime": "image/png",
+                    "name": "Electric Motor.png",
+                    "size": 336.83,
+                    "width": 1024,
+                    "height": 1024,
+                    "caption": null,
+                    "formats": {
+                      "large": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/large_Electric Motor.png-b425d89b8256443126d22f09441b2d9d.png",
+                        "hash": "b425d89b8256443126d22f09441b2d9d",
+                        "mime": "image/png",
+                        "name": "large_Electric Motor.png",
+                        "path": null,
+                        "size": 1321.31,
+                        "width": 1000,
+                        "height": 1000,
+                        "sizeInBytes": 1321307
+                      },
+                      "small": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/small_Electric Motor.png-b703c2f26c16adc73c2d29a84fb1c4d1.png",
+                        "hash": "b703c2f26c16adc73c2d29a84fb1c4d1",
+                        "mime": "image/png",
+                        "name": "small_Electric Motor.png",
+                        "path": null,
+                        "size": 372.11,
+                        "width": 500,
+                        "height": 500,
+                        "sizeInBytes": 372111
+                      },
+                      "medium": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/medium_Electric Motor.png-8ff7ca982de55f6f8b16c7416743254e.png",
+                        "hash": "8ff7ca982de55f6f8b16c7416743254e",
+                        "mime": "image/png",
+                        "name": "medium_Electric Motor.png",
+                        "path": null,
+                        "size": 805.31,
+                        "width": 750,
+                        "height": 750,
+                        "sizeInBytes": 805311
+                      },
+                      "xsmall": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/xsmall_Electric Motor.png-f4a3f60b4a6866b252766c8e87794bf3.png",
+                        "hash": "f4a3f60b4a6866b252766c8e87794bf3",
+                        "mime": "image/png",
+                        "name": "xsmall_Electric Motor.png",
+                        "path": null,
+                        "size": 10.18,
+                        "width": 64,
+                        "height": 64,
+                        "sizeInBytes": 10180
+                      },
+                      "thumbnail": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/thumbnail_Electric Motor.png-51394003ea6900a3909259793a84cb1e.png",
+                        "hash": "51394003ea6900a3909259793a84cb1e",
+                        "mime": "image/png",
+                        "name": "thumbnail_Electric Motor.png",
+                        "path": null,
+                        "size": 45.79,
+                        "width": 156,
+                        "height": 156,
+                        "sizeInBytes": 45787
+                      }
+                    },
+                    "provider": "strapi-provider-upload-supabase",
+                    "alternativeText": null
+                  }
+                }
+              },
+              "title": "Electric Motor ",
+              "category": null,
+              "main_title": "มอเตอร์ไฟฟ้า",
+              "description": null
+            }
+          },
+          {
+            "id": 13,
+            "attributes": {
+              "tag": "Core Controllers & Logic",
+              "slug": "plc-module",
+              "image": {
+                "data": {
+                  "id": 76,
+                  "attributes": {
+                    "ext": ".png",
+                    "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/PLC Module.png-6ce91134e941fd49b55127c558f52f6e.png",
+                    "hash": "6ce91134e941fd49b55127c558f52f6e",
+                    "mime": "image/png",
+                    "name": "PLC Module.png",
+                    "size": 463.3,
+                    "width": 1024,
+                    "height": 1024,
+                    "caption": null,
+                    "formats": {
+                      "large": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/large_PLC Module.png-c1b806de75f964b58cec10f108713598.png",
+                        "hash": "c1b806de75f964b58cec10f108713598",
+                        "mime": "image/png",
+                        "name": "large_PLC Module.png",
+                        "path": null,
+                        "size": 1477.84,
+                        "width": 1000,
+                        "height": 1000,
+                        "sizeInBytes": 1477843
+                      },
+                      "small": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/small_PLC Module.png-7e0d11dcd69ae3c526c9f76937bfd589.png",
+                        "hash": "7e0d11dcd69ae3c526c9f76937bfd589",
+                        "mime": "image/png",
+                        "name": "small_PLC Module.png",
+                        "path": null,
+                        "size": 436.51,
+                        "width": 500,
+                        "height": 500,
+                        "sizeInBytes": 436514
+                      },
+                      "medium": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/medium_PLC Module.png-2fd1f652947cbbeabf24949cee493206.png",
+                        "hash": "2fd1f652947cbbeabf24949cee493206",
+                        "mime": "image/png",
+                        "name": "medium_PLC Module.png",
+                        "path": null,
+                        "size": 916.62,
+                        "width": 750,
+                        "height": 750,
+                        "sizeInBytes": 916622
+                      },
+                      "xsmall": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/xsmall_PLC Module.png-b4fe274246d416895aaffc0a3419250d.png",
+                        "hash": "b4fe274246d416895aaffc0a3419250d",
+                        "mime": "image/png",
+                        "name": "xsmall_PLC Module.png",
+                        "path": null,
+                        "size": 11.34,
+                        "width": 64,
+                        "height": 64,
+                        "sizeInBytes": 11340
+                      },
+                      "thumbnail": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/thumbnail_PLC Module.png-ad8d5a0154f0a551331f814b64d4ad7f.png",
+                        "hash": "ad8d5a0154f0a551331f814b64d4ad7f",
+                        "mime": "image/png",
+                        "name": "thumbnail_PLC Module.png",
+                        "path": null,
+                        "size": 54.43,
+                        "width": 156,
+                        "height": 156,
+                        "sizeInBytes": 54429
+                      }
+                    },
+                    "provider": "strapi-provider-upload-supabase",
+                    "alternativeText": null
+                  }
+                }
+              },
+              "title": "PLC Module – Siemens, Schneider, Allen Bradley",
+              "category": null,
+              "main_title": "Siemens, Schneider, Allen Bradley",
+              "description": null
+            }
+          },
+          {
+            "id": 24,
+            "attributes": {
+              "tag": "Pressure & Flow Control",
+              "slug": "flowmeter",
+              "image": {
+                "data": {
+                  "id": 87,
+                  "attributes": {
+                    "ext": ".jpg",
+                    "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/Flowmeter.jpg-3c2e68fe350cab9bf007b5d65a353dd8.jpg",
+                    "hash": "3c2e68fe350cab9bf007b5d65a353dd8",
+                    "mime": "image/jpeg",
+                    "name": "Flowmeter.jpg",
+                    "size": 95.47,
+                    "width": 1000,
+                    "height": 650,
+                    "caption": null,
+                    "formats": {
+                      "small": {
+                        "ext": ".jpg",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/small_Flowmeter.jpg-5da8301d07a07f98dd4ffa8e14a3f76e.jpg",
+                        "hash": "5da8301d07a07f98dd4ffa8e14a3f76e",
+                        "mime": "image/jpeg",
+                        "name": "small_Flowmeter.jpg",
+                        "path": null,
+                        "size": 35.25,
+                        "width": 500,
+                        "height": 325,
+                        "sizeInBytes": 35252
+                      },
+                      "medium": {
+                        "ext": ".jpg",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/medium_Flowmeter.jpg-b1701af02e5005314a914252a910ea44.jpg",
+                        "hash": "b1701af02e5005314a914252a910ea44",
+                        "mime": "image/jpeg",
+                        "name": "medium_Flowmeter.jpg",
+                        "path": null,
+                        "size": 65.47,
+                        "width": 750,
+                        "height": 488,
+                        "sizeInBytes": 65472
+                      },
+                      "xsmall": {
+                        "ext": ".jpg",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/xsmall_Flowmeter.jpg-b16f4459e60e6a0486aa9344ab648130.jpg",
+                        "hash": "b16f4459e60e6a0486aa9344ab648130",
+                        "mime": "image/jpeg",
+                        "name": "xsmall_Flowmeter.jpg",
+                        "path": null,
+                        "size": 1.43,
+                        "width": 64,
+                        "height": 41,
+                        "sizeInBytes": 1429
+                      },
+                      "thumbnail": {
+                        "ext": ".jpg",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/thumbnail_Flowmeter.jpg-3e19975e37c2fc3ca3d1548ebf2c8c39.jpg",
+                        "hash": "3e19975e37c2fc3ca3d1548ebf2c8c39",
+                        "mime": "image/jpeg",
+                        "name": "thumbnail_Flowmeter.jpg",
+                        "path": null,
+                        "size": 11.35,
+                        "width": 240,
+                        "height": 156,
+                        "sizeInBytes": 11349
+                      }
+                    },
+                    "provider": "strapi-provider-upload-supabase",
+                    "alternativeText": null
+                  }
+                }
+              },
+              "title": "Flowmeter (Electromagnetic, Ultrasonic, Coriolis)",
+              "category": null,
+              "main_title": "Flowmeter (Electromagnetic, Ultrasonic, Coriolis)",
+              "description": null
+            }
+          }
+        ]
+      },
+      "services": {
+        "data": [
+          {
+            "id": 3,
+            "attributes": {
+              "slug": "system-design",
+              "image": {
+                "data": [
+                  {
+                    "id": 40,
+                    "attributes": {
+                      "ext": ".png",
+                      "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/System-Design.png-5d6b1f062408a15181d788c0c9af6f40.png",
+                      "hash": "5d6b1f062408a15181d788c0c9af6f40",
+                      "mime": "image/png",
+                      "name": "System-Design.png",
+                      "size": 529.78,
+                      "width": 1024,
+                      "height": 1024,
+                      "caption": null,
+                      "formats": {
+                        "large": {
+                          "ext": ".png",
+                          "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/large_System-Design.png-300423aa1368fcfbb630cfbf08ab0293.png",
+                          "hash": "300423aa1368fcfbb630cfbf08ab0293",
+                          "mime": "image/png",
+                          "name": "large_System-Design.png",
+                          "path": null,
+                          "size": 1730.33,
+                          "width": 1000,
+                          "height": 1000,
+                          "sizeInBytes": 1730325
+                        },
+                        "small": {
+                          "ext": ".png",
+                          "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/small_System-Design.png-ae17e5c97de88ae955cb04934ae8856e.png",
+                          "hash": "ae17e5c97de88ae955cb04934ae8856e",
+                          "mime": "image/png",
+                          "name": "small_System-Design.png",
+                          "path": null,
+                          "size": 472.87,
+                          "width": 500,
+                          "height": 500,
+                          "sizeInBytes": 472870
+                        },
+                        "medium": {
+                          "ext": ".png",
+                          "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/medium_System-Design.png-8b211d3a4c5ff5a42b7112d3cfb1720a.png",
+                          "hash": "8b211d3a4c5ff5a42b7112d3cfb1720a",
+                          "mime": "image/png",
+                          "name": "medium_System-Design.png",
+                          "path": null,
+                          "size": 1024.32,
+                          "width": 750,
+                          "height": 750,
+                          "sizeInBytes": 1024322
+                        },
+                        "xsmall": {
+                          "ext": ".png",
+                          "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/xsmall_System-Design.png-b1f2574c31615b4678bfcdb79c888249.png",
+                          "hash": "b1f2574c31615b4678bfcdb79c888249",
+                          "mime": "image/png",
+                          "name": "xsmall_System-Design.png",
+                          "path": null,
+                          "size": 11.38,
+                          "width": 64,
+                          "height": 64,
+                          "sizeInBytes": 11379
+                        },
+                        "thumbnail": {
+                          "ext": ".png",
+                          "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/thumbnail_System-Design.png-aaa9dbc48cc454f934f19eafe84b58da.png",
+                          "hash": "aaa9dbc48cc454f934f19eafe84b58da",
+                          "mime": "image/png",
+                          "name": "thumbnail_System-Design.png",
+                          "path": null,
+                          "size": 57.76,
+                          "width": 156,
+                          "height": 156,
+                          "sizeInBytes": 57761
+                        }
+                      },
+                      "provider": "strapi-provider-upload-supabase",
+                      "alternativeText": null
+                    }
+                  },
+                  {
+                    "id": 58,
+                    "attributes": {
+                      "ext": ".webp",
+                      "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/rapid-response-and-on-site-support.webp-645121faa546e7b9b88bf4b4ddcd0f06.webp",
+                      "hash": "645121faa546e7b9b88bf4b4ddcd0f06",
+                      "mime": "image/webp",
+                      "name": "preventive-maintenance-calibration-service.webp",
+                      "size": 82.67,
+                      "width": 1024,
+                      "height": 1024,
+                      "caption": null,
+                      "formats": {
+                        "large": {
+                          "ext": ".webp",
+                          "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/large_rapid-response-and-on-site-support.webp-45d6536ce355a8eaa8fc35979802bd83.webp",
+                          "hash": "45d6536ce355a8eaa8fc35979802bd83",
+                          "mime": "image/webp",
+                          "name": "large_rapid-response-and-on-site-support.webp",
+                          "path": null,
+                          "size": 67.56,
+                          "width": 1000,
+                          "height": 1000,
+                          "sizeInBytes": 67562
+                        },
+                        "small": {
+                          "ext": ".webp",
+                          "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/small_rapid-response-and-on-site-support.webp-870264a0acdff461480961ee76119820.webp",
+                          "hash": "870264a0acdff461480961ee76119820",
+                          "mime": "image/webp",
+                          "name": "small_rapid-response-and-on-site-support.webp",
+                          "path": null,
+                          "size": 30.2,
+                          "width": 500,
+                          "height": 500,
+                          "sizeInBytes": 30202
+                        },
+                        "medium": {
+                          "ext": ".webp",
+                          "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/medium_rapid-response-and-on-site-support.webp-dbd67ec983d1c1eb9f667ab94c7ed910.webp",
+                          "hash": "dbd67ec983d1c1eb9f667ab94c7ed910",
+                          "mime": "image/webp",
+                          "name": "medium_rapid-response-and-on-site-support.webp",
+                          "path": null,
+                          "size": 49.15,
+                          "width": 750,
+                          "height": 750,
+                          "sizeInBytes": 49152
+                        },
+                        "xsmall": {
+                          "ext": ".webp",
+                          "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/xsmall_rapid-response-and-on-site-support.webp-17525d64ebc1bf6b5e8f9c57338f7f04.webp",
+                          "hash": "17525d64ebc1bf6b5e8f9c57338f7f04",
+                          "mime": "image/webp",
+                          "name": "xsmall_rapid-response-and-on-site-support.webp",
+                          "path": null,
+                          "size": 1.57,
+                          "width": 64,
+                          "height": 64,
+                          "sizeInBytes": 1574
+                        },
+                        "thumbnail": {
+                          "ext": ".webp",
+                          "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/thumbnail_rapid-response-and-on-site-support.webp-9130c1054e4db5a65ae6ff5150c3086b.webp",
+                          "hash": "9130c1054e4db5a65ae6ff5150c3086b",
+                          "mime": "image/webp",
+                          "name": "thumbnail_rapid-response-and-on-site-support.webp",
+                          "path": null,
+                          "size": 6.03,
+                          "width": 156,
+                          "height": 156,
+                          "sizeInBytes": 6032
+                        }
+                      },
+                      "provider": "strapi-provider-upload-supabase",
+                      "alternativeText": null
+                    }
+                  }
+                ]
+              },
+              "title": "System Design & Engineering Service",
+              "subtitle": "(บริการออกแบบระบบ Automation/SCADA)",
+              "cover_image": {
+                "data": {
+                  "id": 40,
+                  "attributes": {
+                    "ext": ".png",
+                    "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/System-Design.png-5d6b1f062408a15181d788c0c9af6f40.png",
+                    "hash": "5d6b1f062408a15181d788c0c9af6f40",
+                    "mime": "image/png",
+                    "name": "System-Design.png",
+                    "size": 529.78,
+                    "width": 1024,
+                    "height": 1024,
+                    "caption": null,
+                    "formats": {
+                      "large": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/large_System-Design.png-300423aa1368fcfbb630cfbf08ab0293.png",
+                        "hash": "300423aa1368fcfbb630cfbf08ab0293",
+                        "mime": "image/png",
+                        "name": "large_System-Design.png",
+                        "path": null,
+                        "size": 1730.33,
+                        "width": 1000,
+                        "height": 1000,
+                        "sizeInBytes": 1730325
+                      },
+                      "small": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/small_System-Design.png-ae17e5c97de88ae955cb04934ae8856e.png",
+                        "hash": "ae17e5c97de88ae955cb04934ae8856e",
+                        "mime": "image/png",
+                        "name": "small_System-Design.png",
+                        "path": null,
+                        "size": 472.87,
+                        "width": 500,
+                        "height": 500,
+                        "sizeInBytes": 472870
+                      },
+                      "medium": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/medium_System-Design.png-8b211d3a4c5ff5a42b7112d3cfb1720a.png",
+                        "hash": "8b211d3a4c5ff5a42b7112d3cfb1720a",
+                        "mime": "image/png",
+                        "name": "medium_System-Design.png",
+                        "path": null,
+                        "size": 1024.32,
+                        "width": 750,
+                        "height": 750,
+                        "sizeInBytes": 1024322
+                      },
+                      "xsmall": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/xsmall_System-Design.png-b1f2574c31615b4678bfcdb79c888249.png",
+                        "hash": "b1f2574c31615b4678bfcdb79c888249",
+                        "mime": "image/png",
+                        "name": "xsmall_System-Design.png",
+                        "path": null,
+                        "size": 11.38,
+                        "width": 64,
+                        "height": 64,
+                        "sizeInBytes": 11379
+                      },
+                      "thumbnail": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/thumbnail_System-Design.png-aaa9dbc48cc454f934f19eafe84b58da.png",
+                        "hash": "aaa9dbc48cc454f934f19eafe84b58da",
+                        "mime": "image/png",
+                        "name": "thumbnail_System-Design.png",
+                        "path": null,
+                        "size": 57.76,
+                        "width": 156,
+                        "height": 156,
+                        "sizeInBytes": 57761
+                      }
+                    },
+                    "provider": "strapi-provider-upload-supabase",
+                    "alternativeText": null
+                  }
+                }
+              }
+            }
+          },
+          {
+            "id": 2,
+            "attributes": {
+              "slug": "installation-commissioning",
+              "image": {
+                "data": {
+                  "id": 57,
+                  "attributes": {
+                    "ext": ".webp",
+                    "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/preventive-maintenance.webp-ca5fbefe63a1c7e2f0c93f6dff5f568a.webp",
+                    "hash": "ca5fbefe63a1c7e2f0c93f6dff5f568a",
+                    "mime": "image/webp",
+                    "name": "installation-commissioning.webp",
+                    "size": 73.91,
+                    "width": 1024,
+                    "height": 1024,
+                    "caption": null,
+                    "formats": {
+                      "large": {
+                        "ext": ".webp",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/large_preventive-maintenance.webp-ad5a94e994d02fa0f1a9500e84ee3011.webp",
+                        "hash": "ad5a94e994d02fa0f1a9500e84ee3011",
+                        "mime": "image/webp",
+                        "name": "large_preventive-maintenance.webp",
+                        "path": null,
+                        "size": 61.52,
+                        "width": 1000,
+                        "height": 1000,
+                        "sizeInBytes": 61516
+                      },
+                      "small": {
+                        "ext": ".webp",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/small_preventive-maintenance.webp-1835b993c75c4386e21c5089312a02d5.webp",
+                        "hash": "1835b993c75c4386e21c5089312a02d5",
+                        "mime": "image/webp",
+                        "name": "small_preventive-maintenance.webp",
+                        "path": null,
+                        "size": 27.52,
+                        "width": 500,
+                        "height": 500,
+                        "sizeInBytes": 27518
+                      },
+                      "medium": {
+                        "ext": ".webp",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/medium_preventive-maintenance.webp-b4ebae218a9875e6de5338828d7d50ab.webp",
+                        "hash": "b4ebae218a9875e6de5338828d7d50ab",
+                        "mime": "image/webp",
+                        "name": "medium_preventive-maintenance.webp",
+                        "path": null,
+                        "size": 45.89,
+                        "width": 750,
+                        "height": 750,
+                        "sizeInBytes": 45888
+                      },
+                      "xsmall": {
+                        "ext": ".webp",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/xsmall_preventive-maintenance.webp-9f7a3638aa43bca4682152e3cf952a18.webp",
+                        "hash": "9f7a3638aa43bca4682152e3cf952a18",
+                        "mime": "image/webp",
+                        "name": "xsmall_preventive-maintenance.webp",
+                        "path": null,
+                        "size": 1.63,
+                        "width": 64,
+                        "height": 64,
+                        "sizeInBytes": 1626
+                      },
+                      "thumbnail": {
+                        "ext": ".webp",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/thumbnail_preventive-maintenance.webp-430a9d8c3c587405272345012617f254.webp",
+                        "hash": "430a9d8c3c587405272345012617f254",
+                        "mime": "image/webp",
+                        "name": "thumbnail_preventive-maintenance.webp",
+                        "path": null,
+                        "size": 5.87,
+                        "width": 156,
+                        "height": 156,
+                        "sizeInBytes": 5868
+                      }
+                    },
+                    "provider": "strapi-provider-upload-supabase",
+                    "alternativeText": null
+                  }
+                }
+              },
+              "title": "Installation & Commissioning",
+              "subtitle": "ติดตั้งและทดสอบเดินระบบ",
+              "cover_image": {
+                "data": {
+                  "id": 102,
+                  "attributes": {
+                    "ext": ".png",
+                    "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/installation-commissioning.png-c916ec5c5f05876099bd7e190d63cf0c.png",
+                    "hash": "c916ec5c5f05876099bd7e190d63cf0c",
+                    "mime": "image/png",
+                    "name": "installation-commissioning.png",
+                    "size": 582.98,
+                    "width": 1024,
+                    "height": 1024,
+                    "caption": null,
+                    "formats": {
+                      "large": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/large_installation-commissioning.png-d966ae491e1d513acb98de33a4d5ef9b.png",
+                        "hash": "d966ae491e1d513acb98de33a4d5ef9b",
+                        "mime": "image/png",
+                        "name": "large_installation-commissioning.png",
+                        "path": null,
+                        "size": 2055.84,
+                        "width": 1000,
+                        "height": 1000,
+                        "sizeInBytes": 2055842
+                      },
+                      "small": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/small_installation-commissioning.png-4016a280544d2dd2d82664f42b25af3d.png",
+                        "hash": "4016a280544d2dd2d82664f42b25af3d",
+                        "mime": "image/png",
+                        "name": "small_installation-commissioning.png",
+                        "path": null,
+                        "size": 559.5,
+                        "width": 500,
+                        "height": 500,
+                        "sizeInBytes": 559501
+                      },
+                      "medium": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/medium_installation-commissioning.png-3fbeb6b6c920a3bd1b784766d6ef3ca8.png",
+                        "hash": "3fbeb6b6c920a3bd1b784766d6ef3ca8",
+                        "mime": "image/png",
+                        "name": "medium_installation-commissioning.png",
+                        "path": null,
+                        "size": 1220.77,
+                        "width": 750,
+                        "height": 750,
+                        "sizeInBytes": 1220768
+                      },
+                      "xsmall": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/xsmall_installation-commissioning.png-a35e2a6696ccbaf0703b88f8ada093d8.png",
+                        "hash": "a35e2a6696ccbaf0703b88f8ada093d8",
+                        "mime": "image/png",
+                        "name": "xsmall_installation-commissioning.png",
+                        "path": null,
+                        "size": 12.13,
+                        "width": 64,
+                        "height": 64,
+                        "sizeInBytes": 12132
+                      },
+                      "thumbnail": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/thumbnail_installation-commissioning.png-5d5072defa15f303088ea6f962fd04c8.png",
+                        "hash": "5d5072defa15f303088ea6f962fd04c8",
+                        "mime": "image/png",
+                        "name": "thumbnail_installation-commissioning.png",
+                        "path": null,
+                        "size": 63.37,
+                        "width": 156,
+                        "height": 156,
+                        "sizeInBytes": 63367
+                      }
+                    },
+                    "provider": "strapi-provider-upload-supabase",
+                    "alternativeText": null
+                  }
+                }
+              }
+            }
+          },
+          {
+            "id": 1,
+            "attributes": {
+              "slug": "preventive-maintenance",
+              "image": {
+                "data": {
+                  "id": 94,
+                  "attributes": {
+                    "ext": ".png",
+                    "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/preventive-maintenance.png-3969bcfa36fa786b8490e324e5db364f.png",
+                    "hash": "3969bcfa36fa786b8490e324e5db364f",
+                    "mime": "image/png",
+                    "name": "preventive-maintenance.png",
+                    "size": 479.32,
+                    "width": 1024,
+                    "height": 1024,
+                    "caption": null,
+                    "formats": {
+                      "large": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/large_preventive-maintenance.png-ff5d43d246842bbae9f9c1428bd293dd.png",
+                        "hash": "ff5d43d246842bbae9f9c1428bd293dd",
+                        "mime": "image/png",
+                        "name": "large_preventive-maintenance.png",
+                        "path": null,
+                        "size": 1749.61,
+                        "width": 1000,
+                        "height": 1000,
+                        "sizeInBytes": 1749607
+                      },
+                      "small": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/small_preventive-maintenance.png-6bc585385bbaa89605dac43860f5546e.png",
+                        "hash": "6bc585385bbaa89605dac43860f5546e",
+                        "mime": "image/png",
+                        "name": "small_preventive-maintenance.png",
+                        "path": null,
+                        "size": 498.14,
+                        "width": 500,
+                        "height": 500,
+                        "sizeInBytes": 498135
+                      },
+                      "medium": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/medium_preventive-maintenance.png-e2ae794d8d14f4b5436dff13ce9c7812.png",
+                        "hash": "e2ae794d8d14f4b5436dff13ce9c7812",
+                        "mime": "image/png",
+                        "name": "medium_preventive-maintenance.png",
+                        "path": null,
+                        "size": 1069.96,
+                        "width": 750,
+                        "height": 750,
+                        "sizeInBytes": 1069956
+                      },
+                      "xsmall": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/xsmall_preventive-maintenance.png-734f23064164c59197de04f15370f9bd.png",
+                        "hash": "734f23064164c59197de04f15370f9bd",
+                        "mime": "image/png",
+                        "name": "xsmall_preventive-maintenance.png",
+                        "path": null,
+                        "size": 11.55,
+                        "width": 64,
+                        "height": 64,
+                        "sizeInBytes": 11550
+                      },
+                      "thumbnail": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/thumbnail_preventive-maintenance.png-55738d500b9aa923289db1c2fcde49cd.png",
+                        "hash": "55738d500b9aa923289db1c2fcde49cd",
+                        "mime": "image/png",
+                        "name": "thumbnail_preventive-maintenance.png",
+                        "path": null,
+                        "size": 59.22,
+                        "width": 156,
+                        "height": 156,
+                        "sizeInBytes": 59216
+                      }
+                    },
+                    "provider": "strapi-provider-upload-supabase",
+                    "alternativeText": null
+                  }
+                }
+              },
+              "title": "Preventive Maintenance & Calibration Service",
+              "subtitle": null,
+              "cover_image": {
+                "data": {
+                  "id": 94,
+                  "attributes": {
+                    "ext": ".png",
+                    "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/preventive-maintenance.png-3969bcfa36fa786b8490e324e5db364f.png",
+                    "hash": "3969bcfa36fa786b8490e324e5db364f",
+                    "mime": "image/png",
+                    "name": "preventive-maintenance.png",
+                    "size": 479.32,
+                    "width": 1024,
+                    "height": 1024,
+                    "caption": null,
+                    "formats": {
+                      "large": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/large_preventive-maintenance.png-ff5d43d246842bbae9f9c1428bd293dd.png",
+                        "hash": "ff5d43d246842bbae9f9c1428bd293dd",
+                        "mime": "image/png",
+                        "name": "large_preventive-maintenance.png",
+                        "path": null,
+                        "size": 1749.61,
+                        "width": 1000,
+                        "height": 1000,
+                        "sizeInBytes": 1749607
+                      },
+                      "small": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/small_preventive-maintenance.png-6bc585385bbaa89605dac43860f5546e.png",
+                        "hash": "6bc585385bbaa89605dac43860f5546e",
+                        "mime": "image/png",
+                        "name": "small_preventive-maintenance.png",
+                        "path": null,
+                        "size": 498.14,
+                        "width": 500,
+                        "height": 500,
+                        "sizeInBytes": 498135
+                      },
+                      "medium": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/medium_preventive-maintenance.png-e2ae794d8d14f4b5436dff13ce9c7812.png",
+                        "hash": "e2ae794d8d14f4b5436dff13ce9c7812",
+                        "mime": "image/png",
+                        "name": "medium_preventive-maintenance.png",
+                        "path": null,
+                        "size": 1069.96,
+                        "width": 750,
+                        "height": 750,
+                        "sizeInBytes": 1069956
+                      },
+                      "xsmall": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/xsmall_preventive-maintenance.png-734f23064164c59197de04f15370f9bd.png",
+                        "hash": "734f23064164c59197de04f15370f9bd",
+                        "mime": "image/png",
+                        "name": "xsmall_preventive-maintenance.png",
+                        "path": null,
+                        "size": 11.55,
+                        "width": 64,
+                        "height": 64,
+                        "sizeInBytes": 11550
+                      },
+                      "thumbnail": {
+                        "ext": ".png",
+                        "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/thumbnail_preventive-maintenance.png-55738d500b9aa923289db1c2fcde49cd.png",
+                        "hash": "55738d500b9aa923289db1c2fcde49cd",
+                        "mime": "image/png",
+                        "name": "thumbnail_preventive-maintenance.png",
+                        "path": null,
+                        "size": 59.22,
+                        "width": 156,
+                        "height": 156,
+                        "sizeInBytes": 59216
+                      }
+                    },
+                    "provider": "strapi-provider-upload-supabase",
+                    "alternativeText": null
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

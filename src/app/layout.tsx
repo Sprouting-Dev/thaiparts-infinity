@@ -1,5 +1,14 @@
 import type { Metadata } from 'next';
-import { Kanit } from 'next/font/google';
+// Self-hosted Kanit (รองรับ static export — ไม่ต้องดึงจาก Google Fonts ตอน build)
+import '@fontsource/kanit/100.css';
+import '@fontsource/kanit/200.css';
+import '@fontsource/kanit/300.css';
+import '@fontsource/kanit/400.css';
+import '@fontsource/kanit/500.css';
+import '@fontsource/kanit/600.css';
+import '@fontsource/kanit/700.css';
+import '@fontsource/kanit/800.css';
+import '@fontsource/kanit/900.css';
 import './globals.css';
 
 import Header from '@/components/layout/Header';
@@ -8,12 +17,6 @@ import { fetchLayout, fetchPageBySlug } from '@/lib/cms';
 import { buildMetadataFromSeo } from '@/lib/seo';
 import type { LayoutAttributes } from '@/types/cms';
 import { mediaUrl } from '@/lib/strapi';
-
-const kanit = Kanit({
-  variable: '--font-kanit',
-  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
-  subsets: ['latin', 'latin-ext', 'thai'],
-});
 
 export async function generateMetadata(): Promise<Metadata> {
   const defaultTitle =
@@ -211,8 +214,6 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export const dynamic = 'force-dynamic';
-
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -308,7 +309,7 @@ export default async function RootLayout({
         <meta name="theme-color" content="var(--brand-blue)" />
       </head>
       <body
-        className={`${kanit.variable} antialiased flex flex-col min-h-screen overflow-x-hidden gap-16 lg:gap-24`}
+        className={`antialiased flex flex-col min-h-screen overflow-x-hidden gap-16 lg:gap-24`}
         suppressHydrationWarning
       >
         <Header navbar={navbarForHeader} />

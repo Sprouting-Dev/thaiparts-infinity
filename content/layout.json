@@ -1,0 +1,113 @@
+{
+  "data": {
+    "id": 1,
+    "attributes": {
+      "image": {
+        "data": {
+          "id": 107,
+          "attributes": {
+            "ext": ".png",
+            "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/footer.png-44bb3258207eb90772bbda70a4865fb9.png",
+            "hash": "44bb3258207eb90772bbda70a4865fb9",
+            "mime": "image/png",
+            "name": "footer.png",
+            "size": 312.7,
+            "width": 1024,
+            "height": 1024,
+            "caption": null,
+            "formats": {
+              "large": {
+                "ext": ".png",
+                "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/large_footer.png-772e1fa0cc22c60c630325205dfcf13f.png",
+                "hash": "772e1fa0cc22c60c630325205dfcf13f",
+                "mime": "image/png",
+                "name": "large_footer.png",
+                "path": null,
+                "size": 1532.96,
+                "width": 1000,
+                "height": 1000,
+                "sizeInBytes": 1532962
+              },
+              "small": {
+                "ext": ".png",
+                "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/small_footer.png-5f24e4f17007b594e3e6f84f66257f0b.png",
+                "hash": "5f24e4f17007b594e3e6f84f66257f0b",
+                "mime": "image/png",
+                "name": "small_footer.png",
+                "path": null,
+                "size": 404.14,
+                "width": 500,
+                "height": 500,
+                "sizeInBytes": 404137
+              },
+              "medium": {
+                "ext": ".png",
+                "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/medium_footer.png-978c925c92ed288f2ba15174f2b3cc74.png",
+                "hash": "978c925c92ed288f2ba15174f2b3cc74",
+                "mime": "image/png",
+                "name": "medium_footer.png",
+                "path": null,
+                "size": 907.62,
+                "width": 750,
+                "height": 750,
+                "sizeInBytes": 907617
+              },
+              "xsmall": {
+                "ext": ".png",
+                "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/xsmall_footer.png-d254253d88cc4e0c17806c8052a4cda2.png",
+                "hash": "d254253d88cc4e0c17806c8052a4cda2",
+                "mime": "image/png",
+                "name": "xsmall_footer.png",
+                "path": null,
+                "size": 9.89,
+                "width": 64,
+                "height": 64,
+                "sizeInBytes": 9887
+              },
+              "thumbnail": {
+                "ext": ".png",
+                "url": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/thumbnail_footer.png-498c445f20a805d05cca3e9f71b11a95.png",
+                "hash": "498c445f20a805d05cca3e9f71b11a95",
+                "mime": "image/png",
+                "name": "thumbnail_footer.png",
+                "path": null,
+                "size": 48.39,
+                "width": 156,
+                "height": 156,
+                "sizeInBytes": 48389
+              }
+            },
+            "provider": "strapi-provider-upload-supabase",
+            "alternativeText": null
+          }
+        }
+      },
+      "quote": "<div class=\"raw-html-embed\"><!-- ส่วน Title (จะใหญ่กว่าบรรทัดล่าง) -->\n<span style=\"color:#FFFFFF;\">เครื่องจักรหยุดเดิน? อย่าให้ Downtime ทำลายกำไรของคุณ</span>\n\n<hr>\n\n<!-- ส่วน Subtitle -->\n<p style=\"color:#FFFFFF;\">\n  ติดต่อสายด่วนวิศวกรของเราทันที บริการ On-site Support ภายใน 24-48 ชม.\n</p></div>",
+      "button": "แจ้งปัญหาด่วน/ติดต่อเรา",
+      "address": {
+        "id": 1,
+        "email": "info@thaipartsinfinity.com",
+        "map_url": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3892.1342469107562!2d101.21760030000002!3d12.704659699999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3102fb24e2bfc1c3%3A0x1e03d97838f7cc7a!2z4Lir4Lih4Li54LmI4Lia4LmJ4Liy4LiZ4Liq4Lin4Li14LiX4LmC4Liu4LihJuC4m-C4suC4o-C5jOC4hA!5e0!3m2!1sth!2sth!4v1761806518953!5m2!1sth!2sth",
+        "adddress": "5/17 M.2, Thap Ma, Mueang Rayong, Rayong, 21000",
+        "company_name": "THAIPARTS INFINITY CO., LTD.",
+        "phone_number_1": "924242144",
+        "phone_number_2": "971282707"
+      },
+      "createdAt": "2025-10-23T15:26:18.6",
+      "updatedAt": "2025-10-30T08:54:51.015",
+      "publishedAt": "2025-10-23T15:26:21.628",
+      "social_media": [
+        {
+          "id": 1,
+          "url": "https://lin.ee/E2Zf5YS",
+          "type": "line"
+        },
+        {
+          "id": 2,
+          "url": "info@thaipartsinfinity.com",
+          "type": "email"
+        }
+      ]
+    }
+  }
+}
