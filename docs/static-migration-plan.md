@@ -36,15 +36,10 @@
 | เก็บรูป | commit ลง repo (เพียงพอ + บีบอัดแล้ว) |
 | Image optimization | `images.unoptimized` + บีบอัดตอน build |
 
-### รอยืนยัน ⏳ — โฮสต์ + วิธี login ของลูกค้า (สำคัญ)
-ข้อจำกัดจริง: "ลูกค้า login ด้วย email โดยไม่ต้องมีบัญชี GitHub" ทำได้ผ่าน **Netlify Identity + Git Gateway** เท่านั้น (ฟีเจอร์ของ Netlify) — บน Cloudflare Pages ทำแบบนั้นไม่ได้
-
-| ตัวเลือก | ลูกค้า login ยังไง | หมายเหตุ |
-|---|---|---|
-| **A) Netlify + Identity + Git Gateway** (แนะนำ) | **email/password — ไม่ต้องมีบัญชี GitHub** | ตรงกับที่อยากได้ที่สุด, ฟรีพอสำหรับเว็บโชว์ (100GB/เดือน) |
-| B) Cloudflare Pages + GitHub OAuth | ต้องมี **บัญชี GitHub** (เป็น collaborator) | bandwidth ไม่จำกัด แต่ลูกค้าต้องมี GitHub |
-
-> **Default ที่จะใช้: A) Netlify** เพื่อให้ลูกค้า login ง่ายแบบ email ไม่ต้องรู้จัก GitHub (ถ้าน๊อฟฟี่อยากได้ Cloudflare แทน บอกได้)
+### ยืนยันแล้ว ✅ — โฮสต์ + วิธี login ของลูกค้า
+- **โฮสต์: Cloudflare Pages**
+- **Decap login: GitHub OAuth** — ลูกค้ามีบัญชี GitHub อยู่แล้ว (เพิ่มเป็น collaborator ของ repo)
+- ต้องตั้ง **OAuth proxy** (Cloudflare Worker/Pages Function) ให้ Decap คุยกับ GitHub ได้ → เป็นขั้นตอนตอน deploy
 
 ---
 
