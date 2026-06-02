@@ -26,14 +26,25 @@
 
 ---
 
-## 2. การตัดสินใจที่ต้องยืนยัน (รอ confirm ก่อนลงมือ build หนัก)
+## 2. การตัดสินใจ
 
-| หัวข้อ | ตัวเลือก | คำแนะนำ |
+### ยืนยันแล้ว ✅
+| หัวข้อ | สรุป |
+|---|---|
+| Git-CMS | **Decap CMS** — ฟรี opensource ไม่จำกัดผู้ใช้ |
+| ฟอร์มติดต่อ | **Cloudflare Pages Function** (คง Resend ไว้, ฟรี) |
+| เก็บรูป | commit ลง repo (เพียงพอ + บีบอัดแล้ว) |
+| Image optimization | `images.unoptimized` + บีบอัดตอน build |
+
+### รอยืนยัน ⏳ — โฮสต์ + วิธี login ของลูกค้า (สำคัญ)
+ข้อจำกัดจริง: "ลูกค้า login ด้วย email โดยไม่ต้องมีบัญชี GitHub" ทำได้ผ่าน **Netlify Identity + Git Gateway** เท่านั้น (ฟีเจอร์ของ Netlify) — บน Cloudflare Pages ทำแบบนั้นไม่ได้
+
+| ตัวเลือก | ลูกค้า login ยังไง | หมายเหตุ |
 |---|---|---|
-| Git-CMS | **Decap** (ฟรี opensource, ไม่จำกัดผู้ใช้) vs Tina (UI สวย แต่ free tier จำกัด) | **Decap** — $0 ถาวร เหมาะกับเว็บโชว์ |
-| ฟอร์มติดต่อ | Cloudflare Pages Function (คง Resend ไว้, ฟรี) vs Formspree (บริการนอก, ฟรี ~50/เดือน) | **Cloudflare Pages Function** — คุมเอง ไม่พึ่งเจ้าอื่น |
-| เก็บรูป | commit ลง repo (ง่ายสุด) vs Cloudflare R2/Images | **commit ลง repo** — ปริมาณงานโชว์ + บีบอัดแล้วเล็ก เพียงพออีกนาน |
-| Image optimization | `next/image` แบบ unoptimized + บีบอัดตอน build vs Cloudflare Images | บีบอัดตอน build (ฟรี) |
+| **A) Netlify + Identity + Git Gateway** (แนะนำ) | **email/password — ไม่ต้องมีบัญชี GitHub** | ตรงกับที่อยากได้ที่สุด, ฟรีพอสำหรับเว็บโชว์ (100GB/เดือน) |
+| B) Cloudflare Pages + GitHub OAuth | ต้องมี **บัญชี GitHub** (เป็น collaborator) | bandwidth ไม่จำกัด แต่ลูกค้าต้องมี GitHub |
+
+> **Default ที่จะใช้: A) Netlify** เพื่อให้ลูกค้า login ง่ายแบบ email ไม่ต้องรู้จัก GitHub (ถ้าน๊อฟฟี่อยากได้ Cloudflare แทน บอกได้)
 
 ---
 
