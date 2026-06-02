@@ -1,21 +1,7 @@
 import { Product, ProductsResponse, ProductFilters } from '@/types/product';
-import { categoryMapping } from '@/lib/categoryMapping';
-import { mediaUrl, STRAPI_URL } from '@/lib/strapi';
+import { getProductsByCategory } from '@/lib/categoryMapping';
+import { mediaUrl } from '@/lib/strapi';
 import { PossibleMediaInput } from '@/types/strapi';
-
-const API_TOKEN = process.env.NEXT_PUBLIC_STRAPI_API_TOKEN;
-
-const getStrapiHeaders = () => {
-  const headers: HeadersInit = {
-    'Content-Type': 'application/json',
-  };
-
-  if (API_TOKEN) {
-    headers['Authorization'] = `Bearer ${API_TOKEN}`;
-  }
-
-  return headers;
-};
 
 // Utility function สำหรับสร้าง slug ที่ standardized
 const generateStandardSlug = (text: string): string => {
@@ -68,10 +54,6 @@ interface StrapiProduct {
 const mapStrapiProduct = (strapiProduct: StrapiProduct): Product => {
   const { id, attributes } = strapiProduct;
 
-  // Prefer centralized resolver which handles Strapi media objects and plain URLs.
-  // When CMS image is missing, return an empty string so UI components can
-  // render a neutral placeholder instead of pointing to a local file which
-  // might mask missing CMS content.
   let imageUrl = '';
   try {
     const maybeImage: PossibleMediaInput =
@@ -121,134 +103,59 @@ const mapStrapiProduct = (strapiProduct: StrapiProduct): Product => {
   };
 };
 
+// The full product catalogue is shipped as a static asset (exported from the
+// CMS at build time). We load it once on the client and filter/paginate in
+// memory — no runtime backend is required for the static site.
+let _allProducts: Product[] | null = null;
+
+async function loadAllProducts(signal?: AbortSignal): Promise<Product[]> {
+  if (_allProducts) return _allProducts;
+  const res = await fetch('/data/products.json', { signal });
+  if (!res.ok) {
+    throw new Error(`Failed to fetch products: HTTP ${res.status}`);
+  }
+  const json = await res.json();
+  const data = (json?.data ?? []) as StrapiProduct[];
+  _allProducts = data.map(mapStrapiProduct);
+  return _allProducts;
+}
+
 export const productAPI = {
   async getProducts(
     filters?: ProductFilters,
     opts?: { signal?: AbortSignal }
   ): Promise<ProductsResponse> {
-    try {
-      // Allow caller to request pagination parameters. Default to page=1 pageSize=100
-      // to be backward-compatible with previous behavior. The Products page will
-      // call this with smaller pageSize (e.g. 6) for per-section incremental fetch.
-      const page = filters?.page ?? 1;
-      const pageSize = filters?.pageSize ?? 100;
+    const all = await loadAllProducts(opts?.signal);
 
-      let url = `${STRAPI_URL}/api/products?populate=*&pagination[page]=${page}&pagination[pageSize]=${pageSize}`;
-
-      if (filters?.category) {
-        // Strapi products may use a free-form 'tag' field to classify items.
-        // Our frontend uses logical category keys (e.g. 'plc-scada') which map
-        // to a set of tags in categoryMapping. Translate category -> tags
-        // and use a $in filter on tag to return items for that category.
-        const catInfo = categoryMapping[filters.category];
-        if (catInfo && Array.isArray(catInfo.tags) && catInfo.tags.length > 0) {
-          // Strapi expects repeated array params for $in: filters[tag][$in][]=a&filters[tag][$in][]=b
-          const parts = catInfo.tags
-            .map(t => `filters[tag][$in][]=${encodeURIComponent(t)}`)
-            .join('&');
-          url += `&${parts}`;
-        } else {
-          // fallback: attempt to filter by category field directly
-          url += `&filters[category][$eq]=${encodeURIComponent(filters.category)}`;
-        }
-      }
-      if (filters?.tag) {
-        url += `&filters[tag][$eq]=${filters.tag}`;
-      }
-      if (filters?.search) {
-        url += `&filters[$or][0][title][$containsi]=${filters.search}&filters[$or][1][description][$containsi]=${filters.search}`;
-      }
-
-      const headers = getStrapiHeaders();
-
-      const response = await fetch(url, {
-        headers: headers,
-        signal: opts?.signal,
-      });
-
-      if (!response.ok) {
-        if (response.status === 401 && !API_TOKEN) {
-          const retryResponse = await fetch(url, {
-            headers: { 'Content-Type': 'application/json' },
-            signal: opts?.signal,
-          });
-
-          if (retryResponse.ok) {
-            const strapiResponse = await retryResponse.json();
-            const products = strapiResponse.data?.map(mapStrapiProduct) || [];
-            return {
-              products,
-              total: strapiResponse.meta?.pagination?.total || products.length,
-              page: strapiResponse.meta?.pagination?.page || 1,
-              limit:
-                strapiResponse.meta?.pagination?.pageSize || products.length,
-              hasMore: false,
-            };
-          }
-        }
-
-        let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
-        try {
-          const errorBody = await response.json();
-          errorMessage = errorBody.error?.message || errorMessage;
-        } catch {
-          // Error parsing response body
-        }
-
-        throw new Error(`Failed to fetch products: ${errorMessage}`);
-      }
-
-      const strapiResponse = await response.json();
-
-      let products = strapiResponse.data?.map(mapStrapiProduct) || [];
-
-      // Fallback: if caller requested a category and we got no results, try a
-      // containsi OR query across the tags to catch mismatched tag shapes.
-      if (filters?.category && products.length === 0) {
-        const catInfo = categoryMapping[filters.category];
-        if (catInfo && Array.isArray(catInfo.tags) && catInfo.tags.length > 0) {
-          // build OR filters for tag containsi
-          const orParts = catInfo.tags
-            .map(
-              (t, i) =>
-                `filters[$or][${i}][tag][$containsi]=${encodeURIComponent(t)}`
-            )
-            .join('&');
-
-          const fallbackUrl = `${STRAPI_URL}/api/products?populate=*&pagination[page]=${page}&pagination[pageSize]=${pageSize}&${orParts}`;
-          const fallbackResp = await fetch(fallbackUrl, {
-            headers: getStrapiHeaders(),
-            signal: opts?.signal,
-          });
-          if (fallbackResp.ok) {
-            const fallbackJson = await fallbackResp.json();
-            products = fallbackJson.data?.map(mapStrapiProduct) || products;
-            // update pagination meta if available
-            if (fallbackJson.meta?.pagination) {
-              // override strapiResponse meta to the fallback one for downstream values
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              (strapiResponse as any).meta = fallbackJson.meta;
-            }
-          }
-        }
-      }
-
-      const total = strapiResponse.meta?.pagination?.total ?? products.length;
-      const currentPage = strapiResponse.meta?.pagination?.page ?? page;
-      const limit = strapiResponse.meta?.pagination?.pageSize ?? pageSize;
-      const pageCount =
-        strapiResponse.meta?.pagination?.pageCount ?? Math.ceil(total / limit);
-
-      return {
-        products,
-        total,
-        page: currentPage,
-        limit,
-        hasMore: currentPage < pageCount,
-      };
-    } catch (error) {
-      throw error;
+    let products = all;
+    if (filters?.category) {
+      products = getProductsByCategory(all, filters.category);
+    } else if (filters?.tag) {
+      products = all.filter((p) => p.tag === filters.tag);
     }
+
+    if (filters?.search) {
+      const q = filters.search.toLowerCase();
+      products = products.filter(
+        (p) =>
+          (p.name ?? '').toLowerCase().includes(q) ||
+          (p.description ?? '').toLowerCase().includes(q)
+      );
+    }
+
+    const page = filters?.page ?? 1;
+    const pageSize = filters?.pageSize ?? 100;
+    const total = products.length;
+    const start = (page - 1) * pageSize;
+    const slice = products.slice(start, start + pageSize);
+
+    return {
+      products: slice,
+      total,
+      page,
+      limit: pageSize,
+      hasMore: start + pageSize < total,
+    };
   },
 };
 

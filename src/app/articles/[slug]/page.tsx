@@ -1,10 +1,20 @@
 import type { Metadata } from 'next';
-import { fetchArticleBySlug, fetchArticles } from '@/lib/cms';
+import {
+  fetchArticleBySlug,
+  fetchArticles,
+  allArticleSlugs,
+} from '@/lib/cms';
 import { sanitizeHtml } from '@/lib/sanitize';
 import { notFound } from 'next/navigation';
 import SafeHtml from '@/components/ui/SafeHtml';
 import { buildMetadataFromSeo, extractMediaMeta } from '@/lib/seo';
 import Image from 'next/image';
+
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  return allArticleSlugs().map((slug) => ({ slug }));
+}
 
 export async function generateMetadata({
   params,

@@ -5,17 +5,14 @@ import Image from 'next/image';
 import LogoCarousel from '@/components/features/LogoCarousel';
 import CTAButton from '@/components/ui/CTAButton';
 import { MotionReveal } from '@/components/motion/MotionReveal';
-import { fetchPageBySlug } from '@/lib/cms';
+import { fetchPageBySlug, fetchAbout } from '@/lib/cms';
 import { logger } from '@/lib/logger';
-import { mediaUrl, STRAPI_URL } from '@/lib/strapi';
+import { mediaUrl } from '@/lib/strapi';
 import type { AboutAttributes, PageAttributes } from '@/types/cms';
 import type { PossibleMediaInput } from '@/types/strapi';
 import type { CTAVariant } from '@/lib/button-styles';
 
 import { buildMetadataFromSeo } from '@/lib/seo';
-
-// Local helpers/constants used by this page
-const STRAPI_TOKEN = process.env.STRAPI_API_TOKEN;
 
 type CTA = {
   label: string;
@@ -23,35 +20,6 @@ type CTA = {
   variant?: CTAVariant;
   newTab?: boolean;
 };
-/** 2) เนื้อหาอื่น ๆ จาก Single Type: about-us */
-async function fetchAboutSingle(): Promise<unknown> {
-  const headers: Record<string, string> = {};
-  if (STRAPI_TOKEN) headers['Authorization'] = `Bearer ${STRAPI_TOKEN}`;
-
-  const q = new URLSearchParams();
-  // ไม่ต้อง populate hero ใน single type แล้ว เพราะเราใช้ hero จาก pages
-  q.set('populate[Team][populate]', 'image');
-  q.set('populate[Warehouse][populate]', 'image');
-  q.set('populate[Standards]', '*');
-  q.set('populate[vision]', '*');
-  q.set('populate[mission]', '*');
-  q.set('populate[About]', '*');
-
-  const url = `${STRAPI_URL}/api/about-us?${q.toString()}`;
-  try {
-    const res = await fetch(url, { headers, cache: 'no-store' });
-    if (!res.ok) {
-      logger.error('[ABOUT][fetchAboutSingle] HTTP', res.status);
-      return null;
-    }
-    return (await res.json()) as unknown;
-  } catch (errUnknown) {
-    const err =
-      errUnknown instanceof Error ? errUnknown : new Error(String(errUnknown));
-    logger.error('[ABOUT][fetchAboutSingle]', err.message);
-    return null;
-  }
-}
 
 /** ========== Helpers ========== */
 
@@ -87,7 +55,7 @@ const pickTitleDesc = (v: unknown): { title: string; description: string } => {
 export default async function AboutUsPage() {
   const [pageHero, aboutJson] = await Promise.all([
     fetchPageBySlug('about-us'),
-    fetchAboutSingle(),
+    fetchAbout(),
   ]);
 
   let aboutAttrs: AboutAttributes | null = null;

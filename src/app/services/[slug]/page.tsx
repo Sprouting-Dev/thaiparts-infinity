@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { fetchServiceBySlug } from '@/lib/cms';
+import { fetchServiceBySlug, allServiceSlugs } from '@/lib/cms';
 import { buildMetadataFromSeo } from '@/lib/seo';
 import { mediaUrl } from '@/lib/strapi';
 import type { PossibleMediaInput } from '@/types/strapi';
@@ -15,6 +15,12 @@ import SafetyAndStandards from '@/components/sections/SafetyAndStandards';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
+}
+
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  return allServiceSlugs().map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({

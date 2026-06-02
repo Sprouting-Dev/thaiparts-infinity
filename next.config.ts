@@ -1,58 +1,15 @@
 import type { NextConfig } from 'next';
 
-// Parse NEXT_PUBLIC_STRAPI_URL (fall back to localhost) so we can allow that host
-const STRAPI_URL =
-  process.env.NEXT_PUBLIC_STRAPI_URL ?? 'http://localhost:1337';
-// default pattern for local dev
-let remotePatterns: Array<Record<string, string | undefined>> = [
-  { protocol: 'http', hostname: 'localhost', port: '1337', pathname: '/**' },
-  {
-    protocol: 'https',
-    hostname: 'intakohtlmqmpjajyenj.supabase.co',
-    pathname: '/**',
-  },
-];
-
-try {
-  const parsed = new URL(STRAPI_URL);
-  remotePatterns = [
-    {
-      protocol: parsed.protocol.replace(':', ''),
-      hostname: parsed.hostname,
-      port: parsed.port || undefined,
-      pathname: '/**',
-    },
-    {
-      protocol: 'https',
-      hostname: 'intakohtlmqmpjajyenj.supabase.co',
-      pathname: '/**',
-    },
-  ];
-} catch {
-  // leave default
-}
-
-// Allow common remote hosts in addition to Strapi (e.g., Supabase storage)
-remotePatterns.push({
-  protocol: 'https',
-  hostname: '**.supabase.co',
-  pathname: '/storage/v1/object/public/**',
-});
-
 const nextConfig: NextConfig = {
+  // Fully static site (Next.js export) — no server runtime.
+  // Deployed to Cloudflare Pages; the contact form is handled by a
+  // Cloudflare Pages Function (functions/api/send-email.ts).
+  output: 'export',
   images: {
-    // TypeScript expects RemotePattern[]; cast here because we built the shape dynamically.
-    // It's safe because entries follow the RemotePattern fields: protocol, hostname, port?, pathname
-    // Cast via unknown to the expected NextConfig images.remotePatterns type
-    remotePatterns: remotePatterns as unknown as NonNullable<
-      NextConfig['images']
-    >['remotePatterns'],
-    // Force WebP/AVIF conversion for all images (except SVG which Next.js preserves as-is)
-    // AVIF will be used if browser supports it, otherwise falls back to WebP
-    // This ensures all images are converted to modern formats for better performance
-    formats: ['image/webp', 'image/avif'],
-    // Cache optimized images for 60 seconds to reduce server load
-    minimumCacheTTL: 60,
+    // No image optimization server in a static export. Images reference
+    // remote (Supabase storage) URLs and are emitted as-is; <Image> already
+    // passes `unoptimized` where needed.
+    unoptimized: true,
   },
 };
 

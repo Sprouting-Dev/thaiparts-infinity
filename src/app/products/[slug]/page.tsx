@@ -1,10 +1,16 @@
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { fetchProductBySlug } from '@/lib/cms';
+import { fetchProductBySlug, allProductSlugs } from '@/lib/cms';
 import { mediaUrl } from '@/lib/strapi';
 import type { PossibleMediaInput } from '@/types/strapi';
 import SafeHtml from '@/components/ui/SafeHtml';
 import CTAButton from '@/components/ui/CTAButton';
+
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  return allProductSlugs().map((slug) => ({ slug }));
+}
 
 export default async function ProductDetailPage({
   params,
