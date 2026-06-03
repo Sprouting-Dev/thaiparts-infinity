@@ -13,7 +13,9 @@ backend:
   name: github
   repo: Sprouting-Dev/thaiparts-infinity
   branch: main
-  base_url: https://REPLACE-WITH-OAUTH-PROXY   # TODO: ใส่ URL ของ OAuth proxy ตอน deploy
+  # OAuth proxy = Cloudflare Pages Functions บนเว็บนี้เอง (functions/oauth/*)
+  base_url: https://thaipartsinfinity.com
+  auth_endpoint: oauth
 
 media_folder: "public/uploads"   # ที่เก็บรูปจริงใน repo
 public_folder: "/uploads"        # path ที่เว็บใช้อ้างรูป
