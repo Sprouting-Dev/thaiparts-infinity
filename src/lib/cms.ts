@@ -63,27 +63,45 @@ function paginate<T>(items: Array<StrapiItem<T>>, params: ListParams) {
   };
 }
 
+// Site settings (footer contact, logo, quote) — flat file edited via Decap.
+type LayoutFlat = {
+  logo?: string;
+  prefooter_image?: string;
+  quote?: string;
+  button?: string;
+  company_name?: string;
+  address?: string;
+  phone_number_1?: string;
+  phone_number_2?: string;
+  email?: string;
+  map_url?: string;
+  social_media?: Array<{ type?: string; url?: string }>;
+};
+
 export async function fetchLayout(): Promise<LayoutAttributes | null> {
-  const json = readContent<StrapiSingle<LayoutAttributes>>('layout.json');
-  const attrs = (json?.data?.attributes ?? null) as any;
-  if (attrs) {
-    // Normalize contact/address shape: Strapi schema contains a typo `adddress`.
-    try {
-      const addr = attrs.address || attrs.adddress || null;
-      if (addr && typeof addr === 'object') {
-        const normalized = { ...(addr as any) } as any;
-        normalized.address =
-          addr.adddress ?? addr.address ?? addr.address_text ?? '';
-        attrs.address = normalized;
-      }
-    } catch {
-      // non-fatal
-    }
-    try {
-      if (typeof attrs.quote === 'string') attrs.quote = sanitizeHtml(attrs.quote);
-    } catch {}
-  }
-  return attrs;
+  const f = readContent<LayoutFlat>('settings/layout.json');
+  if (!f) return null;
+  let quote = f.quote ?? '';
+  try {
+    quote = sanitizeHtml(quote);
+  } catch {}
+  return {
+    image: f.logo,
+    prefooter_image: f.prefooter_image,
+    quote,
+    button: f.button,
+    address: {
+      company_name: f.company_name,
+      // keep both keys: Footer reads `adddress` (Strapi typo) then `address`
+      adddress: f.address,
+      address: f.address,
+      phone_number_1: f.phone_number_1,
+      phone_number_2: f.phone_number_2,
+      email: f.email,
+      map_url: f.map_url,
+    },
+    social_media: f.social_media,
+  } as unknown as LayoutAttributes;
 }
 
 function sanitizeRec(o: any): any {
@@ -121,44 +139,129 @@ export async function fetchHome(): Promise<HomeAttributes | null> {
   return attrs;
 }
 
+type AboutFlat = {
+  about?: { title?: string; description?: string };
+  vision?: { title?: string; description?: string };
+  mission?: { title?: string; description?: string };
+  team?: { image?: string; description?: string };
+  warehouse?: { image?: string; description?: string };
+  standards?: string[];
+};
+
 export async function fetchAbout(): Promise<unknown> {
-  // Returns the raw `{ data: { attributes } }` shape the about page expects.
-  return readContent<unknown>('about.json');
+  // Map the flat (Decap-edited) about file back to the `{ data: { attributes } }`
+  // shape the about page expects.
+  const f = readContent<AboutFlat>('settings/about.json');
+  if (!f) return null;
+  return {
+    data: {
+      attributes: {
+        About: f.about ?? { title: '', description: '' },
+        vision: f.vision ?? { title: '', description: '' },
+        mission: f.mission ?? { title: '', description: '' },
+        Team: { image: f.team?.image, description: f.team?.description },
+        Warehouse: {
+          image: f.warehouse?.image,
+          description: f.warehouse?.description,
+        },
+        Standards: {
+          data: (f.standards ?? []).map((url) => ({ attributes: { url } })),
+        },
+      },
+    },
+  };
 }
+
+type PageFile = {
+  slug?: string;
+  quote?: string;
+  button_1?: string;
+  button_2?: string;
+  is_show_button?: boolean;
+  hero_image?: string;
+  SEO?: unknown;
+};
 
 export async function fetchPageBySlug(
   slug: string
 ): Promise<(PageAttributes & { id?: number }) | null> {
-  const json = readContent<StrapiList<PageAttributes>>('pages.json');
-  const item = json?.data?.find(
-    (p) => (p.attributes as any)?.slug === slug
-  );
-  if (!item) return null;
-  const a: any = { id: item.id, ...(item.attributes as any) };
+  const f = readContentDir<PageFile>('pages').find((p) => p.slug === slug);
+  if (!f) return null;
+  const a: any = { id: f.slug, ...f };
   try {
     if (typeof a.quote === 'string') a.quote = sanitizeHtml(a.quote);
-  } catch {}
-  try {
-    if (typeof a.description === 'string')
-      a.description = sanitizeHtml(a.description);
   } catch {}
   return a as PageAttributes & { id?: number };
 }
 
-export async function fetchArticles(params: ListParams = {}) {
-  const json = readContent<StrapiList<ArticleAttributes>>('articles.json');
-  const items = sortItems(
-    json?.data ?? [],
-    params.sort ?? 'publishedAt:desc'
+// Articles: one file per article under content/articles/ (Decap folder
+// collection). `content` is a list of typed blocks ({type:'content'|'image'})
+// which we map back to the `__component` shape the article renderer expects.
+type ArticleBlock = {
+  type?: string;
+  content?: string;
+  description?: string;
+  image?: string;
+};
+type ArticleFile = {
+  title?: string;
+  slug?: string;
+  subtitle?: string;
+  read_time?: number | string | null;
+  publishedAt?: string | null;
+  image?: string;
+  content?: ArticleBlock[];
+};
+
+function articleItems(): Array<StrapiItem<ArticleAttributes>> {
+  return readContentDir<ArticleFile>('articles').map(
+    (f) =>
+      ({
+        id: f.slug,
+        attributes: {
+          title: f.title,
+          slug: f.slug,
+          subtitle: f.subtitle,
+          read_time: f.read_time,
+          publishedAt: f.publishedAt,
+          image: f.image,
+        },
+      }) as unknown as StrapiItem<ArticleAttributes>
   );
+}
+
+function mapArticleBlocks(blocks: ArticleBlock[] = []) {
+  return blocks.map((b) =>
+    b.type === 'image'
+      ? {
+          __component: 'shared.image-with-description',
+          description: b.description ?? '',
+          image: b.image ?? '',
+        }
+      : { __component: 'shared.content-default', content: b.content ?? '' }
+  );
+}
+
+export async function fetchArticles(params: ListParams = {}) {
+  const items = sortItems(articleItems(), params.sort ?? 'publishedAt:desc');
   return paginate(items, params);
 }
 
 export async function fetchArticleBySlug(slug: string) {
-  const json = readContent<StrapiList<ArticleAttributes>>('articles.json');
-  const item = json?.data?.find((a) => (a.attributes as any)?.slug === slug);
-  if (!item) return null;
-  return { id: item.id, attributes: item.attributes };
+  const f = readContentDir<ArticleFile>('articles').find((x) => x.slug === slug);
+  if (!f) return null;
+  return {
+    id: f.slug,
+    attributes: {
+      title: f.title,
+      slug: f.slug,
+      subtitle: f.subtitle,
+      read_time: f.read_time,
+      publishedAt: f.publishedAt,
+      image: f.image,
+      content: mapArticleBlocks(f.content),
+    },
+  };
 }
 
 // Products are stored one-file-per-item under content/products/ (Decap folder
@@ -233,9 +336,8 @@ export function allProductSlugs(): string[] {
 }
 
 export function allArticleSlugs(): string[] {
-  const json = readContent<StrapiList<ArticleAttributes>>('articles.json');
-  return (json?.data ?? [])
-    .map((a) => (a.attributes as any)?.slug as string)
+  return readContentDir<ArticleFile>('articles')
+    .map((f) => f.slug as string)
     .filter(Boolean);
 }
 
