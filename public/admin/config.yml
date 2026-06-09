@@ -2,22 +2,21 @@
 # Decap CMS — Thai Parts Infinity
 # โฮสต์: Cloudflare Pages | Login: GitHub OAuth (ลูกค้าต้องเป็น collaborator ของ repo)
 #
-# DRAFT: ฟิลด์ด้านล่างอ้างอิงจากโครงสร้างข้อมูลปัจจุบัน (ดู docs/static-migration-plan.md ข้อ 3)
-#        จะปรับให้ตรงเป๊ะอีกครั้งหลัง export ข้อมูลจริงจาก Strapi (Phase 1)
+# OAuth proxy = Cloudflare Pages Functions (functions/oauth/*) บนเว็บนี้เอง
+# ต้องตั้ง env บน Cloudflare: OAUTH_GITHUB_CLIENT_ID, OAUTH_GITHUB_CLIENT_SECRET
 #
-# ⚠️ ก่อนใช้งานจริง: GitHub backend บน Cloudflare ต้องมี OAuth proxy
-#    ตั้ง base_url ให้ชี้ไป proxy นั้น (เช่น Cloudflare Worker)
+# หมายเหตุ: รอบแรกเปิดให้แก้ "สินค้า (Products)" ก่อน — Articles / ข้อความหน้าเว็บ
+#           จะทยอยเพิ่มเมื่อ wire โครงสร้างเสร็จ (Services แก้ผ่านเดฟ)
 # ───────────────────────────────────────────────────────────────────
 
 backend:
   name: github
   repo: Sprouting-Dev/thaiparts-infinity
   branch: main
-  # OAuth proxy = Cloudflare Pages Functions บนเว็บนี้เอง (functions/oauth/*)
   base_url: https://thaipartsinfinity.com
   auth_endpoint: oauth
 
-media_folder: "public/uploads"   # ที่เก็บรูปจริงใน repo
+media_folder: "public/uploads"   # ที่เก็บรูปจริงใน repo (รูปอัปใหม่ commit ที่นี่)
 public_folder: "/uploads"        # path ที่เว็บใช้อ้างรูป
 
 locale: "en"
@@ -42,142 +41,3 @@ collections:
       - { name: description, label: "รายละเอียด (HTML)", widget: text, required: false, hint: "รองรับ HTML — ตารางสเปกเป็น HTML" }
       - { name: category, label: "category (ไม่บังคับ)", widget: string, required: false, default: "" }
       - { name: order, label: "ลำดับการแสดง", widget: number, required: false, value_type: int, hint: "เลขน้อย = แสดงก่อน" }
-
-  # ── บทความ ─────────────────────────────────────────────
-  - name: articles
-    label: "บทความ (Articles)"
-    label_singular: "บทความ"
-    folder: "content/articles"
-    create: true
-    slug: "{{slug}}"
-    identifier_field: title
-    fields:
-      - { name: title, label: "หัวข้อ", widget: string }
-      - { name: slug, label: "Slug (สำหรับ URL)", widget: string }
-      - { name: subtitle, label: "หัวข้อรอง", widget: string, required: false }
-      - { name: image, label: "รูปปก", widget: image, required: false }
-      - { name: read_time, label: "เวลาอ่าน", widget: string, required: false }
-      - { name: publishedAt, label: "วันที่เผยแพร่", widget: datetime, required: false }
-      - { name: content, label: "เนื้อหา", widget: markdown }
-
-  # ── บริการ ─────────────────────────────────────────────
-  # บริการมีบล็อกย่อยเยอะ (faqs, process_steps, features ...) — ใส่ pattern list ไว้บางส่วน
-  # ส่วนที่เหลือจะเพิ่มหลังเห็น schema จริงจาก Strapi
-  - name: services
-    label: "บริการ (Services)"
-    label_singular: "บริการ"
-    folder: "content/services"
-    create: true
-    slug: "{{slug}}"
-    identifier_field: title
-    fields:
-      - { name: title, label: "ชื่อบริการ", widget: string }
-      - { name: slug, label: "Slug (สำหรับ URL)", widget: string }
-      - { name: subtitle, label: "หัวข้อรอง", widget: string, required: false }
-      - { name: image, label: "รูปหลัก", widget: image, required: false }
-      - { name: cover_image, label: "รูปปก", widget: image, required: false }
-      - { name: content, label: "เนื้อหา", widget: markdown, required: false }
-      - name: highlights
-        label: "จุดเด่น"
-        widget: list
-        required: false
-        fields:
-          - { name: text, label: "ข้อความ", widget: string }
-      - name: features
-        label: "ฟีเจอร์"
-        widget: list
-        required: false
-        fields:
-          - { name: title, label: "หัวข้อ", widget: string }
-          - { name: description, label: "คำอธิบาย", widget: text, required: false }
-      - name: process_steps
-        label: "ขั้นตอนการทำงาน"
-        widget: list
-        required: false
-        fields:
-          - { name: title, label: "หัวข้อ", widget: string }
-          - { name: description, label: "คำอธิบาย", widget: text, required: false }
-      - name: faqs
-        label: "คำถามที่พบบ่อย"
-        widget: list
-        required: false
-        fields:
-          - { name: question, label: "คำถาม", widget: string }
-          - { name: answer, label: "คำตอบ", widget: text }
-
-  # ── หน้า (about-us / contact-us) ───────────────────────
-  - name: pages
-    label: "หน้า (Pages)"
-    label_singular: "หน้า"
-    folder: "content/pages"
-    create: false
-    slug: "{{slug}}"
-    identifier_field: slug
-    fields:
-      - { name: slug, label: "Slug", widget: string }
-      - { name: quote, label: "ข้อความ/คำโปรย", widget: text, required: false }
-      - { name: hero_image, label: "รูป hero", widget: image, required: false }
-      - { name: isShowButton, label: "แสดงปุ่ม", widget: boolean, required: false, default: false }
-      - { name: button_1, label: "ปุ่ม 1", widget: string, required: false }
-      - { name: button_2, label: "ปุ่ม 2", widget: string, required: false }
-
-  # ── ตั้งค่าเว็บ (singletons) ────────────────────────────
-  - name: settings
-    label: "ตั้งค่าเว็บ"
-    files:
-      - name: layout
-        label: "ส่วนหัว/ท้าย + ข้อมูลติดต่อ"
-        file: "content/settings/layout.json"
-        fields:
-          - { name: image, label: "โลโก้", widget: image, required: false }
-          - { name: prefooter_image, label: "รูปก่อน footer", widget: image, required: false }
-          - name: address
-            label: "ข้อมูลติดต่อ"
-            widget: object
-            fields:
-              - { name: companyName, label: "ชื่อบริษัท", widget: string, required: false }
-              - { name: phone_number_1, label: "เบอร์โทร 1", widget: string, required: false }
-              - { name: phone_number_2, label: "เบอร์โทร 2", widget: string, required: false }
-              - { name: email, label: "อีเมล", widget: string, required: false }
-              - { name: map_url, label: "ลิงก์แผนที่", widget: string, required: false }
-          - name: social_media
-            label: "โซเชียล"
-            widget: list
-            required: false
-            fields:
-              - { name: name, label: "ชื่อ", widget: string }
-              - { name: url, label: "ลิงก์", widget: string }
-
-      - name: home
-        label: "หน้าแรก"
-        file: "content/settings/home.json"
-        fields:
-          - { name: title, label: "หัวข้อ", widget: string, required: false }
-          - { name: description, label: "คำอธิบาย", widget: text, required: false }
-
-      - name: about
-        label: "เกี่ยวกับเรา"
-        file: "content/settings/about.json"
-        fields:
-          - { name: about, label: "เกี่ยวกับ", widget: markdown, required: false }
-          - { name: vision, label: "วิสัยทัศน์", widget: markdown, required: false }
-          - { name: mission, label: "พันธกิจ", widget: markdown, required: false }
-          - name: team
-            label: "ทีม"
-            widget: object
-            required: false
-            fields:
-              - { name: image, label: "รูป", widget: image, required: false }
-              - { name: description, label: "คำอธิบาย", widget: text, required: false }
-          - name: warehouse
-            label: "คลังสินค้า"
-            widget: object
-            required: false
-            fields:
-              - { name: image, label: "รูป", widget: image, required: false }
-              - { name: description, label: "คำอธิบาย", widget: text, required: false }
-          - name: standards
-            label: "มาตรฐาน (รูป)"
-            widget: list
-            required: false
-            field: { name: image, label: "รูป", widget: image }
