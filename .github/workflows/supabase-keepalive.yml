@@ -1,52 +1,34 @@
-# ============================================================
-# Supabase Keepalive — every 5 days
-# ============================================================
-# Required GitHub Secrets:
-#   - CRON_SECRET    : same value as production CRON_SECRET env var
-#   - KEEPALIVE_URL  : https://thaipartsinfinity.com/api/ops/keepalive
-#
-# Schedule: 03:00 UTC every 5 days (= 10:00 Bangkok time)
-# Manual trigger: GitHub Actions tab → Run workflow
-# ============================================================
 name: Supabase Keepalive
+
+# กัน Supabase (Free plan) auto-pause หลังไม่มี activity ~7 วัน
+# เว็บเป็น static ไม่ได้ query Supabase แล้ว แต่ "รูป" ยังโหลดจาก Supabase storage
+# ถ้า project pause รูปจะหาย -> workflow นี้ยิง REST request ตรงไป Supabase ทุก 3 วัน
+# (anon key เป็น key สาธารณะ ใส่ในไฟล์ได้ตามปกติ)
+#
+# TODO ระยะยาว: ย้ายรูปลง repo (public/uploads) แล้วลบ Supabase + workflow นี้ได้เลย
 
 on:
   schedule:
-    - cron: "0 3 */5 * *"
-  workflow_dispatch:
+    - cron: "0 3 */3 * *" # ทุก 3 วัน 03:00 UTC (10:00 น. ไทย)
+  workflow_dispatch: {}
 
 jobs:
   ping:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
     steps:
-      - name: Ping keepalive endpoint
+      - name: Ping Supabase REST (keep project active)
         env:
-          CRON_SECRET: ${{ secrets.CRON_SECRET }}
-          KEEPALIVE_URL: ${{ secrets.KEEPALIVE_URL }}
+          SUPABASE_URL: https://intakohtlmqmpjajyenj.supabase.co
+          SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImludGFrb2h0bG1xbXBqYWp5ZW5qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzE3NzcsImV4cCI6MjA3NjAwNzc3N30.uYPlnj8ExJnaP4xBfxBjtL_M40mhWmyHU5zN3TXP7ug
         run: |
-          if [ -z "$CRON_SECRET" ] || [ -z "$KEEPALIVE_URL" ]; then
-            echo "::error::Missing required secrets CRON_SECRET / KEEPALIVE_URL"
+          set -e
+          code=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            "$SUPABASE_URL/rest/v1/products?select=id&limit=1")
+          echo "Supabase responded HTTP $code"
+          if [ "$code" = "000" ] || [ "$code" -ge 500 ]; then
+            echo "::error::Supabase keepalive failed (HTTP $code)"
             exit 1
           fi
-
-          echo "Pinging: $KEEPALIVE_URL"
-
-          RESPONSE=$(curl -fsS \
-            -H "Authorization: Bearer $CRON_SECRET" \
-            -w "\nHTTP_CODE:%{http_code}" \
-            --max-time 30 \
-            "$KEEPALIVE_URL")
-
-          HTTP_CODE=$(echo "$RESPONSE" | grep -oE "HTTP_CODE:[0-9]+" | cut -d: -f2)
-          BODY=$(echo "$RESPONSE" | sed '/HTTP_CODE:/d')
-
-          echo "Response: $BODY"
-          echo "HTTP code: $HTTP_CODE"
-
-          if [ "$HTTP_CODE" != "200" ]; then
-            echo "::error::Keepalive endpoint returned HTTP $HTTP_CODE"
-            exit 1
-          fi
-
-          echo "✅ Supabase keepalive succeeded"
+          echo "✅ Supabase pinged — project kept active"
