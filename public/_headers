@@ -1,0 +1,5 @@
+# Don't cache the Decap admin app/config so CMS config changes take effect immediately
+/admin/config.yml
+  Cache-Control: no-cache, must-revalidate
+/admin/*
+  Cache-Control: no-cache
