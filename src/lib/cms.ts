@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { sanitizeHtml } from '@/lib/sanitize';
-import { readContent } from '@/lib/content';
+import { readContent, readContentDir } from '@/lib/content';
 import type {
   ListParams as CmsListParams,
   PageAttributes,
@@ -161,15 +161,48 @@ export async function fetchArticleBySlug(slug: string) {
   return { id: item.id, attributes: item.attributes };
 }
 
+// Products are stored one-file-per-item under content/products/ (Decap folder
+// collection). Each file is flat; we wrap it back into the { id, attributes }
+// shape the existing product components/`mediaUrl` consume.
+type ProductFile = {
+  title?: string;
+  main_title?: string;
+  slug?: string;
+  tag?: string;
+  category?: string;
+  description?: string;
+  image?: string;
+  order?: number;
+};
+
+function productItems(): Array<StrapiItem<ProductAttributes>> {
+  return readContentDir<ProductFile>('products')
+    .slice()
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+    .map(
+      (f) =>
+        ({
+          id: f.order,
+          attributes: {
+            title: f.title,
+            main_title: f.main_title,
+            slug: f.slug,
+            tag: f.tag,
+            category: f.category,
+            description: f.description,
+            image: f.image,
+          },
+        }) as StrapiItem<ProductAttributes>
+    );
+}
+
 export async function fetchProducts(params: ListParams = {}) {
-  const json = readContent<StrapiList<ProductAttributes>>('products.json');
-  const items = sortItems(json?.data ?? [], params.sort);
+  const items = sortItems(productItems(), params.sort);
   return paginate(items, params);
 }
 
 export async function fetchProductBySlug(slug: string) {
-  const json = readContent<StrapiList<ProductAttributes>>('products.json');
-  const item = json?.data?.find((p) => (p.attributes as any)?.slug === slug);
+  const item = productItems().find((p) => (p.attributes as any)?.slug === slug);
   if (!item) return null;
   const a: any = { ...(item.attributes as any) };
   try {
@@ -194,9 +227,8 @@ export async function fetchServiceBySlug(slug: string) {
 
 /** Slug helpers for `generateStaticParams()` on dynamic routes. */
 export function allProductSlugs(): string[] {
-  const json = readContent<StrapiList<ProductAttributes>>('products.json');
-  return (json?.data ?? [])
-    .map((p) => (p.attributes as any)?.slug as string)
+  return readContentDir<ProductFile>('products')
+    .map((f) => f.slug as string)
     .filter(Boolean);
 }
 

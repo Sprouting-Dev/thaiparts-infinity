@@ -45,10 +45,7 @@ export function mediaUrl(input?: PossibleMediaInput): string {
   if (typeof input === 'string') {
     const url = input.trim();
     if (!url) return '';
-    if (url.startsWith('http')) return url;
-    if (url.startsWith('/')) return `${STRAPI_URL}${url}`;
-    // non-leading slash (e.g. 'uploads/image.png') — assume Strapi-relative
-    return `${STRAPI_URL}/${url}`;
+    return resolveUrl(url);
   }
 
   // If it's an array of data entries
@@ -136,8 +133,10 @@ function findUrlLike(obj: unknown): string | undefined {
 function resolveUrl(url: string) {
   if (!url) return '';
   if (url.startsWith('http')) return url;
-  if (url.startsWith('/')) return `${STRAPI_URL}${url}`;
-  return `${STRAPI_URL}/${url}`;
+  // Static site: a leading-slash path (e.g. /uploads/foo.png from Decap) is a
+  // local public asset and is served as-is.
+  if (url.startsWith('/')) return url;
+  return `/${url}`;
 }
 
 function chooseUrlFromAttributes(
