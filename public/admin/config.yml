@@ -43,3 +43,122 @@ collections:
       - { name: description, label: "รายละเอียด (HTML)", widget: text, required: false, hint: "รองรับ HTML — ตารางสเปกเป็น HTML" }
       - { name: category, label: "category (ไม่บังคับ)", widget: string, required: false, default: "" }
       - { name: order, label: "ลำดับการแสดง", widget: number, required: false, value_type: int, hint: "เลขน้อย = แสดงก่อน" }
+
+  # ── บทความ ─────────────────────────────────────────────
+  - name: articles
+    label: "บทความ (Articles)"
+    label_singular: "บทความ"
+    folder: "content/articles"
+    extension: "json"
+    format: "json"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: title
+    summary: "{{title}}"
+    fields:
+      - { name: title, label: "หัวข้อ", widget: string }
+      - { name: slug, label: "Slug (URL)", widget: string, hint: "อังกฤษพิมพ์เล็ก คั่นด้วยขีด" }
+      - { name: subtitle, label: "หัวข้อรอง", widget: text, required: false }
+      - { name: image, label: "รูปปก", widget: image, required: false, choose_url: true }
+      - { name: read_time, label: "เวลาอ่าน (นาที)", widget: number, required: false, value_type: int }
+      - { name: publishedAt, label: "วันที่เผยแพร่", widget: datetime, required: false }
+      - name: content
+        label: "เนื้อหา (เพิ่มทีละบล็อก)"
+        widget: list
+        required: false
+        types:
+          - name: content
+            label: "ย่อหน้าข้อความ"
+            fields:
+              - { name: content, label: "ข้อความ (HTML)", widget: text }
+          - name: image
+            label: "รูป + คำบรรยาย"
+            fields:
+              - { name: image, label: "รูป", widget: image }
+              - { name: description, label: "คำบรรยาย", widget: text, required: false }
+
+  # ── หน้า Hero (home / about-us / contact-us) ───────────
+  - name: pages
+    label: "ข้อความ Hero หน้าเว็บ"
+    label_singular: "หน้า"
+    folder: "content/pages"
+    extension: "json"
+    format: "json"
+    create: false
+    slug: "{{slug}}"
+    identifier_field: slug
+    summary: "{{slug}}"
+    fields:
+      - { name: slug, widget: hidden }
+      - { name: SEO, widget: hidden }
+      - { name: quote, label: "ข้อความ Hero (HTML)", widget: text, required: false }
+      - { name: hero_image, label: "รูปพื้นหลัง Hero", widget: image, required: false, choose_url: true }
+      - { name: button_1, label: "ปุ่ม 1", widget: string, required: false }
+      - { name: button_2, label: "ปุ่ม 2", widget: string, required: false }
+      - { name: is_show_button, label: "แสดงปุ่ม", widget: boolean, required: false, default: false }
+
+  # ── ตั้งค่าเว็บ (singletons) ────────────────────────────
+  - name: settings
+    label: "ตั้งค่าเว็บ"
+    files:
+      - name: layout
+        label: "Footer / ข้อมูลติดต่อ / โลโก้"
+        file: "content/settings/layout.json"
+        fields:
+          - { name: logo, label: "โลโก้", widget: image, required: false }
+          - { name: prefooter_image, label: "รูปแบนเนอร์ก่อน Footer", widget: image, required: false }
+          - { name: quote, label: "ข้อความก่อน Footer (HTML, คั่น 2 บรรทัดด้วย <hr>)", widget: text, required: false }
+          - { name: button, label: "ข้อความปุ่ม", widget: string, required: false }
+          - { name: company_name, label: "ชื่อบริษัท", widget: string, required: false }
+          - { name: address, label: "ที่อยู่", widget: text, required: false }
+          - { name: phone_number_1, label: "เบอร์โทร 1", widget: string, required: false }
+          - { name: phone_number_2, label: "เบอร์โทร 2", widget: string, required: false }
+          - { name: email, label: "อีเมล", widget: string, required: false }
+          - { name: map_url, label: "ลิงก์แผนที่ (Google Maps)", widget: string, required: false }
+          - name: social_media
+            label: "โซเชียล"
+            widget: list
+            required: false
+            fields:
+              - { name: type, label: "ประเภท (line / facebook / email / youtube / tiktok / x)", widget: string }
+              - { name: url, label: "ลิงก์", widget: string }
+
+      - name: about
+        label: "หน้าเกี่ยวกับเรา"
+        file: "content/settings/about.json"
+        fields:
+          - name: about
+            label: "เกี่ยวกับ"
+            widget: object
+            fields:
+              - { name: title, label: "หัวข้อ", widget: string, required: false }
+              - { name: description, label: "เนื้อหา", widget: text, required: false }
+          - name: vision
+            label: "วิสัยทัศน์"
+            widget: object
+            fields:
+              - { name: title, label: "หัวข้อ", widget: string, required: false }
+              - { name: description, label: "เนื้อหา", widget: text, required: false }
+          - name: mission
+            label: "พันธกิจ"
+            widget: object
+            fields:
+              - { name: title, label: "หัวข้อ", widget: string, required: false }
+              - { name: description, label: "เนื้อหา", widget: text, required: false }
+          - name: team
+            label: "ทีมงาน"
+            widget: object
+            fields:
+              - { name: image, label: "รูป", widget: image, required: false }
+              - { name: description, label: "คำบรรยาย", widget: text, required: false }
+          - name: warehouse
+            label: "คลังสินค้า"
+            widget: object
+            fields:
+              - { name: image, label: "รูป", widget: image, required: false }
+              - { name: description, label: "คำบรรยาย", widget: text, required: false }
+          - name: standards
+            label: "โลโก้มาตรฐาน (รูป)"
+            widget: list
+            required: false
+            field: { name: image, label: "รูป", widget: image }

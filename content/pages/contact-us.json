@@ -1,0 +1,9 @@
+{
+  "slug": "contact-us",
+  "quote": "<div class=\"raw-html-embed\"><!-- ส่วน Title (จะใหญ่กว่าบรรทัดล่าง) -->\n<span style=\"color:#1063A7;\">เราพร้อมให้</span>\n<span style=\"color:#E92928;\">การสนับสนุนและบริการคุณ</span>\n\n<hr>\n\n<!-- ส่วน Subtitle -->\n<p style=\"color:#F5F5F5;\">\n  ติดต่อทีมงานขายส่งของเรา เพื่อสอบถามราคา เปิดบัญชี หรือติดตามสถานะคำสั่งซื้อ\n</p>\n</div>",
+  "button_1": "ปรึกษาวิศวกร",
+  "button_2": "ดูสินค้าและอะไหล่ทั้งหมด",
+  "is_show_button": false,
+  "hero_image": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/contact-hero.png-50e3100ee30be6d3a20f8d85e551000f.png",
+  "SEO": null
+}

@@ -1,0 +1,28 @@
+{
+  "about": {
+    "title": "มากกว่าแค่ผู้จัดจำหน่าย เราคือผู้สร้างความมั่นคงในสายการผลิต",
+    "description": "เราก่อตั้ง THAIPARTS INFINITY ขึ้นจากความเข้าใจปัญหา Downtime ที่ 'ทุกนาทีคือเงิน' และความยุ่งยากในการหาผู้ให้บริการอะไหล่และระบบ Automation ที่ เชื่อถือได้ ในที่เดียว เราจึงเป็นมากกว่าผู้จัดจำหน่าย โดยเป็น One Stop Service ที่พร้อมให้คำปรึกษา ออกแบบ  ติดตั้ง และรับประกันผลงานอย่างครบวงจร"
+  },
+  "vision": {
+    "title": "วิสัยทัศน์",
+    "description": "มุ่งสู่การเป็นผู้ให้บริการโซลูชันวิศวกรรม และอะไหล่อุตสาหกรรมชั้นนำในประเทศไทย ที่ได้รับความเชื่อมั่นสูงสุด ให้กับลูกค้าใน ทุกภาคอุตสาหกรรมหนัก"
+  },
+  "mission": {
+    "title": "พันธกิจ",
+    "description": "เราคือผู้สนับสนุนความต่อเนื่องในการผลิต  โดยการเป็น One Stop Service ที่ ส่งมอบอะไหล่แท้มาตรฐานสากล พร้อมโซลูชันวิศวกรรมครบวงจร และบริการฉุกเฉินที่รวดเร็ว"
+  },
+  "team": {
+    "image": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/team.png-6139a6173408b023cfec6bf6900265a6.png",
+    "description": "ทีมงานที่เชี่ยวชาญในการจัดหา คัดเลือก และให้คำปรึกษาด้านอะไหล่โดยเฉพาะ"
+  },
+  "warehouse": {
+    "image": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/warehouse.png-aeb189755e32f5b794e01f1a916448ac.png",
+    "description": "คลังสินค้าและ ระบบการจัดการสต็อกที่ทันสมัย"
+  },
+  "standards": [
+    "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/iso-icon.svg-ccf2e1704f1f1a2873fa4e89fa1f13b1.svg",
+    "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/ce-icon.svg-c5943f03928b39841adab3f30d9fba07.svg",
+    "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/atex-icon.svg-497ae6f19d9a57e8e797e3e14fd5c1e9.svg",
+    "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/iec-icon.svg-7fa7d15a551c79049686bbbc1b20cf21.svg"
+  ]
+}

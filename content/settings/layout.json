@@ -1,0 +1,22 @@
+{
+  "logo": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/footer.png-44bb3258207eb90772bbda70a4865fb9.png",
+  "prefooter_image": "",
+  "quote": "<div class=\"raw-html-embed\"><!-- ส่วน Title (จะใหญ่กว่าบรรทัดล่าง) -->\n<span style=\"color:#FFFFFF;\">เครื่องจักรหยุดเดิน? อย่าให้ Downtime ทำลายกำไรของคุณ</span>\n\n<hr>\n\n<!-- ส่วน Subtitle -->\n<p style=\"color:#FFFFFF;\">\n  ติดต่อสายด่วนวิศวกรของเราทันที บริการ On-site Support ภายใน 24-48 ชม.\n</p></div>",
+  "button": "แจ้งปัญหาด่วน/ติดต่อเรา",
+  "company_name": "THAIPARTS INFINITY CO., LTD.",
+  "address": "5/17 M.2, Thap Ma, Mueang Rayong, Rayong, 21000",
+  "phone_number_1": "924242144",
+  "phone_number_2": "971282707",
+  "email": "info@thaipartsinfinity.com",
+  "map_url": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3892.1342469107562!2d101.21760030000002!3d12.704659699999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3102fb24e2bfc1c3%3A0x1e03d97838f7cc7a!2z4Lir4Lih4Li54LmI4Lia4LmJ4Liy4LiZ4Liq4Lin4Li14LiX4LmC4Liu4LihJuC4m-C4suC4o-C5jOC4hA!5e0!3m2!1sth!2sth!4v1761806518953!5m2!1sth!2sth",
+  "social_media": [
+    {
+      "type": "line",
+      "url": "https://lin.ee/E2Zf5YS"
+    },
+    {
+      "type": "email",
+      "url": "info@thaipartsinfinity.com"
+    }
+  ]
+}

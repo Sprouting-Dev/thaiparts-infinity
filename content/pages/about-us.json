@@ -1,0 +1,9 @@
+{
+  "slug": "about-us",
+  "quote": "<div class=\"raw-html-embed\"><!-- ส่วน Title (จะใหญ่กว่าบรรทัดล่าง) -->\n<span style=\"color:#1063A7;\">THAIPARTS</span>\n<span style=\"color:#E92928;\">INFINITY</span>\n<span style=\"color:#1063A7;\">พาร์ทเนอร์ผู้เชี่ยวชาญด้านระบบ</span>\n<span style=\"color:#E92928;\">อุตสาหกรรมครบวงจร</span>\n<hr>\n\n<!-- ส่วน Subtitle -->\n<p style=\"color:#F5F5F5;\">\n  เราช่วยลดความเสี่ยงการหยุดทำงาน และเพิ่มประสิทธิภาพการผลิตให้กับโรงงานอุตสาหกรรมชั้นนำ\n</p>\n</div>",
+  "button_1": "ปรึกษาวิศวกร",
+  "button_2": "ดูสินค้าและอะไหล่ทั้งหมด",
+  "is_show_button": false,
+  "hero_image": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/about-us-hero.png-a7a2ff60beaccacc618851095e6363a3.png",
+  "SEO": null
+}

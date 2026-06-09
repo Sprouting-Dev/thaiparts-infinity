@@ -1,0 +1,55 @@
+{
+  "title": "5 สัญญาณเตือน! ถึงเวลาต้องอัปเกรด PLC/SCADA ในโรงงานคุณ",
+  "slug": "scada-plc-system",
+  "subtitle": "บทวิเคราะห์เชิงเทคนิคที่ช่วยให้ผู้บริหารและวิศวกรประเมินความเสี่ยงจากระบบควบคุมที่ล้าสมัย ก่อนเกิด Downtime ครั้งใหญ่",
+  "read_time": 8,
+  "publishedAt": "2025-10-23T15:30:44.372",
+  "image": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/scada-plc-system.png-b5a0213178b7fca69155e538fc77892b.png",
+  "content": [
+    {
+      "type": "image",
+      "description": "สัญญาณเตือนที่ 1: ความเสี่ยงในการจัดหาอะไหล่  (The Sourcing Crisis)",
+      "image": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/scada-plc-system-1.png-051f6cb1d21cd4306b55019671894673.png"
+    },
+    {
+      "type": "content",
+      "content": "<p>นี่คือปัญหาทางธุรกิจที่เร่งด่วนที่สุด</p><p>อาการ: Part Number ของ PLC/I/O Module ไม่มีการผลิตแล้ว (Discontinued หรือ End-of-Life) หรือหาอะไหล่ได้ยากมากในตลาดโลก</p><p>ผลกระทบทางเทคนิค: หาก Hardware ชิ้นใดชิ้นหนึ่งเสีย คุณต้องพึ่งพา ตลาดมือสอง หรือ สินค้าทดแทน (Aftermarket) ที่ไม่มีการรับประกันคุณภาพ ซึ่งนำมาสู่ความเสี่ยงที่จะเกิด Downtime นานหลายสัปดาห์</p><p>คำแนะนำจาก TPI: หากคุณพบว่า Lead Time ในการจัดหาอะไหล่ Core PLC (CPU, Power Supply) เกินกว่า 30 วัน นั่นคือสัญญาณเตือนที่ชัดเจนที่สุด เราสามารถช่วยคุณประเมินและจัดหา อะไหล่แท้พร้อมส่ง สำหรับรุ่นที่ยังรองรับ หรือวางแผนการเปลี่ยนผ่านไปสู่แพลตฟอร์มที่ใหม่กว่า</p>"
+    },
+    {
+      "type": "image",
+      "description": "สัญญาณเตือนที่ 2: ข้อจำกัดด้านการสื่อสารและเครือข่าย  (Communication & Networking Bottlenecks)",
+      "image": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/scada-plc-system-2.png-955d4989e73ab7be76ba0517e5cf47d8.png"
+    },
+    {
+      "type": "content",
+      "content": "<p>อาการ: ระบบควบคุมยังคงใช้โปรโตคอลการสื่อสารแบบเก่า เช่น Profibus DP, DeviceNet &nbsp;หรือ Serial Communication (RS-232/485) ซึ่งไม่รองรับการส่งข้อมูลความเร็วสูง</p><p>ผลกระทบทางเทคนิค: การเชื่อมต่อกับระบบบริหารจัดการ (MES/ERP), Cloud Computing &nbsp;หรือ IIoT (Industrial IoT) เป็นไปได้ยากหรือไม่เสถียร ทำให้ไม่สามารถใช้ Big Data ในการวิเคราะห์และปรับปรุงประสิทธิภาพการผลิต (OEE) ได้</p><p>คำแนะนำจาก TPI: การอัปเกรดไปใช้แพลตฟอร์มที่รองรับ Standard Ethernet (Profinet/Ethernet/IP) จะช่วยให้การสื่อสารระหว่าง PLC และ SCADA/Cloud มีความเร็วและความเสถียรสูงขึ้น ลด Latency ในการควบคุม</p>"
+    },
+    {
+      "type": "image",
+      "description": "สัญญาณเตือนที่ 3: ปัญหาด้านความปลอดภัยทางไซเบอร์  (Cybersecurity Vulnerability)",
+      "image": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/scada-plc-system-3.png-a4bd208bc6b93c849dd869f24e77743d.png"
+    },
+    {
+      "type": "content",
+      "content": "<p>อาการ: ระบบปฏิบัติการ (Operating System) ของ SCADA Server หรือ HMI Panel &nbsp;เป็นเวอร์ชันที่ล้าสมัย (เช่น Windows XP, Windows 7 ที่ไม่มีการอัปเดต Security Patch แล้ว)</p><p>ผลกระทบทางเทคนิค: ช่องโหว่ด้านความปลอดภัยเหล่านี้ทำให้โรงงานของคุณมีความเสี่ยงต่อ การถูกโจมตีทางไซเบอร์ได้ง่าย ซึ่งอาจนำไปสู่การขโมยข้อมูลสูตรการผลิต หรือที่เลวร้ายที่สุดคือการแทรกแซงและทำลายกระบวนการควบคุม</p><p>คำแนะนำจาก TPI: การอัปเกรด Hardware และ Software ให้เป็นเวอร์ชันปัจจุบันจะช่วยให้คุณสามารถใช้ Security Features ที่ทันสมัย เช่น การเข้ารหัสข้อมูล (Encryption), การพิสูจน์ตัวตนแบบ Multi-Factor (MFA), และการจำกัดสิทธิ์การเข้าถึงอย่างเข้มงวด</p>"
+    },
+    {
+      "type": "image",
+      "description": "สัญญาณเตือนที่ 4: HMI/SCADA Interface ที่ขาดประสิทธิภาพ  (Ineffective Human Interface)",
+      "image": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/scada-plc-system-4.png-80348ff1b240ac61028ad8403f294116.png"
+    },
+    {
+      "type": "content",
+      "content": "<p>อาการ: หน้าจอ HMI (Human-Machine Interface) หรือ SCADA ที่มีกราฟิกโบราณ, &nbsp;ข้อมูลไม่ชัดเจน, และการแจ้งเตือน (Alarm) ที่ไม่เป็นระบบ</p><p>ผลกระทบทางเทคนิค: ผู้ปฏิบัติงาน (Operator) ไม่สามารถวิเคราะห์ปัญหาหรือตอบสนองต่อเหตุการณ์ฉุกเฉินได้อย่างรวดเร็ว เนื่องจากต้องใช้เวลานานในการทำความเข้าใจสถานะของเครื่องจักร ซึ่งนำไปสู่การตัดสินใจที่ผิดพลาดและเพิ่มเวลา Downtime โดยไม่จำเป็น</p><p>คำแนะนำจาก TPI: การออกแบบ HMI/SCADA Interface ใหม่ตามหลักการ &nbsp;High-Performance HMI จะช่วยให้ผู้ปฏิบัติงานสามารถ เข้าใจสถานะ และ &nbsp;ตอบสนองต่อสัญญาณเตือน ได้เร็วขึ้นกว่าเดิมอย่างน้อย 30%</p>"
+    },
+    {
+      "type": "image",
+      "description": "สัญญาณเตือนที่ 5: ความยากในการบำรุงรักษาและการปรับปรุง  (Maintenance and Modification Difficulty)",
+      "image": "https://intakohtlmqmpjajyenj.supabase.co/storage/v1/object/public/image/images/scada-plc-system-5.png-f4ba8a30df21fa4701b121e011eada7c.png"
+    },
+    {
+      "type": "content",
+      "content": "<p>อาการ: โปรแกรม PLC ถูกเขียนด้วยภาษาโปรแกรมรุ่นเก่า, ไม่มีเอกสารกำกับ &nbsp;(Documentation) หรือไม่สามารถหาบุคลากรที่เขียน/แก้ไขโปรแกรมได้</p><p>ผลกระทบทางเทคนิค: เมื่อคุณต้องการเพิ่มฟังก์ชันใหม่ หรือแก้ไข Bug ในระบบ คุณต้องจ่ายค่าบริการวิศวกรในอัตราที่สูงมาก หรือต้องเสี่ยงให้ช่างที่ไม่เชี่ยวชาญเข้ามาแก้ไข ซึ่งอาจทำให้เกิดความผิดพลาดในการผลิต</p><p>คำแนะนำจาก TPI: การอัปเกรดเป็นแพลตฟอร์มและภาษาโปรแกรมที่ทันสมัย จะช่วยให้การ Troubleshooting และ Modification ทำได้ง่ายขึ้นมาก นอกจากนี้ TPI ยังมี System Design Service ที่รวมถึงการจัดทำเอกสารและ Training บุคลากรของคุณให้พร้อมสำหรับการดูแลระบบในระยะยาว</p>"
+    }
+  ]
+}
