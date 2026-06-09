@@ -5,6 +5,10 @@ export const STRAPI_URL =
   process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
 const STRAPI_TOKEN = process.env.STRAPI_API_TOKEN;
 
+// Abort a request if the backend is unreachable/slow so it cannot hang
+// server-side rendering indefinitely (e.g. when the CMS database is paused).
+const STRAPI_TIMEOUT_MS = Number(process.env.STRAPI_FETCH_TIMEOUT_MS) || 10000;
+
 export async function strapiFetch<T = unknown>(
   path: string,
   opts: RequestInit = {},
@@ -20,18 +24,35 @@ export async function strapiFetch<T = unknown>(
       ? path
       : `${STRAPI_URL}${path}`;
 
-  const res = await fetch(url, {
-    ...opts,
-    headers,
-    next: { revalidate },
-  });
-  if (!res.ok) {
-    if (process.env.NODE_ENV === 'development') {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), STRAPI_TIMEOUT_MS);
+
+  try {
+    const res = await fetch(url, {
+      ...opts,
+      headers,
+      signal: controller.signal,
+      next: { revalidate },
+    });
+    if (!res.ok) {
       logger.warn('[strapiFetch] non-OK:', res.status, url);
+      return null;
     }
+    return (await res.json()) as T;
+  } catch (err) {
+    // Network error, DNS failure, or timeout — most commonly the CMS backend
+    // (or its database) being unreachable. Degrade gracefully by returning null
+    // so pages render instead of throwing a 500 during SSR/ISR.
+    const e = err as Error;
+    const reason =
+      e?.name === 'AbortError'
+        ? `timeout after ${STRAPI_TIMEOUT_MS}ms`
+        : e?.message || String(e);
+    logger.error('[strapiFetch] request failed:', reason, url);
     return null;
+  } finally {
+    clearTimeout(timeout);
   }
-  return (await res.json()) as T;
 }
 
 /**
