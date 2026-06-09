@@ -28,6 +28,8 @@ collections:
     label: "สินค้า (Products)"
     label_singular: "สินค้า"
     folder: "content/products"
+    extension: "json"
+    format: "json"
     create: true
     slug: "{{slug}}"
     identifier_field: title
