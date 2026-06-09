@@ -31,20 +31,17 @@ collections:
     folder: "content/products"
     create: true
     slug: "{{slug}}"
-    identifier_field: name
-    summary: "{{name}}"
+    identifier_field: title
+    summary: "{{title}}"
     fields:
-      - { name: name, label: "ชื่อสินค้า", widget: string }
-      - { name: slug, label: "Slug (สำหรับ URL)", widget: string, hint: "เช่น brake-pad-x1" }
-      - { name: main_title, label: "หัวข้อหลัก", widget: string, required: false }
-      - { name: image, label: "รูปหลัก", widget: image, required: false }
-      - { name: thumbnail, label: "รูปย่อ (thumbnail)", widget: image, required: false }
-      - { name: category, label: "หมวดหมู่", widget: string, required: false }
-      - { name: tag, label: "แท็ก", widget: string, required: false }
-      - { name: price, label: "ราคา", widget: string, required: false }
-      - { name: inStock, label: "มีสินค้า", widget: boolean, default: true, required: false }
-      - { name: specifications, label: "สเปก", widget: markdown, required: false }
-      - { name: description, label: "รายละเอียด", widget: markdown, required: false }
+      - { name: title, label: "ชื่อสินค้า", widget: string }
+      - { name: slug, label: "Slug (URL)", widget: string, hint: "อังกฤษพิมพ์เล็ก คั่นด้วยขีด เช่น bearing-roller" }
+      - { name: main_title, label: "หัวข้อหลัก (แสดงในหน้าสินค้า)", widget: string, required: false }
+      - { name: tag, label: "แท็ก/หมวด", widget: string, required: false, hint: "เช่น Mechanical & Power Transmission Systems" }
+      - { name: image, label: "รูปสินค้า", widget: image, required: false, choose_url: true }
+      - { name: description, label: "รายละเอียด (HTML)", widget: text, required: false, hint: "รองรับ HTML — ตารางสเปกเป็น HTML" }
+      - { name: category, label: "category (ไม่บังคับ)", widget: string, required: false, default: "" }
+      - { name: order, label: "ลำดับการแสดง", widget: number, required: false, value_type: int, hint: "เลขน้อย = แสดงก่อน" }
 
   # ── บทความ ─────────────────────────────────────────────
   - name: articles
